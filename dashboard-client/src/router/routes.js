@@ -95,6 +95,172 @@ export default [
         },
         component: () => import('../views/pages/dashboard/analytics/index')
     },
+    //My Dashboard Pages
+    //Super Admin routes
+    {
+        path: '/dashboard/super-admin',
+        name: 'super-admin-dashboard',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/superAdmin/index')
+    },
+    {
+        path: '/dashboard/super-admin/reports',
+        name: 'reports',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/superAdmin/reports')
+    },
+    {
+        path: '/dashboard/super-admin/invoices',
+        name: 'invoices',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/superAdmin/invoices')
+    },
+    {
+        path: '/dashboard/super-admin/users',
+        name: 'users',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/superAdmin/users')
+    },
+    {
+        path: '/dashboard/super-admin/variance',
+        name: 'variance',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/superAdmin/variance')
+    },
+    {
+        path: '/dashboard/super-admin/payment-request',
+        name: 'payment-request',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/superAdmin/payment-request')
+    },
+
+    //end of super admin routes
+
+    //admin dashboards
+
+    {
+        path: '/dashboard/admin',
+        name: 'admin-dashboard',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/admin/index')
+    },
+
+    {
+        path: '/dashboard/admin/reports',
+        name: 'reports',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/admin/reports')
+    },
+    {
+        path: '/dashboard/admin/restaurants',
+        name: 'restaurants',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/admin/restaurants')
+    },
+
+    {
+        path: '/dashboard/admin/invoices.vue',
+        name: 'invoices',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/admin/invoices')
+    },
+
+    //end of admin
+
+    //restaurant Owner dashboard
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/restaurantOwner/index')
+    },
+
+    {
+        path: '/dashboard/reports',
+        name: 'reports',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/restaurantOwner/reports')
+    },
+    
+    {
+        path: '/dashboard/invoices',
+        name: 'invoices',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/restaurantOwner/invoices')
+    },
+    
+    {
+        path: '/dashboard/staff',
+        name: 'staff',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/restaurantOwner/staff')
+    },
+
+    //end  of restaurant owner dashboard
+
+    // restaurant staff dashboards
+
+    
+    {
+        path: '/dashboard/staff-dashboard',
+        name: 'staff-dashboard',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/restaurantStaff/index')
+    },
+
+    {
+        path: '/dashboard/staff-dashboard/invoices',
+        name: 'invoices',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/restaurantStaff/invoices')
+    },
+
+    {
+        path: '/dashboard/staff-dashboard/reports',
+        name: 'reports',
+        meta: {
+            authRequired: true,
+        },
+        component: () => import('../views/pages/dashboard/restaurantStaff/reports')
+    },
+    
+
+    
+
+    //end of restaurant staff dashboard
+
     {
         path: '/apps/calendar',
         name: 'calendar',

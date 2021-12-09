@@ -667,7 +667,18 @@ export const menuItems = [
                     }
                 ]
             }
+
+
         ]
-    }
+    },
+    {
+        id: 117,
+        label: "Dashboard",
+        icon: "ri-dashboard-line",
+        link: '/dashboard/super-admin'
+    },
+
+
+
 ];
 
