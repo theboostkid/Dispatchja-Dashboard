@@ -3,19 +3,18 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom, map } from 'rxjs';
 import { Task, Item } from './schema/task.schema';
-import { TookanTaskRepository } from './tookantask.repository';
+import { TaskRepository } from './task.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import camelCase from "camelcase";
-import { start } from 'repl';
 
 
 @Injectable()
-export class TookanService implements OnModuleInit {
+export class TaskService implements OnModuleInit {
 	private readonly API_URL: string;
 	private readonly API_KEY: string;
 
 	constructor(
-		private readonly _tookanTaskRespository: TookanTaskRepository,
+		private readonly _tookanTaskRespository: TaskRepository,
 		private readonly _configService: ConfigService,
 		private readonly _httpService: HttpService) {
 		this.API_URL = this._configService.get<string>("TOOKAN_API_URL");
@@ -23,13 +22,13 @@ export class TookanService implements OnModuleInit {
 	}
 
 	async onModuleInit() {
-		await this.loadTasksFromAPI();
+		// await this.loadTasksFromAPI();
 	}
 
 	@Cron(CronExpression.EVERY_30_MINUTES)
 	async handleCron() {
 		console.log('Called when the current second is 45');
-		await this.checkForNewOrUpdatedTasksForToday();
+		// await this.checkForNewOrUpdatedTasksForToday();
 	}
 
 	/**
@@ -49,7 +48,7 @@ export class TookanService implements OnModuleInit {
 			"api_key": this.API_KEY,
 			"job_type": 1,
 			"custom_fields": 1,
-			"is_pagination": false
+			"is_pagination": 0
 		}
 
 		const { data } = await lastValueFrom(this._httpService.post(`${this.API_URL}get_all_tasks`,
@@ -95,7 +94,7 @@ export class TookanService implements OnModuleInit {
 				$match: { "restaurantName": restaurantName }
 			})
 		}
-		console.log(startDate)
+
 		if (startDate) {
 			let dateFilterPipeline = {
 				dateCreated: { $gte: startDate }
@@ -114,8 +113,11 @@ export class TookanService implements OnModuleInit {
 				total: {
 					$sum: 1
 				},
-				totalBill: {
+				totalPrice: {
 					$sum: "$totalPrice"
+				},
+				totalDeliveryFee: {
+					$sum: "$deliveryFee"
 				},
 				items: {
 					$push: "$items"
@@ -127,7 +129,8 @@ export class TookanService implements OnModuleInit {
 			$project: {
 				restaurantName: "$_id",
 				total: 1,
-				totalBill: 1,
+				totalPrice: 1,
+				totalDeliveryFee: 1,
 				"items": {
 					$reduce: {
 						input: '$items',
@@ -140,25 +143,6 @@ export class TookanService implements OnModuleInit {
 
 		return this._tookanTaskRespository.aggregate(pipelines)
 	}
-
-	// getTasks(taskFilters: TaskFilterDto): Observable<any> {
-	// 	return this._httpService.post(`${this.API_URL}get_all_tasks`,
-	// 		{
-	// 			"api_key": this.API_KEY,
-	// 			"job_status": taskFilters.jobStatus,
-	// 			"job_type": taskFilters.jobType,
-	// 			"start_date": taskFilters.startDate,
-	// 			"end_date": taskFilters.endDate,
-	// 			"custom_fields": taskFilters.customFields,
-	// 			"is_pagination": taskFilters.isPagination,
-	// 			"requested_page": taskFilters.requestedPage,
-	// 			"customer_id": taskFilters.customerId,
-	// 			"fleet_id": taskFilters.fleetId,
-	// 			"job_id": taskFilters.jobId,
-	// 			"order_id": taskFilters.orderId,
-	// 			"team_id": taskFilters.teamId
-	// 		})
-	// }
 
 	// updateTask(taskId: string, updateTaskDto: UpdateTaskDto): Observable<any> {
 	// 	return this._httpService.post(`${this.API_URL}get_all_tasks`,
@@ -206,6 +190,9 @@ export class TookanService implements OnModuleInit {
 						break;
 					case "Phone_No":
 						task["clientPhone"] = value;
+						break;
+					case "Delivery_Fee":
+						task["deliveryFee"] = Number(value?.replace("-", "0") || 0);
 						break;
 					case "Items":
 						items = value?.body?.map((el) => {

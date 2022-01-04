@@ -193,6 +193,9 @@ export class Task {
 	totalPrice?: number;
 
 	@Prop()
+	deliveryFee?: number;
+
+	@Prop()
 	instructions?: string;
 
 	@Prop()

@@ -6,7 +6,7 @@ import { Task, TaskDocument } from './schema/task.schema';
 
 
 @Injectable()
-export class TookanTaskRepository {
+export class TaskRepository {
 	constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) { }
 
 	async findOne(tasksFilterQuery: FilterQuery<TaskDocument>): Promise<Task> {
