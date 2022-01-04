@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Put, Patch, Delete, Body, Param, HttpCode, ParseUUIDPipe, Query } from '@nestjs/common';
-import { count } from 'console';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, HttpCode, ParseUUIDPipe, Query, UseGuards } from '@nestjs/common';
 import { CreateUserDto, UserSearchQueryParams, UpdatePasswordDTO, UpdateUserDTO } from './dto/user.dto';
 import { UsersService } from './users.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
+@UseGuards(AuthGuard('jwt'))
 export class UsersController {
 	constructor(private readonly userService: UsersService) { }
 
