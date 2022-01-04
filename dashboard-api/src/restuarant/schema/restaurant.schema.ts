@@ -18,6 +18,15 @@ export class Invoice {
 	endDate?: string;
 
 	@Prop()
+	totalAmountPaid?: number;
+
+	@Prop()
+	totalAmount?: number;
+
+	@Prop()
+	totalDeliveryFee?: number;
+
+	@Prop()
 	invoiceFrequencyInWeeks?: number;
 
 	@Prop()
@@ -32,6 +41,9 @@ export class Restaurant {
 
 	@Prop()
 	name?: string;
+
+	@Prop()
+	email?: string;
 
 	@Prop()
 	invoiceFrequencyInWeeks?: number;
