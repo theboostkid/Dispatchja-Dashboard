@@ -86,64 +86,6 @@ export class TaskService implements OnModuleInit {
 		return apiResults;
 	}
 
-	getTaskForRestaurantForPeriod(restaurantName?: string, startDate?: string, endDate?: string) {
-		let pipelines = [];
-
-		if (restaurantName) {
-			pipelines.push({
-				$match: { "restaurantName": restaurantName }
-			})
-		}
-
-		if (startDate) {
-			let dateFilterPipeline = {
-				dateCreated: { $gte: startDate }
-			};
-
-			if (endDate) {
-				dateFilterPipeline["dateCreated"]["$lte"] = endDate;
-			}
-
-			pipelines.push({ $match: dateFilterPipeline });
-		}
-
-		pipelines.push({
-			$group: {
-				_id: "$restaurantName",
-				total: {
-					$sum: 1
-				},
-				totalPrice: {
-					$sum: "$totalPrice"
-				},
-				totalDeliveryFee: {
-					$sum: "$deliveryFee"
-				},
-				items: {
-					$push: "$items"
-				}
-			}
-		})
-
-		pipelines.push({
-			$project: {
-				restaurantName: "$_id",
-				total: 1,
-				totalPrice: 1,
-				totalDeliveryFee: 1,
-				"items": {
-					$reduce: {
-						input: '$items',
-						initialValue: [],
-						in: { $concatArrays: ['$$value', '$$this'] }
-					}
-				}
-			}
-		})
-
-		return this._tookanTaskRespository.aggregate(pipelines)
-	}
-
 	// updateTask(taskId: string, updateTaskDto: UpdateTaskDto): Observable<any> {
 	// 	return this._httpService.post(`${this.API_URL}get_all_tasks`,
 	// 		{
@@ -170,7 +112,7 @@ export class TaskService implements OnModuleInit {
 			}
 
 			const camelCasedKey = camelCase(key);
-			task[`${camelCasedKey}`] = taskComingFromAPI[key]
+			task[`${camelCasedKey}`] = taskComingFromAPI[key];
 		}
 
 		task.dateCreated = task.creationDatetime?.split(' ')[0];
@@ -211,6 +153,9 @@ export class TaskService implements OnModuleInit {
 
 								item[camelCasedKey] = value;
 							})
+
+							//todo: review potential undefined
+							item["paymentMethod"] = task["paymentMethod"];
 							return item;
 						}) || [];
 
