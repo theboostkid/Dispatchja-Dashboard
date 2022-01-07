@@ -38,7 +38,7 @@ export class AuthService {
 				this.emailService.sendEmail({
 					to: user.email,
 					subject: 'Account Disabled',
-					template: 'account-disabled',
+					template: './account-disabled',
 					context: {
 						name: user.name,
 					},
@@ -63,15 +63,16 @@ export class AuthService {
 			return;
 		}
 
-		await this.usersService.updateUser(user.id, { resetPasswordToken: uuidv4() })
+		const token = uuidv4();
+		await this.usersService.updateUser(user.id, { resetPasswordToken: token })
 
 		this.emailService.sendEmail({
 			to: user.email,
 			subject: 'Password Reset Request',
-			template: 'password-reset-request',
+			template: './password-reset-request',
 			context: {
 				name: user.name,
-				url: `${host}/confirm-request`,
+				url: `${host}/confirm-request?token=${token}`,
 			},
 		})
 	}
@@ -83,14 +84,14 @@ export class AuthService {
 		}
 
 		const password = generate({ length: 10, numbers: true });
-		const hashedPassword = bcrypt.hash(password, 10);
+		const hashedPassword = await bcrypt.hash(password, 10);
 
 		await this.usersService.changePassword(user.id, hashedPassword, true);
 
 		this.emailService.sendEmail({
 			to: user.email,
 			subject: 'Password Reset',
-			template: 'password-reset',
+			template: './password-reset',
 			context: {
 				password,
 				name: user.name,

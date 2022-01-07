@@ -115,8 +115,9 @@ export class UsersService {
 
 	async generateNewPassword(id: string) {
 		const password = generate({ length: 10, numbers: true });
+		const hashedPassword = await bcrypt.hash(password, 10);
 
-		const user = await this.usersRepository.update({ id }, { password, resetPasswordToken: "", shouldChangePassword: true })
+		const user = await this.usersRepository.update({ id }, { password: hashedPassword, resetPasswordToken: "", shouldChangePassword: true })
 
 		this.emailService.sendEmail({
 			to: user.email,
@@ -160,6 +161,6 @@ export class UsersService {
 	}
 
 	async delete(id: string) {
-		return this.usersRepository.update({ id }, { isDeleted: true })
+		return this.usersRepository.delete({ id })
 	}
 }

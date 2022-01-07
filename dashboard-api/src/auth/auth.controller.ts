@@ -1,4 +1,4 @@
-import { Controller, Request, Body, Param, Post, Get, Patch, UseGuards, HttpCode, UnauthorizedException, HostParam } from '@nestjs/common';
+import { Controller, Request, Body, Param, Post, Get, Patch, UseGuards, HttpCode, UnauthorizedException, HostParam, ParseUUIDPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/users/schema/user.schema';
 import { AuthService } from './auth.service';
@@ -36,10 +36,16 @@ export class AuthController {
     ]);
   }
 
-  @Post("/:email")
+  @Post("/:email/request-password-change")
   @HttpCode(204)
-  requestPasswordChange(@Param() { email }: EmailOnlyParams, @HostParam('origin') origin: string) {
-    this.authService.sendResetPasswordRequest(email, origin)
+  requestPasswordChange(@Param('email') email: string, @HostParam('origin') origin: string) {
+    console.log(email)
+    return this.authService.sendResetPasswordRequest(email, origin)
   }
 
+  @Patch("/confirm-password-change/:token")
+  @HttpCode(204)
+  confirmPasswordChange(@Param('token', ParseUUIDPipe) token: string) {
+    return this.authService.sentNewPassword(token)
+  }
 }

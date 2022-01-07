@@ -34,4 +34,8 @@ export class UsersRepository {
 	async update(userFilterQuery: FilterQuery<UserDocument>, user: Partial<User>): Promise<User> {
 		return this.userModel.findOneAndUpdate(userFilterQuery, user, { new: true });
 	}
+
+	async delete(userFilterQuery: FilterQuery<UserDocument>) {
+		return this.userModel.deleteOne(userFilterQuery);
+	}
 }
