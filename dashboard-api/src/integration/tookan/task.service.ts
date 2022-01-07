@@ -22,13 +22,12 @@ export class TaskService implements OnModuleInit {
 	}
 
 	async onModuleInit() {
-		// await this.loadTasksFromAPI();
+		await this.loadTasksFromAPI();
 	}
 
 	@Cron(CronExpression.EVERY_30_MINUTES)
 	async handleCron() {
-		console.log('Called when the current second is 45');
-		// await this.checkForNewOrUpdatedTasksForToday();
+		await this.checkForNewOrUpdatedTasksForToday();
 	}
 
 	/**

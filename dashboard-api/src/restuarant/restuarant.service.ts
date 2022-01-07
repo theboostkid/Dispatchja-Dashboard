@@ -42,8 +42,6 @@ export class RestuarantService implements OnModuleInit {
 
 	@Cron(CronExpression.EVERY_30_MINUTES)
 	async automatedInvoiceCron() {
-		console.log('Called when the current second is 45');
-
 		const today = (new Date()).toISOString().split('T')[0]
 		const { results } = await this.findAll();
 
