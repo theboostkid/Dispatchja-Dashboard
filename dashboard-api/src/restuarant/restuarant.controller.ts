@@ -1,5 +1,5 @@
 import { Body, Request, Controller, Param, Post, Delete, Get, Put, Patch, Query, HttpCode, ForbiddenException, NotFoundException, BadRequestException, UseGuards } from '@nestjs/common';
-import { InvoiceDTO, InvoiceSearchQueryParams, UpdateInvoiceDTO, UpdateRestaurantDetailsDTO } from './dto/restaurant.dto';
+import { InvoiceDTO, SearchQueryParams, UpdateInvoiceDTO, UpdateRestaurantDetailsDTO } from './dto/restaurant.dto';
 import { RestuarantService } from './restuarant.service';
 import { Role, User } from '../users/schema/user.schema';
 import { AuthGuard } from '@nestjs/passport';
@@ -38,15 +38,30 @@ export class RestuarantController {
 	@Get("/statistics")
 	getRestaurantStatistic(
 		@Request() req,
-		@Query() searchQuery: InvoiceSearchQueryParams) {
+		@Query() searchQuery: SearchQueryParams) {
 
-		const { restaurantName, startDate, endDate } = searchQuery;
+		const { restaurantName, startDate, endDate, jobStatus } = searchQuery;
 		const user = req.user as User;
 		if (!this._isUserAuthorized(user, { restaurantName })) {
 			throw new ForbiddenException();
 		}
 
-		return this._restaurantService.getStatistic(restaurantName, startDate, endDate)
+		return this._restaurantService.getStatistic(restaurantName, startDate, endDate, jobStatus)
+	}
+
+
+	@Get("/transactions")
+	getTransactions(
+		@Request() req,
+		@Query() searchQuery: SearchQueryParams) {
+
+		const { restaurantName, startDate, endDate, jobStatus } = searchQuery;
+		const user = req.user as User;
+		if (!this._isUserAuthorized(user, { restaurantName })) {
+			throw new ForbiddenException();
+		}
+
+		return this._restaurantService.getTransactions(restaurantName, startDate, endDate, jobStatus)
 	}
 
 	@Delete("/:id")
@@ -77,25 +92,6 @@ export class RestuarantController {
 		return this._restaurantService.updateRestaurantDetails(restaurantId, updatedDetails)
 	}
 
-	@Get("/invoices")
-	getInvoices(
-		@Request() req,
-		@Query() searchQuery: InvoiceSearchQueryParams) {
-		const { restaurantName, startDate, endDate } = searchQuery;
-		const user = req.user as User;
-
-		if (!this._isUserAuthorized(user, { restaurantName })) {
-			throw new ForbiddenException();
-		}
-
-		if (restaurantName) {
-			return this._restaurantService.getInvoiceByRestaurant(restaurantName, startDate, endDate)
-		}
-
-		return this._restaurantService.getAllInvoices(startDate, endDate)
-	}
-
-
 	@Post("/:restaurantId/invoices")
 	async createInvoice(
 		@Request() req,
@@ -104,13 +100,13 @@ export class RestuarantController {
 	) {
 
 		if (startDate > endDate) {
-			throw new BadRequestException("startDate cannot be greater than endDate")
+			throw new BadRequestException(["startDate cannot be greater than endDate"])
 		}
 
 		const today = (new Date()).toISOString().split("T")[0];
 
 		if (endDate <= today) {
-			throw new BadRequestException("endDate must be greater than today.")
+			throw new BadRequestException(["endDate must be greater than today."])
 		}
 
 		const user = req.user as User;
@@ -124,7 +120,7 @@ export class RestuarantController {
 		}
 
 		if (restaurant.invoices && restaurant.invoices.length > 0) {
-			throw new BadRequestException("Cannot create invoice for restaurant with existing invoice.")
+			throw new BadRequestException(["Cannot create invoice for restaurant with existing invoice."])
 		}
 
 		//only create invoices for those who dont have one
@@ -145,7 +141,7 @@ export class RestuarantController {
 	) {
 
 		if (invoice.startDate > invoice.endDate) {
-			throw new BadRequestException("startDate cannot be greater than endDate")
+			throw new BadRequestException(["startDate cannot be greater than endDate"])
 		}
 
 		const user = req.user as User;
@@ -166,20 +162,21 @@ export class RestuarantController {
 		}
 
 		if (oldInvoice.endDate <= today) {
-			throw new BadRequestException("Cannot edit invoice that was issued.")
+			throw new BadRequestException(["Cannot edit invoice that was issued."])
 		}
 
 		const lengthOfInvoices = restaurant.invoices.length
 		const { invoices } = restaurant;
 
 		if (invoices[lengthOfInvoices - 1].endDate < today) {
-			throw new BadRequestException("endDate must be greater than today.")
+			throw new BadRequestException(["endDate must be greater than today."])
 		}
 
 		return this._restaurantService.updateInvoice(restaurantId, id, invoice)
 	}
 
 	@Patch("/:restaurantId/invoices/:id")
+	@HttpCode(204)
 	async updateInvoiceStatus(
 		@Request() req,
 		@Param("restaurantId") restaurantId: string,
@@ -203,8 +200,10 @@ export class RestuarantController {
 			throw new NotFoundException("Invoice not found");
 		}
 
+		const summary = await this._restaurantService.getStatistic(restaurant.name, invoice.startDate, invoice.endDate) as any
+
 		let status = "Partially Paid";
-		if (invoice.totalDeliveryFee <= totalAmountPaid) {
+		if (summary?.restaurantSummary?.totalOwedToMerchant <= totalAmountPaid) {
 			status = "Paid";
 		}
 
@@ -235,7 +234,7 @@ export class RestuarantController {
 		}
 
 		if (oldInvoice.endDate <= today) {
-			throw new BadRequestException("Cannot delete invoice that was issued.")
+			throw new BadRequestException(["Cannot delete invoice that was issued."])
 		}
 
 		return this._restaurantService.removeInvoice(restaurantId, id)

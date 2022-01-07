@@ -7,6 +7,15 @@ import { randomUUID } from 'crypto';
 import { TaskRepository } from 'src/integration/tookan/task.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
+type GroupByOptions = {
+	propertyToGroupBy?: 'restaurantName' | 'paymentMethod';
+	restaurantName?: string;
+	startDate?: string;
+	endDate?: string;
+	returnItems?: boolean;
+	jobStatus?: number;
+}
+
 @Injectable()
 export class RestuarantService implements OnModuleInit {
 	constructor(
@@ -47,6 +56,9 @@ export class RestuarantService implements OnModuleInit {
 			.forEach(async ({ id, lastInvoiceDate, invoiceFrequencyInWeeks }) => {
 				const t = new Date(lastInvoiceDate);
 
+				//(sum of all completed orders including delivery fees) - 
+				//all delivery fees - all card transaction fees (4% of all card transactions) = amount owed to merchant
+
 				t.setDate(t.getDate() + 1)
 				const startDate = t.toISOString().split('T')[0];
 
@@ -65,14 +77,16 @@ export class RestuarantService implements OnModuleInit {
 	}
 
 	_populateInvoiceDetails(invoice: Invoice) {
-		const today = new Date()
 		invoice.id = randomUUID();
-		invoice.dateCreated = today.toISOString().split("T")[0];
 
-		today.setDate(today.getDate() + invoice.invoiceFrequencyInWeeks * 7)
+		const today = new Date()
+		invoice.dateCreated = today.toISOString().split("T")[0];
+		const endDate = new Date(invoice.endDate)
+
+		endDate.setDate(endDate.getDate() + invoice.invoiceFrequencyInWeeks * 7)
 		const lastInvoiceDate = invoice.dateCreated;
 		const invoiceFrequencyInWeeks = invoice.invoiceFrequencyInWeeks;
-		const nextInvoiceDate = today.toISOString().split("T")[0];
+		const nextInvoiceDate = endDate.toISOString().split("T")[0];
 
 		return { lastInvoiceDate, nextInvoiceDate, invoiceFrequencyInWeeks }
 	}
@@ -91,33 +105,6 @@ export class RestuarantService implements OnModuleInit {
 
 	remove(id: string) {
 		return this._restaurantRepository.delete({ id: id })
-	}
-
-	async getAllInvoices(startDate: string, endDate: string) {
-		const { results } = await this._restaurantRepository.findAll({});
-		const summaries = await this._tookanTaskService.getTaskForRestaurantForPeriod("", startDate, endDate)
-
-		return results.map((el) => {
-			const summary = summaries.find((e) => e.restaurantName == el.name) ?? {};
-			const r = el as any;
-			r._id = undefined;
-
-			return { ...r, summary }
-		})
-	}
-
-	async getInvoiceByRestaurant(restaurantName: string, startDate?: string, endDate?: string) {
-		const restaurant = await this._restaurantRepository.findOne({ name: restaurantName })
-		if (!restaurant) {
-			throw new NotFoundException(`${restaurantName} was not found`)
-		}
-
-		const summary = await this._tookanTaskService.getTaskForRestaurantForPeriod(restaurantName, startDate, endDate)
-
-		const r = restaurant as any;
-		r._id = undefined;
-
-		return { ...r, summary: summary[0] ?? {} }
 	}
 
 	updateRestaurantDetails(restaurantId: string, { invoiceFrequencyInWeeks, email, isActive }: UpdateRestaurantDetailsDTO) {
@@ -155,164 +142,38 @@ export class RestuarantService implements OnModuleInit {
 		)
 	}
 
-	async getStatistic(restaurantName?: string, startDate?: string, endDate?: string) {
-		const restaurants = await this.getActiveRestaurants(startDate, endDate);
-		const periodData = await this.getTotalPriceForRestaurantForPeriod(restaurantName, startDate, endDate);
+	async getStatistic(restaurantName?: string, startDate?: string, endDate?: string, jobStatus?: number) {
+		const groupByOptions: GroupByOptions = {
+			restaurantName,
+			startDate,
+			endDate,
+		}
+
+		const periodData = await this.getTotalBreakDownGroupedByField({ ...groupByOptions, propertyToGroupBy: 'restaurantName', returnItems: true, jobStatus });
 		const monthlySummary = await this.getTotalPriceForEachMonth(startDate, restaurantName)
-		const paymentMethodSummary = await this.getPaymentMethodSummary(restaurantName, startDate, endDate);
 
-		const restaurantSummary = periodData.map(({ totalDeliveryFee, restaurantName, totalJobs, totalPrice, jobStatus, items }) => {
-			const isDelivery = (name) => name == "DELIVERY_FEE";
-
-			const summary = items.reduce((cur, prev) => {
-				const summary = {
-					itemDiscount: cur.itemDiscount + prev.itemDiscount,
-					totalDeliveryFee: isDelivery(prev.name) ? cur.totalDeliveryFee + prev.totalItemPrice : cur.totalDeliveryFee,
-					taxRate: Number(cur.taxRate) + prev.taxRate,
-					taxValue: Number(cur.taxValue) + prev.taxValue
-				}
-				return summary
-			}, { totalDeliveryFee: 0, itemDiscount: 0, taxValue: 0, taxRate: 0 })
-
-			return {
-				restaurantName: restaurantName,
-				totalJobs: totalJobs,
-				totalPrice: totalPrice,
-				jobStatus: jobStatus,
-				totalDeliveryFee: totalDeliveryFee || summary.totalDeliveryFee,
-				totalTaxRate: summary.taxRate,
-				totalTaxValue: summary.taxValue,
-				totalDiscount: summary.itemDiscount,
-			}
-
-		})
+		let paymentMethodSummary;
+		if (!restaurantName) {
+			paymentMethodSummary = await this.getTotalBreakDownGroupedByField({ ...groupByOptions, propertyToGroupBy: 'paymentMethod', returnItems: false, jobStatus });
+			paymentMethodSummary.forEach((el) => {
+				delete el.totalCashTransactions
+				delete el.totalCardTransactions
+			})
+		}
 
 		return {
-			paymentMethodSummary,
 			monthlySummary,
-			totalActiveRestaurants: restaurantName ? undefined : restaurants.length,
-			restaurantSummary: restaurantName ? restaurantSummary[0] : restaurantSummary,
+			paymentMethodSummary: restaurantName ? undefined : paymentMethodSummary,
+			restaurantSummary: restaurantName ? periodData[0] : periodData
 		}
 	}
 
-	getTotalPriceForRestaurantForPeriod(restaurantName?: string, startDate?: string, endDate?: string) {
+	async getTotalPriceForEachMonth(startDate?: string, restaurantName?: string, jobStatus?: number) {
 		let pipelines = [];
 
 		if (restaurantName) {
 			pipelines.push({
-				$match: { "restaurantName": restaurantName }
-			})
-		}
-
-		if (startDate) {
-			let dateFilterPipeline = {
-				dateCreated: { $gte: startDate }
-			};
-
-			if (endDate) {
-				dateFilterPipeline["dateCreated"]["$lte"] = endDate;
-			}
-
-			pipelines.push({ $match: dateFilterPipeline });
-		}
-
-		pipelines.push({
-			$group: {
-				_id: "$restaurantName",
-				jobStatus: {
-					$first: "$jobStatus"
-				},
-				totalJobs: {
-					$sum: 1
-				},
-				totalPrice: {
-					$sum: "$totalPrice"
-				},
-				totalDeliveryFee: {
-					$sum: "$deliveryFee"
-				},
-				"items": {
-					$push: "$items"
-				}
-			}
-		})
-
-		pipelines.push({
-			$project: {
-				restaurantName: "$_id",
-				totalJobs: 1,
-				totalPrice: 1,
-				totalDeliveryFee: 1,
-				jobStatus: 1,
-				"items": {
-					$reduce: {
-						input: '$items',
-						initialValue: [],
-						in: { $concatArrays: ['$$value', '$$this'] }
-					}
-				}
-			}
-		})
-
-		return this._tookanTaskRepository.aggregate(pipelines)
-	}
-
-
-	getPaymentMethodSummary(restaurantName?: string, startDate?: string, endDate?: string) {
-		let pipelines = [];
-
-		if (restaurantName) {
-			pipelines.push({
-				$match: { "restaurantName": restaurantName }
-			})
-		}
-
-		if (startDate) {
-			let dateFilterPipeline = {
-				dateCreated: { $gte: startDate }
-			};
-
-			if (endDate) {
-				dateFilterPipeline["dateCreated"]["$lte"] = endDate;
-			}
-
-			pipelines.push({ $match: dateFilterPipeline });
-		}
-
-		pipelines.push({
-			$group: {
-				_id: "$paymentMethod",
-				total: {
-					$sum: 1
-				},
-				totalPrice: {
-					$sum: "$totalPrice"
-				},
-				totalDeliveryFee: {
-					$sum: "$deliveryFee"
-				}
-			}
-		})
-
-		pipelines.push({
-			$project: {
-				paymentMethod: "$_id",
-				total: 1,
-				totalPrice: 1,
-				totalDeliveryFee: 1
-			}
-		})
-
-		return this._tookanTaskRepository.aggregate(pipelines)
-	}
-
-
-	getTotalPriceForEachMonth(startDate?: string, restaurantName?: string) {
-		let pipelines = [];
-
-		if (restaurantName) {
-			pipelines.push({
-				$match: { "restaurantName": restaurantName }
+				$match: { "restaurantName": restaurantName, jobStatus: jobStatus || 2 }
 			})
 		}
 
@@ -335,9 +196,9 @@ export class RestuarantService implements OnModuleInit {
 				totalPrice: {
 					$sum: "$totalPrice"
 				},
-				totalDeliveryFee: {
-					$sum: "$deliveryFee"
-				}
+				items: {
+					$push: "$items"
+				},
 			}
 		})
 
@@ -346,16 +207,119 @@ export class RestuarantService implements OnModuleInit {
 				month: "$_id",
 				totalJobs: 1,
 				totalPrice: 1,
-				totalDeliveryFee: 1,
-				jobStatus: 1
+				"items": {
+					$reduce: {
+						input: '$items',
+						initialValue: [],
+						in: { $concatArrays: ['$$value', '$$this'] }
+					}
+				}
 			}
 		})
 
-		return this._tookanTaskRepository.aggregate(pipelines)
+		const data = await this._tookanTaskRepository.aggregate(pipelines);
+
+		return this._getMappedTotals(data);
 	}
 
-	getActiveRestaurants(startDate?: string, endDate?: string) {
+	async getTransactions(restaurantName?: string, startDate?: string, endDate?: string, jobStatus?: number) {
 		let pipelines = [];
+
+		if (restaurantName) {
+			pipelines.push({
+				$match: { "restaurantName": restaurantName, jobStatus: jobStatus || 2 }
+			})
+		}
+
+		if (startDate) {
+			let dateFilterPipeline = {
+				dateCreated: { $gte: startDate }
+			};
+
+			if (endDate) {
+				dateFilterPipeline["dateCreated"]["$lte"] = endDate;
+			}
+
+			pipelines.push({ $match: dateFilterPipeline });
+		}
+
+		const data = await this._tookanTaskRepository.aggregate(pipelines);
+
+		return this._getMappedTotals(data, true, true);
+	}
+
+	_summarizeItems(items) {
+		const isDelivery = (name) => name === "DELIVERY_FEE";
+		const isCash = (paymentMethod) => paymentMethod === "CASH";
+
+		const summary = items.reduce((cur, prev) => {
+			const isDeliveryFee = isDelivery(prev.name);
+			const isCashTransaction = isCash(prev.paymentMethod);
+
+			const summary = {
+				totalCashTransactions: isCashTransaction ? cur.totalCashTransactions + prev.totalItemPrice - prev.itemDiscount : cur.totalCashTransactions,
+				totalCardTransactions: !isCashTransaction ? cur.totalCardTransactions + prev.totalItemPrice - prev.itemDiscount : cur.totalCardTransactions,
+				itemDiscount: cur.itemDiscount + prev.itemDiscount,
+				totalDeliveryFee: isDeliveryFee ? cur.totalDeliveryFee + prev.totalItemPrice : cur.totalDeliveryFee,
+				totalWithoutDeliveryFee: !isDeliveryFee ? cur.totalWithoutDeliveryFee + prev.totalItemPrice : cur.totalWithoutDeliveryFee,
+				taxRate: Number(cur.taxRate) + prev.taxRate,
+				taxValue: Number(cur.taxValue) + prev.taxValue
+			};
+
+			return summary
+		},
+			{
+				totalCashTransactions: 0,
+				totalCardTransactions: 0,
+				totalWithoutDeliveryFee: 0,
+				totalDeliveryFee: 0,
+				itemDiscount: 0,
+				taxValue: 0,
+				taxRate: 0
+			})
+		return summary;
+	}
+
+	private _getMappedTotals(data: any[], returnItems?: boolean, includeOtherProperties?: boolean) {
+		return data.map((el) => {
+			const { month, restaurantName, paymentMethod, totalJobs, totalPrice, items } = el;
+			const summary = this._summarizeItems(items);
+			let results = {
+				month,
+				restaurantName,
+				paymentMethod,
+				totalJobs,
+				totalPriceWithDiscount: totalPrice,
+				totalWithoutDeliveryFeeAndDiscount: summary.totalWithoutDeliveryFee - summary.itemDiscount,
+				totalDeliveryFee: summary.totalDeliveryFee,
+				totalTaxRate: summary.taxRate,
+				totalTaxValue: summary.taxValue,
+				totalDiscount: summary.itemDiscount,
+				totalCashTransactions: summary.totalCashTransactions,
+				totalCardTransactions: summary.totalCardTransactions,
+				items: returnItems ? items : undefined
+			}
+
+			delete el.items;
+			delete el.totalPrice;
+
+			if (includeOtherProperties) {
+				results = { ...results, ...el };
+			}
+
+			results["totalOwedToMerchant"] = results.totalPriceWithDiscount - (results.totalCardTransactions * 0.04);
+			return results;
+		})
+	}
+
+	private async getTotalBreakDownGroupedByField({ propertyToGroupBy, restaurantName, startDate, endDate, returnItems, jobStatus }: GroupByOptions) {
+		let pipelines = [];
+
+		if (restaurantName) {
+			pipelines.push({
+				$match: { "restaurantName": restaurantName, jobStatus: jobStatus || 2 }
+			})
+		}
 
 		if (startDate) {
 			let dateFilterPipeline = {
@@ -371,13 +335,38 @@ export class RestuarantService implements OnModuleInit {
 
 		pipelines.push({
 			$group: {
-				_id: "$restaurantName",
+				_id: `$${propertyToGroupBy}`,
+				totalJobs: {
+					$sum: 1
+				},
+				totalPrice: {
+					$sum: "$totalPrice"
+				},
+				items: {
+					$push: "$items"
+				},
+
 			}
 		})
 
-		return this._tookanTaskRepository.aggregate(pipelines)
+		const projection = {
+			$project: {
+				totalJobs: 1,
+				totalPrice: 1,
+				"items": {
+					$reduce: {
+						input: '$items',
+						initialValue: [],
+						in: { $concatArrays: ['$$value', '$$this'] }
+					}
+				}
+			}
+		};
+		projection['$project'][`${propertyToGroupBy}`] = '$_id'
+		pipelines.push(projection)
+
+		const data = await this._tookanTaskRepository.aggregate(pipelines);
+
+		return this._getMappedTotals(data, returnItems);
 	}
-
-
-
 }

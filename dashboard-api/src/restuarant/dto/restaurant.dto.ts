@@ -1,6 +1,6 @@
-import { IsEmail, IsOptional, IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsString, Max, Min } from "class-validator";
+import { IsEmail, IsOptional, IsBoolean, IsInt, IsDateString, IsNotEmpty, IsNumber, IsString, Max, Min, isBoolean } from "class-validator";
 
-export class InvoiceSearchQueryParams {
+export class SearchQueryParams {
 	@IsOptional()
 	@IsString()
 	restaurantName?: string;
@@ -12,6 +12,9 @@ export class InvoiceSearchQueryParams {
 	@IsOptional()
 	@IsString()
 	endDate?: string;
+
+	@IsOptional()
+	jobStatus?: number;
 }
 
 export class UpdateRestaurantDetailsDTO {
@@ -43,8 +46,6 @@ export class InvoiceDTO {
 	@Max(52)
 	invoiceFrequencyInWeeks: number;
 }
-
-
 
 export class UpdateInvoiceDTO {
 	@IsNumber()
