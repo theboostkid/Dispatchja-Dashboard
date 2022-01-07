@@ -30,6 +30,9 @@ export class Item {
 	totalItemPrice?: number;
 
 	@Prop()
+	paymentMethod?: string;
+
+	@Prop()
 	instructions?: string
 }
 export const ItemSchema = SchemaFactory.createForClass(Item);
