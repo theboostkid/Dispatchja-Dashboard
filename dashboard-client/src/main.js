@@ -1,39 +1,27 @@
 import Vue from 'vue'
-import App from './App.vue'
 import BootstrapVue from 'bootstrap-vue'
+import VueApexCharts from 'vue-apexcharts'
 import Vuelidate from 'vuelidate'
-import simplebar from "simplebar-vue";
-import VueTour from 'vue-tour'
+import * as VueGoogleMaps from 'vue2-google-maps'
+import VueMask from 'v-mask'
+import VueRouter from 'vue-router'
 import vco from "v-click-outside"
-import * as VueGoogleMaps from "vue2-google-maps";
-import i18n from './i18n'
+import router from './router/index'
+import Scrollspy from 'vue2-scrollspy';
+import VueSweetalert2 from 'vue-sweetalert2';
 
-import router from './router'
+import "../src/design/app.scss";
+
 import store from '@/state/store'
 
-import VueApexCharts from 'vue-apexcharts'
-import VueStringFilter from 'vue-string-filter'
-import Lightbox from 'vue-easy-lightbox'
+import App from './App.vue'
 
-Vue.config.productionTip = false
-
-Vue.use(vco)
-
-// As a plugin
-import VueMask from 'v-mask'
-import VueQuillEditor from 'vue-quill-editor'
-import VueDraggable from "vue-draggable";
-Vue.use(VueDraggable);
-Vue.use(VueQuillEditor)
-Vue.use(VueMask);
-
-import VueSlideBar from 'vue-slide-bar'
- 
-Vue.component('VueSlideBar', VueSlideBar)
-
-import { initFirebaseBackend } from './authUtils';
+import { initFirebaseBackend } from './authUtils'
+import i18n from './i18n'
 
 import { configureFakeBackend } from './helpers/fake-backend';
+
+import tinymce from 'vue-tinymce-editor'
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_APIKEY,
@@ -48,29 +36,31 @@ const firebaseConfig = {
 
 if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
   initFirebaseBackend(firebaseConfig);
-} else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
+} else {
   configureFakeBackend();
 }
 
-Vue.component('apexchart', VueApexCharts)
+Vue.component('tinymce', tinymce)
+Vue.use(VueRouter)
+Vue.use(vco)
+Vue.use(Scrollspy);
+const VueScrollTo = require('vue-scrollto')
+Vue.use(VueScrollTo)
+Vue.config.productionTip = false
+
 Vue.use(BootstrapVue)
 Vue.use(Vuelidate)
+Vue.use(VueMask)
 Vue.use(require('vue-chartist'))
-Vue.component('simplebar', simplebar)
-Vue.use(VueStringFilter)
-Vue.use(VueTour)
-Vue.use(Lightbox)
-
+Vue.use(VueSweetalert2);
 Vue.use(VueGoogleMaps, {
   load: {
-    key: "AIzaSyAbvyBxmMbFhrzP9Z8moyYr6dCr-pzjhBE",
-    libraries: "places"
+    key: 'AIzaSyAbvyBxmMbFhrzP9Z8moyYr6dCr-pzjhBE',
+    libraries: 'places',
   },
   installComponents: true
-});
-
-import "@/assets/scss/app.scss";
-
+})
+Vue.component('apexchart', VueApexCharts)
 
 new Vue({
   router,

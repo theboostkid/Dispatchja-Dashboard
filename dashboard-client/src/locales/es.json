@@ -4,322 +4,325 @@
       "text": "Buscar..."
     },
     "dropdown": {
-      "createnew": {
-        "text": "Crear nuevo",
-        "list": {
-          "projects": "Proyectos nuevos",
-          "users": "Crear usuarios",
-          "revenue": "Informe de ingresos",
-          "settings": "Configuraciones",
-          "help": "Servicio de asistencia"
-        }
-      },
       "megamenu": {
         "text": "Mega menú",
         "uicontent": {
-          "title": "Componentes de UI",
+          "title": "Componentes de la IU",
           "list": {
-            "widgets": "Widgets",
-            "nestable": "Lista encajable",
-            "rangeslider": "Range Sliders",
-            "masonry": "Artículos de albañilería",
-            "sweetalert": "Alertas dulces",
-            "treeview": "Página Treeview",
-            "tour": "Página del tour"
+            "lightbox": "Caja ligera",
+            "rangeslider": "Control deslizante de rango",
+            "sweetalert": "Alerta dulce",
+            "rating": "Clasificación",
+            "forms": "Formas",
+            "tables": "Mesas",
+            "charts": "Gráficos"
           }
         },
         "application": {
           "title": "Aplicaciones",
           "list": {
-            "ecommerce": "Páginas de comercio electrónico",
-            "crm": "Páginas de CRM",
-            "email": "Email",
-            "calendar": "Calendar",
-            "contacts": "Contactos del equipo",
-            "tasks": "Tablero de tareas",
-            "template": "Plantillas de correo electrónico"
+            "ecommerce": "Comercio electrónico",
+            "calendar": "Calendario",
+            "email": "Correo electrónico",
+            "projects": "Proyectos",
+            "tasks": "Tareas",
+            "contacts": "Contactos"
           }
         },
         "extrapages": {
           "title": "Páginas extra",
           "list": {
-            "leftsidebaruser": "Barra lateral izquierda con usuario",
-            "collapsed": "Menú contraído",
-            "leftsidebar": "Pequeña barra lateral izquierda",
-            "header": "Nuevo estilo de encabezado",
-            "search": "Resultado de búsqueda",
-            "gallery": "Páginas de galería",
-            "maintenance": "Mantenimiento y próximamente"
+            "lightsidebar": "Barra lateral ligera",
+            "compactsidebar": "Barra lateral compacta",
+            "horizontallayout": "Diseño horizontal",
+            "maintenance": "Mantenimiento",
+            "comingsoon": "Próximamente",
+            "timeline": "Cronograma",
+            "faqs": "Preguntas frecuentes"
           }
-        },
-        "discount": "Venta de descuento especial!",
-        "subtext": "Ahorre hasta un 70% de descuento.",
-        "buttontext": "Descargar ahora"
+        }
       },
       "site": {
         "list": {
           "github": "GitHub",
           "bitbucket": "Bitbucket",
-          "dribbble": "Regate",
+          "dribbble": "Regatear",
           "dropbox": "Dropbox",
-          "g-suite": "G Suite",
-          "slack": "Flojo"
+          "mailchimp": "Chimpancé de correo",
+          "slack": "Floja"
         }
       },
       "notification": {
-        "badge": "5",
+        "badge": "3",
         "text": "Notificaciones",
-        "subtext": "Limpiar todo",
-        "1": {
-          "title": "Doug Dukes comentó en Admin Dashboard",
-          "text": "Hace 1 minuto"
+        "subtext": "Ver todo",
+        "order": {
+          "title": "Su pedido es realizado",
+          "text": "Si varios idiomas fusionan la gramática",
+          "time": "Hace 3 minutos"
         },
-        "2": {
-          "title": "Mario Drummond",
-          "text": "¿Hola! Cómo estás? ¿Qué pasa con nuestra próxima reunión?"
+        "james": {
+          "title": "James Lemire",
+          "text": "Parecerá un inglés simplificado.",
+          "time": "Hace 1 hora"
         },
-        "3": {
-          "title": "Karen Robinson",
-          "text": "Guauu ! este administrador se ve bien y un diseño impresionante"
+        "item": {
+          "title": "Your item is shipped",
+          "text": "Si varios idiomas fusionan la gramática",
+          "time": "Hace 3 minutos"
         },
-        "4": {
-          "title": "Nueva usuario registrada.",
-          "text": "hace 5 horas"
+        "salena": {
+          "title": "Salena Layfield",
+          "text": "As a skeptical Cambridge friend of mine occidental.",
+          "time": "Hace 1 hora"
         },
-        "5": {
-          "title": "Caleb Flakelar comentó en Admin",
-          "text": "Hace 4 días"
-        },
-        "6": {
-          "title": "Recomendado por Carlos Crouch",
-          "text": "Hace 13 dias"
-        },
-        "button": "Ver todo"
+        "button": "Carga más.."
       },
-      "name": {
-        "text": "Nik Patel",
+      "henry": {
+        "text": "Henry",
         "list": {
-          "greet": "Bienvenidos !",
-          "account": "Mi cuenta",
+          "profile": "Perfil",
           "mywallet": "Mi billetera",
           "settings": "Configuraciones",
           "lockscreen": "Bloquear pantalla",
-          "logout": "Cerrar sesión"
+          "logout": "cerrar sesión"
         }
       }
     }
   },
   "menuitems": {
-    "navigation": {
-      "text": "Navegación"
+    "menu": {
+      "text": "Menú"
     },
-    "dashboard": {
-      "text": "Tablero",
-      "badge": "3",
+    "dashboards": {
+      "text": "Tableros",
+      "badge": "04",
       "list": {
-        "sales": "Ventas",
-        "crm": "CRM",
-        "analytics": "Analítica"
+        "default": "Defecto",
+        "saas": "Saas",
+        "crypto": "Cripto",
+        "blog": "Blog"
+      }
+    },
+    "layouts": {
+      "text": "Diseños",
+      "list": {
+        "horizontal": "Horizontal",
+        "lightsidebar": "Barra lateral ligera",
+        "compactsidebar": "Barra lateral compacta",
+        "iconsidebar": "Barra lateral de iconos",
+        "boxed": "Diseño en caja",
+        "coloredsidebar": "Barra lateral de color",
+        "vertical": "Vertical",
+        "lighttopbar": "Barra superior ligera",
+        "coloredheader": "Encabezado de color"
       }
     },
     "apps": {
       "text": "Aplicaciones"
     },
-    "chat": {
-      "text": "Charla"
-    },
-    "ecommerce": {
-      "text": "Comercio electrónico",
-      "badge": "Nueva",
-      "list": {
-        "products": "Lista de productos",
-        "productsgrid": "Productos Grid",
-        "productdetail": "Detalle del producto",
-        "createproduct": "Crear producto",
-        "customers": "Clientes",
-        "orders": "Pedidos",
-        "orderdetail": "Detalle de la orden",
-        "sellers": "Vendedoras",
-        "cart": "Carrito de compras",
-        "checkout": "Revisa"
-      }
-    },
     "calendar": {
       "text": "Calendario"
     },
+    "chat": {
+      "text": "Charla",
+      "badge": "Nueva"
+    },
+    "filemanager": {
+      "text": "Administradora de archivos",
+      "badge": "Nueva"
+    },
+    "ecommerce": {
+      "text": "Comercio electrónico",
+      "list": {
+        "products": "Productos",
+        "productdetail": "Detalle del producto",
+        "orders": "Pedidos",
+        "customers": "Clientes",
+        "cart": "Carro",
+        "checkout": "Revisa",
+        "shops": "Tiendas",
+        "addproduct": "Agregar producto"
+      }
+    },
+    "crypto": {
+      "text": "Cripto",
+      "list": {
+        "wallet": "Billetera",
+        "buy/sell": "Compra venta",
+        "exchange": "Intercambiar",
+        "lending": "Préstamo",
+        "orders": "Pedidos",
+        "kycapplication": "Solicitud KYC",
+        "icolanding": "Aterrizaje ICO"
+      }
+    },
     "email": {
-      "text": "Email",
+      "text": "Correo electrónico",
       "list": {
         "inbox": "Bandeja de entrada",
-        "reademail": "Read Email",
-        "template": "Plantillas de correo electrónico"
+        "reademail": "Leer el correo electrónico",
+        "template": {
+          "text": "Plantillas",
+          "list": {
+            "basic": "Acción básica",
+            "alert": "Correo electrónico de alerta",
+            "billing": "Correo Electrónico de Facturas"
+          }
+        }
       }
     },
-    "companies": {
-      "text": "Compañías"
+    "invoices": {
+      "text": "Facturas",
+      "list": {
+        "invoicelist": "Lista de facturas",
+        "invoicedetail": "Detalle de factura"
+      }
+    },
+    "projects": {
+      "text": "Proyectos",
+      "list": {
+        "grid": "Cuadrícula de proyectos",
+        "projectlist": "Lista de proyectos",
+        "overview": "Descripción del proyecto",
+        "create": "Crear nueva"
+      }
     },
     "tasks": {
-      "text": "Tasks",
+      "text": "Tareas",
       "list": {
-        "list": "Lista",
-        "detail": "Detalles",
-        "kanban": "Tablero Kanban"
+        "tasklist": "Lista de tareas",
+        "kanban": "Kanban Board",
+        "createtask": "Crear tarea"
       }
-    },
-    "ticket": {
-      "text": "Entradas"
     },
     "contacts": {
       "text": "Contactos",
       "list": {
-        "members": "Lista de miembros",
+        "usergrid": "Cuadrícula de usuario",
+        "userlist": "Lista de usuarios",
         "profile": "Perfil"
       }
     },
-    "filemanager": {
-      "text": "Administradora de archivos"
-    },
-    "custom": {
-      "text": "Personalizada"
-    },
-    "auth": {
-      "text": "Páginas de autenticación",
+    "blog": {
+      "text": "Blog",
+      "badge": "Nueva",
       "list": {
-        "login": "Iniciar sesión",
-        "login-2": "Iniciar sesión 2",
-        "register": "Registrarse",
-        "register-2": "Registrarse 2",
-        "signin-signup": "Ingresar. Registrarse",
-        "signin-signup-2": "Ingresar. Registrarse 2",
-        "recoverpwd": "Recuperar contraseña",
-        "recoverpwd-2": "Recuperar contraseña 2",
-        "lock-screen": "Bloquear pantalla",
-        "lock-screen-2": "Bloquear pantalla 2",
-        "logout": "Cerrar sesión",
-        "logout-2": "Cerrar sesión 2",
-        "confirm-mail": "Confirmar correo",
-        "confirm-mail-2": "Confirmar correo 2"
-      }
-    },
-    "extrapages": {
-      "text": "Páginas extra",
-      "list": {
-        "starter": "Arrancadora",
-        "timeline": "Cronología",
-        "sitemap": "Mapa del sitio",
-        "invoice": "Factura",
-        "faqs": "Preguntas frecuentes",
-        "search-results": "Resultados de la búsqueda",
-        "pricing": "Precios",
-        "maintenance": "Mantenimiento",
-        "comingsoon": "Próximamente",
-        "lightbox": "Caja ligera",
-        "error404": "Error 404",
-        "error404-alt": "Error 404-alt",
-        "error500": "Error 500"
-      }
-    },
-    "components": {
-      "text": "Componentes"
-    },
-    "ui": {
-      "text": "IU base",
-      "list": {
-        "avatars": "Avatares",
-        "buttons": "Botones",
-        "cards": "Tarjetas",
-        "carousel": "Carrusel",
-        "dropdowns": "Listas deplegables",
-        "video": "Insertar video",
-        "general": "IU general",
-        "grid": "Cuadrícula",
-        "images": "Imagenes",
-        "listgroup": "Grupo de lista",
-        "modals": "Modales",
-        "notifications": "Notificaciones",
-        "portlet": "Portlets",
-        "progress": "Progreso",
-        "ribbons": "Cintas",
-        "spinners": "Hilanderas",
-        "tabs": "Pestañas y acordeones",
-        "tooltip": "Información sobre herramientas",
-        "typography": "Tipografía"
-      }
-    },
-    "extendedui": {
-      "badge": "Caliente",
-      "text": "IU extendida",
-      "list": {
-        "rangeslider": "Control deslizante de rango",
-        "sweetalert": "Alerta dulce",
-        "tour": "Página del tour",
-        "scrollspy": "Scrollspy"
-      }
-    },
-    "widgets": {
-      "text": "Widgets"
-    },
-    "icons": {
-      "text": "Iconos",
-      "list": {
-        "feather": "Pluma",
-        "remix": "Remix",
-        "boxicons": "Boxicones",
-        "materialdesign": "Diseño de materiales",
-        "dripicons": "Dripicons",
-        "fontawesome": "Font Awesome 5",
-        "weather": "Clima"
-      }
-    },
-    "forms": {
-      "text": "Formularios",
-      "list": {
-        "elements": "Elementos generales",
-        "advanced": "Avanzado",
-        "validation": "Validación",
-        "wizard": "Mago",
-        "mask": "Máscara",
-        "editor": "Editora de plumas",
-        "fileupload": "Subidas de archivos"
-      }
-    },
-    "tables": {
-      "text": "Mesas",
-      "list": {
-        "basic": "Tablas básicas",
-        "advanced": "Tabla avanzada"
-      }
-    },
-    "charts": {
-      "text": "Gráficos",
-      "list": {
-        "apex": "Apéndice",
-        "chartjs": "Chartjs",
-        "c3": "C3",
-        "chartist": "Chartista",
-        "knob": "Mando"
-      }
-    },
-    "maps": {
-      "text": "Mapas",
-      "list": {
-        "googlemap": "mapas de Google"
+        "bloglist": "Lista de blogs",
+        "grid": "Blog Grid",
+        "detail": "Detalles del blog"
       }
     },
     "pages": {
       "text": "Páginas"
     },
-    "authstyle": {
-      "text": "Estilo de autenticación 1"
-    },
-    "authstyle2": {
-      "text": "Estilo de autenticación 2"
-    },
-    "errors": {
-      "text": "Errores"
+    "authentication": {
+      "text": "Autenticación",
+      "badge": "Nueva",
+      "list": {
+        "login": "Iniciar sesión",
+        "register": "Registrarse",
+        "recoverpwd": "Recuperar contraseña",
+        "lockscreen": "Bloquear pantalla",
+        "login-2": "Iniciar sesión 2",
+        "register-2": "Registrarse 2",
+        "recoverpwd-2": "Recuperar contraseña 2",
+        "lockscreen-2": "Bloquear pantalla 2",
+        "confirm-mail": "Confirmar correo",
+        "confirm-mail-2": "Confirmar correo 2",
+        "verification": "Verificacion de email",
+        "verification-2": "Verificacion de email 2",
+        "verification-step": "Verificación de dos pasos",
+        "verification-step-2": "Verificación de dos pasos 2"
+      }
     },
     "utility": {
-      "text": "Utilidad"
+      "text": "Utilidad",
+      "list": {
+        "starter": "Página de inicio",
+        "maintenance": "Mantenimiento",
+        "timeline": "Cronograma",
+        "faqs": "Preguntas frecuentes",
+        "pricing": "Precios",
+        "error404": "error 404",
+        "error500": "error 500",
+        "comingsoon": "Próximamente"
+      }
+    },
+    "components": {
+      "text": "Componentes"
+    },
+    "uielements": {
+      "text": "Elementos de la IU",
+      "list": {
+        "alerts": "Alertas",
+        "buttons": "Botones",
+        "cards": "Tarjetas",
+        "carousel": "Carrusel",
+        "dropdowns": "Listas deplegables",
+        "grid": "Cuadrícula",
+        "images": "Imágenes",
+        "modals": "Modalidades",
+        "rangeslider": "Control deslizante de rango",
+        "progressbar": "Barras de progreso",
+        "placeholder":"Marcador de posición",
+        "sweetalert": "Alerta dulce",
+        "tabs": "Pestañas y acordeones",
+        "typography": "Tipografía",
+        "video": "Vídeo",
+        "general": "General",
+        "colors": "Colores",
+        "lightbox": "Caja ligera",
+        "cropper": "Recortador de imagen",
+        "drawer": "Cajón"
+      }
+    },
+    "forms": {
+      "text": "Formas",
+      "badge": "8",
+      "list": {
+        "elements": "Elementos de formulario",
+        "layouts": "Diseños de formulario",
+        "validation": "Validación de formulario",
+        "advanced": "Formulario avanzado",
+        "editor": "Editora de formularios",
+        "fileupload": "Subir archivo de formulario",
+        "repeater": "Repetidor de forma",
+        "wizard": "Asistente de formulario",
+        "mask": "Máscara de forma"
+      }
+    },
+    "tables": {
+      "text": "Mesas",
+      "list": {
+        "basic": "Tablas Básicas",
+        "advanced": "Mesa avanzada"
+      }
+    },
+    "charts": {
+      "text": "Gráficos",
+      "list": {
+        "apex": "Gráfico de Apex",
+        "chartjs": "Chartjs Chart",
+        "chartist": "Chartist Chart",
+        "echart": "Gráfico E"
+      }
+    },
+    "icons": {
+      "text": "Íconos",
+      "list": {
+        "boxicons": "Boxicones",
+        "materialdesign": "Diseño de materiales",
+        "dripicons": "Dripicons",
+        "fontawesome": "Font awesome"
+      }
+    },
+    "maps": {
+      "text": "Mapas",
+      "list": {
+        "googlemap": "mapas de Google",
+        "leafletmap": "Mapas de folleto"
+      }
     },
     "multilevel": {
       "text": "Multi nivel",
@@ -329,7 +332,7 @@
           "2": "Nivel 1.2",
           "level2": {
             "1": "Nivel 2.1",
-            "2": "Nivel 2.2"
+            "2": "Level 2.2"
           }
         }
       }

@@ -5,11 +5,11 @@ export const state = {
 
 export const mutations = {
     success(state, message) {
-        state.type = 'success';
+        state.type = 'alert-success';
         state.message = message;
     },
     error(state, message) {
-        state.type = 'danger';
+        state.type = 'alert-danger';
         state.message = message;
     },
     clear(state) {

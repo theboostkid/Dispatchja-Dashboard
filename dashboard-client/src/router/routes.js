@@ -1,1007 +1,724 @@
-import store from '@/state/store'
+import store from "@/state/store";
 
 export default [
-    {
-        path: '/login',
-        name: 'login',
-        component: () => import('../views/pages/account/login'),
-        meta: {
-            beforeResolve(routeTo, routeFrom, next) {
-                // If the user is already logged in
-                if (store.getters['auth/loggedIn']) {
-                    // Redirect to the home page instead
-                    next({ name: 'home' })
-                } else {
-                    // Continue to the login page
-                    next()
-                }
-            },
-        },
-    },
-    {
-        path: '/register',
-        name: 'register',
-        component: () => import('../views/pages/account/register'),
-        meta: {
-            beforeResolve(routeTo, routeFrom, next) {
-                // If the user is already logged in
-                if (store.getters['auth/loggedIn']) {
-                    // Redirect to the home page instead
-                    next({ name: 'home' })
-                } else {
-                    // Continue to the login page
-                    next()
-                }
-            },
-        },
-    },
-    {
-        path: '/forgot-password',
-        name: 'Forgot-password',
-        component: () => import('../views/pages/account/forgot-password'),
-        meta: {
-            beforeResolve(routeTo, routeFrom, next) {
-                // If the user is already logged in
-                if (store.getters['auth/loggedIn']) {
-                    // Redirect to the home page instead
-                    next({ name: 'home' })
-                } else {
-                    // Continue to the login page
-                    next()
-                }
-            },
-        },
-    },
-    {
-        path: '/logout',
-        name: 'logout',
-        meta: {
-            authRequired: true,
-            beforeResolve(routeTo, routeFrom, next) {
-                if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
-                    store.dispatch('auth/logOut')
-                } else if (process.env.VUE_APP_DEFAULT_AUTH === "fakebackend") {
-                    store.dispatch('authfack/logout')
-                }
-                const authRequiredOnPreviousRoute = routeFrom.matched.some(
-                    (route) => route.push('/login')
-                )
-                // Navigate back to previous page, or home as a fallback
-                next(authRequiredOnPreviousRoute ? { name: 'home' } : { ...routeFrom })
-            },
-        },
-    },
-    {
-        path: '/',
-        name: 'home',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/sales/index')
-    },
-    {
-        path: '/dashboard/crm',
-        name: 'crm-dashboard',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/crm/index')
-    },
-    {
-        path: '/dashboard/analytics',
-        name: 'analytics-dashboard',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/analytics/index')
-    },
-    //My Dashboard Pages
-    //Super Admin routes
-    {
-        path: '/dashboard/super-admin',
-        name: 'super-admin-dashboard',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/superAdmin/index')
-    },
-    {
-        path: '/dashboard/super-admin/reports',
-        name: 'reports',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/superAdmin/reports')
-    },
-    {
-        path: '/dashboard/super-admin/invoices',
-        name: 'invoices',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/superAdmin/invoices')
-    },
-    {
-        path: '/dashboard/super-admin/users',
-        name: 'users',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/superAdmin/users')
-    },
-    {
-        path: '/dashboard/super-admin/variance',
-        name: 'variance',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/superAdmin/variance')
-    },
-    {
-        path: '/dashboard/super-admin/payment-request',
-        name: 'payment-request',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/superAdmin/payment-request')
-    },
-
-    //end of super admin routes
-
-    //admin dashboards
-
-    {
-        path: '/dashboard/admin',
-        name: 'admin-dashboard',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/admin/index')
-    },
-
-    {
-        path: '/dashboard/admin/reports',
-        name: 'reports',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/admin/reports')
-    },
-    {
-        path: '/dashboard/admin/restaurants',
-        name: 'restaurants',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/admin/restaurants')
-    },
-
-    {
-        path: '/dashboard/admin/invoices.vue',
-        name: 'invoices',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/admin/invoices')
-    },
-
-    //end of admin
-
-    //restaurant Owner dashboard
-    {
-        path: '/dashboard',
-        name: 'dashboard',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/restaurantOwner/index')
-    },
-
-    {
-        path: '/dashboard/reports',
-        name: 'reports',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/restaurantOwner/reports')
-    },
-    
-    {
-        path: '/dashboard/invoices',
-        name: 'invoices',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/restaurantOwner/invoices')
-    },
-    
-    {
-        path: '/dashboard/staff',
-        name: 'staff',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/restaurantOwner/staff')
-    },
-
-    //end  of restaurant owner dashboard
-
-    // restaurant staff dashboards
-
-    
-    {
-        path: '/dashboard/staff-dashboard',
-        name: 'staff-dashboard',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/restaurantStaff/index')
-    },
-
-    {
-        path: '/dashboard/staff-dashboard/invoices',
-        name: 'invoices',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/restaurantStaff/invoices')
-    },
-
-    {
-        path: '/dashboard/staff-dashboard/reports',
-        name: 'reports',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/dashboard/restaurantStaff/reports')
-    },
-    
-
-    
-
-    //end of restaurant staff dashboard
-
-    {
-        path: '/apps/calendar',
-        name: 'calendar',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/apps/calendar/index')
-    },
-    {
-        path: '/apps/chat',
-        name: 'chat',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/apps/chat')
-    },
-    {
-        path: '/apps/companies',
-        name: 'companies',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/apps/companies')
-    },
-    {
-        path: '/apps/tickets',
-        name: 'tickets',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/apps/tickets')
-    },
-    {
-        path: '/apps/file-manager',
-        name: 'file-manager',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/apps/file-manager')
-    },
-    {
-        path: '/ecommerce/customers',
-        name: 'customers',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ecommerce/customers/index')
-    },
-    {
-        path: '/ecommerce/orders',
-        name: 'orders',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ecommerce/orders/index')
-    },
-    {
-        path: '/ecommerce/product-detail/:id',
-        name: 'product-detail',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ecommerce/product-detail')
-    },
-    {
-        path: '/ecommerce/products',
-        name: 'products',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ecommerce/products/index')
-    },
-    {
-        path: '/ecommerce/cart',
-        name: 'cart',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ecommerce/cart')
-    },
-    {
-        path: '/ecommerce/checkout',
-        name: 'checkout',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ecommerce/checkout')
-    },
-    {
-        path: '/ecommerce/order-detail',
-        name: 'order-detail',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ecommerce/order-detail')
-    },
-    {
-        path: '/ecommerce/product-create',
-        name: 'product-create',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ecommerce/product-create')
-    },
-    {
-        path: '/ecommerce/products-grid',
-        name: 'products-grid',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ecommerce/products-grid')
-    },
-    {
-        path: '/ecommerce/sellers',
-        name: 'sellers',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ecommerce/sellers')
-    },
-    {
-        path: '/email/inbox',
-        name: 'email-inbox',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/email/inbox')
-    },
-    {
-        path: '/email/reademail/:id',
-        name: 'reademail',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/email/reademail')
-    },
-    {
-        path: '/email/templates',
-        name: 'email-templates',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/email/templates')
-    },
-    {
-        path: '/task/list',
-        name: 'task-list',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/task/list')
-    },
-    {
-        path: '/task/detail',
-        name: 'task-detail',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/task/detail')
-    },
-    {
-        path: '/task/kanban',
-        name: 'kanban-board',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/task/kanban/index')
-    },
-    {
-        path: '/contacts/list',
-        name: 'contacts-list',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/contacts/list')
-    },
-    {
-        path: '/contacts/profile',
-        name: 'contacts-profile',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/contacts/profile')
-    },
-    {
-        path: '/auth/login-1',
-        name: 'auth-login-1',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/login-1')
-    },
-    {
-        path: '/auth/register-1',
-        name: 'auth-register-1',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/register-1')
-    },
-    {
-        path: '/auth/recoverpwd',
-        name: 'auth-recoverpwd',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/recoverpwd')
-    },
-    {
-        path: '/auth/lock-screen',
-        name: 'auth-lock-screen',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/lock-screen')
-    },
-    {
-        path: '/auth/signin-signup',
-        name: 'auth-signin-signup',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/signin-signup')
-    },
-    {
-        path: '/auth/logout-1',
-        name: 'auth-logout-1',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/logout-1')
-    },
-    {
-        path: '/auth/login-2',
-        name: 'auth-login-2',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/login-2')
-    },
-    {
-        path: '/auth/register-2',
-        name: 'auth-register-2',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/register-2')
-    },
-    {
-        path: '/auth/recoverpwd-2',
-        name: 'auth-recoverpwd-2',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/recoverpwd-2')
-    },
-    {
-        path: '/auth/lock-screen-2',
-        name: 'auth-lock-screen-2',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/lock-screen-2')
-    },
-    {
-        path: '/auth/signin-signup-2',
-        name: 'auth-signin-signup-2',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/signin-signup-2')
-    },
-    {
-        path: '/auth/logout-2',
-        name: 'auth-logout-2',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/auth/logout-2')
-    },
-    {
-        path: '/extras/starter',
-        name: 'extras-starter',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extras/starter')
-    },
-    {
-        path: '/extras/timeline',
-        name: 'extras-timeline',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extras/timeline')
-    },
-    {
-        path: '/extras/sitemap',
-        name: 'extras-sitemap',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extras/sitemap')
-    },
-    {
-        path: '/extras/invoice',
-        name: 'extras-invoice',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extras/invoice')
-    },
-    {
-        path: '/extras/faqs',
-        name: 'extras-faqs',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extras/faqs')
-    },
-    {
-        path: '/extras/search-results',
-        name: 'extras-search-results',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extras/search-results')
-    },
-    {
-        path: '/extras/pricing',
-        name: 'extras-pricing',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extras/pricing')
-    },
-    {
-        path: '/extras/maintenance',
-        name: 'extras-maintenance',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extras/maintenance')
-    },
-    {
-        path: '/extras/coming-soon',
-        name: 'extras-coming-soon',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extras/coming-soon')
-    },
-    {
-        path: '/extras/lightbox',
-        name: 'extras-lightbox',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extras/lightbox')
-    },
-    {
-        path: '/error/404',
-        name: 'error-404',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/error/404')
-    },
-    {
-        path: '/error/500',
-        name: 'error-500',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/error/500')
-    },
-    {
-        path: '/error/404-alt',
-        name: 'error-404-alt',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/error/404-alt')
-    },
-    {
-        path: '/ui/avatars',
-        name: 'ui-avatars',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/avatars')
-    },
-    {
-        path: '/ui/buttons',
-        name: 'ui-buttons',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/buttons')
-    },
-    {
-        path: '/ui/cards',
-        name: 'ui-cards',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/cards')
-    },
-    {
-        path: '/ui/carousel',
-        name: 'ui-carousel',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/carousel')
-    },
-    {
-        path: '/ui/dropdowns',
-        name: 'ui-dropdowns',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/dropdowns')
-    },
-    {
-        path: '/ui/general',
-        name: 'ui-general',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/general')
-    },
-    {
-        path: '/ui/grid',
-        name: 'ui-grid',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/grid')
-    },
-    {
-        path: '/ui/images',
-        name: 'ui-images',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/images')
-    },
-    {
-        path: '/ui/list-group',
-        name: 'ui-list-group',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/list-group')
-    },
-    {
-        path: '/ui/modals',
-        name: 'ui-modals',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/modals')
-    },
-    {
-        path: '/ui/notifications',
-        name: 'ui-notifications',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/notifications')
-    },
-    {
-        path: '/ui/portlets',
-        name: 'ui-portlets',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/portlets')
-    },
-    {
-        path: '/ui/progress',
-        name: 'ui-progress',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/progress')
-    },
-    {
-        path: '/ui/ribbons',
-        name: 'ui-ribbons',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/ribbons')
-    },
-    {
-        path: '/ui/spinners',
-        name: 'ui-spinners',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/spinners')
-    },
-    {
-        path: '/ui/tabs-accordions',
-        name: 'ui-tabs-accordions',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/tabs-accordions')
-    },
-    {
-        path: '/ui/tooltips-popovers',
-        name: 'ui-tooltips-popovers',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/tooltips-popovers')
-    },
-    {
-        path: '/ui/typography',
-        name: 'ui-typography',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/typography')
-    },
-    {
-        path: '/ui/video',
-        name: 'ui-video',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/ui/video')
-    },
-    {
-        path: '/extended/rangeslider',
-        name: 'rangeslider',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extended/rangeslider')
-    },
-    {
-        path: '/extended/sweet-alert',
-        name: 'sweet-alert',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extended/sweet-alert')
-    },
-    {
-        path: '/extended/tour',
-        name: 'tour',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extended/tour')
-    },
-    {
-        path: '/extended/scrollspy',
-        name: 'scrollspy',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/extended/scrollspy')
-    },
-    {
-        path: '/widgets',
-        name: 'widgets',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/widgets')
-    },
-    {
-        path: '/icons/feather',
-        name: 'feather',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/icons/feather')
-    },
-    {
-        path: '/icons/remix',
-        name: 'remix',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/icons/remix')
-    }, {
-        path: '/icons/boxicons',
-        name: 'boxicons',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/icons/boxicons')
-    },
-    {
-        path: '/icons/mdi',
-        name: 'mdi',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/icons/mdi')
-    },
-    {
-        path: '/icons/font-awesome',
-        name: 'font-awesome',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/icons/font-awesome')
-    },
-    {
-        path: '/icons/weather',
-        name: 'weather',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/icons/weather')
-    },
-    {
-        path: '/forms/elements',
-        name: 'elements',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/forms/elements')
-    },
-    {
-        path: '/forms/advanced',
-        name: 'advanced-form',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/forms/advanced')
-    },
-    {
-        path: '/forms/validation',
-        name: 'validation',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/forms/validation')
-    },
-    {
-        path: '/forms/wizard',
-        name: 'wizard',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/forms/wizard')
-    },
-    {
-        path: '/forms/mask',
-        name: 'mask',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/forms/mask')
-    },
-    {
-        path: '/forms/quill',
-        name: 'quill',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/forms/quill')
-    },
-    {
-        path: '/forms/file-uploads',
-        name: 'file-uploads',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/forms/file-uploads')
-    },
-    {
-        path: '/tables/basic',
-        name: 'basic',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/tables/basic')
-    },
-    {
-        path: '/tables/advanced',
-        name: 'advanced',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/tables/advanced')
-    },
-    {
-        path: '/charts/apex',
-        name: 'charts-apex',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/charts/apex')
-    },
-    {
-        path: '/charts/chartjs',
-        name: 'charts-chartjs',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/charts/chartjs')
-    },
-    {
-        path: '/charts/c3',
-        name: 'charts-c3',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/charts/c3')
-    },
-    {
-        path: '/charts/chartist',
-        name: 'charts-chartist',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/charts/chartist')
-    },
-    {
-        path: '/charts/knob',
-        name: 'charts-knob',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/charts/knob')
-    },
-    {
-        path: '/maps/google',
-        name: 'maps-google',
-        meta: {
-            authRequired: true,
-        },
-        component: () => import('../views/pages/maps/google')
-    }
-]
+  {
+    path: "/",
+    name: "default",
+    meta: {
+      authRequired: true,
+    },
+    component: () => import("./views/dashboards/default"),
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("./views/account/login"),
+    meta: {
+      beforeResolve(routeTo, routeFrom, next) {
+        // If the user is already logged in
+        if (store.getters["auth/loggedIn"]) {
+          // Redirect to the home page instead
+          next({ name: "default" });
+        } else {
+          // Continue to the login page
+          next();
+        }
+      },
+    },
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: () => import("./views/account/register"),
+    meta: {
+      beforeResolve(routeTo, routeFrom, next) {
+        // If the user is already logged in
+        if (store.getters["auth/loggedIn"]) {
+          // Redirect to the home page instead
+          next({ name: "default" });
+        } else {
+          // Continue to the login page
+          next();
+        }
+      },
+    },
+  },
+  {
+    path: "/forgot-password",
+    name: "Forgot password",
+    component: () => import("./views/account/forgot-password"),
+    meta: {
+      beforeResolve(routeTo, routeFrom, next) {
+        // If the user is already logged in
+        if (store.getters["auth/loggedIn"]) {
+          // Redirect to the home page instead
+          next({ name: "default" });
+        } else {
+          // Continue to the login page
+          next();
+        }
+      },
+    },
+  },
+  {
+    path: "/logout",
+    name: "logout",
+    meta: {
+      authRequired: true,
+      beforeResolve(routeTo, routeFrom, next) {
+        if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
+          store.dispatch("auth/logOut");
+        } else {
+          store.dispatch("authfack/logout");
+        }
+        const authRequiredOnPreviousRoute = routeFrom.matched.some((route) =>
+          route.push("/login")
+        );
+        // Navigate back to previous page, or home as a fallback
+        next(
+          authRequiredOnPreviousRoute ? { name: "default" } : { ...routeFrom }
+        );
+      },
+    },
+  },
+  {
+    path: "/404",
+    name: "404",
+    component: require("./views/utility/404").default,
+  },
+  // Redirect any unmatched routes to the 404 page. This may
+  // require some server configuration to work in production:
+  // https://router.vuejs.org/en/essentials/history-mode.html#example-server-configurations
+  {
+    path: "*",
+    redirect: "404",
+  },
+  {
+    path: "/dashboard/saas",
+    name: "saas-dashboard",
+    meta: { authRequired: true },
+    component: () => import("./views/dashboards/saas/index"),
+  },
+  {
+    path: "/dashboard/crypto",
+    name: "crypto-dashboard",
+    meta: { authRequired: true },
+    component: () => import("./views/dashboards/crypto/index"),
+  },
+  {
+    path: "/dashboard/blog",
+    name: "blog-dashboard",
+    meta: { authRequired: true },
+    component: () => import("./views/dashboards/blog/index"),
+  },
+  {
+    path: "/calendar",
+    name: "Calendar",
+    meta: { authRequired: true },
+    component: () => import("./views/calendar/calendar"),
+  },
+  {
+    path: "/chat",
+    name: "chat",
+    meta: { authRequired: true },
+    component: () => import("./views/chat/index"),
+  },
+  {
+    path: "/apps/file-manager",
+    name: "file-manager",
+    meta: { authRequired: true },
+    component: () => import("./views/file-manager/index"),
+  },
+  {
+    path: "/ecommerce/products",
+    name: "Products",
+    meta: { authRequired: true },
+    component: () => import("./views/ecommerce/products"),
+  },
+  {
+    path: "/ecommerce/product-detail/:id",
+    name: "Product Detail",
+    meta: { authRequired: true },
+    component: () => import("./views/ecommerce/product-detail"),
+  },
+  {
+    path: "/ecommerce/orders",
+    name: "Orders",
+    meta: { authRequired: true },
+    component: () => import("./views/ecommerce/orders"),
+  },
+  {
+    path: "/ecommerce/customers",
+    name: "Customers",
+    meta: { authRequired: true },
+    component: () => import("./views/ecommerce/customers"),
+  },
+  {
+    path: "/ecommerce/cart",
+    name: "Cart",
+    meta: { authRequired: true },
+    component: () => import("./views/ecommerce/cart"),
+  },
+  {
+    path: "/ecommerce/checkout",
+    name: "Checkout",
+    meta: { authRequired: true },
+    component: () => import("./views/ecommerce/checkout"),
+  },
+  {
+    path: "/ecommerce/shops",
+    name: "Shops",
+    meta: { authRequired: true },
+    component: () => import("./views/ecommerce/shops"),
+  },
+  {
+    path: "/ecommerce/add-product",
+    name: "Add Product",
+    meta: { authRequired: true },
+    component: () => import("./views/ecommerce/add-product"),
+  },
+  {
+    path: "/blog/list",
+    name: "blog-list",
+    meta: { authRequired: true },
+    component: () => import("./views/blog/list"),
+  },
+  {
+    path: "/blog/grid",
+    name: "blog-grid",
+    meta: { authRequired: true },
+    component: () => import("./views/blog/grid"),
+  },
+  {
+    path: "/blog/detail",
+    name: "blog-detail",
+    meta: { authRequired: true },
+    component: () => import("./views/blog/detail"),
+  },
+  {
+    path: "/crypto/wallet",
+    name: "Wallet",
+    meta: { authRequired: true },
+    component: () => import("./views/crypto/wallet/index"),
+  },
+  {
+    path: "/crypto/buy-sell",
+    name: "Buy/sell",
+    meta: { authRequired: true },
+    component: () => import("./views/crypto/buysell/index"),
+  },
+  {
+    path: "/crypto/exchange",
+    name: "Exchange",
+    meta: { authRequired: true },
+    component: () => import("./views/crypto/exchange/index"),
+  },
+  {
+    path: "/crypto/lending",
+    name: "Lending",
+    meta: { authRequired: true },
+    component: () => import("./views/crypto/lending/index"),
+  },
+  {
+    path: "/crypto/orders",
+    name: "crypto-orders",
+    meta: { authRequired: true },
+    component: () => import("./views/crypto/orders/index"),
+  },
+  {
+    path: "/crypto/kyc-application",
+    name: "kyc-application",
+    meta: { authRequired: true },
+    component: () => import("./views/crypto/kycapplication/index"),
+  },
+  {
+    path: "/crypto/ico-landing",
+    name: "Ico-landing",
+    meta: { authRequired: true },
+    component: () => import("./views/crypto/ico-landing"),
+  },
+  {
+    path: "/invoices/detail",
+    name: "Invoice Detail",
+    meta: { authRequired: true },
+    component: () => import("./views/invoices/detail"),
+  },
+  {
+    path: "/invoices/list",
+    name: "Invoice List",
+    meta: { authRequired: true },
+    component: () => import("./views/invoices/list"),
+  },
+  {
+    path: "/ui/alerts",
+    name: "Alerts",
+    meta: {
+      authRequired: true,
+    },
+    component: () => import("./views/ui/alerts"),
+  },
+  {
+    path: "/ui/buttons",
+    name: "Buttons",
+    meta: {
+      authRequired: true,
+    },
+    component: () => import("./views/ui/buttons"),
+  },
+  {
+    path: "/ui/cards",
+    name: "Cards",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/cards"),
+  },
+  {
+    path: "/ui/carousel",
+    name: "Carousel",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/carousel"),
+  },
+  {
+    path: "/ui/dropdowns",
+    name: "Dropdowns",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/dropdowns"),
+  },
+  {
+    path: "/ui/grid",
+    name: "Grid",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/grid"),
+  },
+  {
+    path: "/ui/images",
+    name: "Images",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/images"),
+  },
+  {
+    path: "/ui/modals",
+    name: "Modals",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/modals"),
+  },
+  {
+    path: "/ui/drawer",
+    name: "Drawer",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/drawer"),
+  },
+  {
+    path: "/ui/rangeslider",
+    name: "Rangeslider",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/rangeslider"),
+  },
+  {
+    path: "/ui/progressbars",
+    name: "Progressbars",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/progressbars"),
+  },
+  {
+    path: "/ui/placeholder",
+    name: "Placeholder",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/placeholder"),
+  },
+  {
+    path: "/ui/sweet-alert",
+    name: "Sweet-alert",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/sweet-alert"),
+  },
+  {
+    path: "/ui/tabs-accordions",
+    name: "Tabs-accordions",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/tabs-accordions"),
+  },
+  {
+    path: "/ui/typography",
+    name: "Typography",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/typography"),
+  },
+  {
+    path: "/ui/video",
+    name: "Video",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/video"),
+  },
+  {
+    path: "/ui/general",
+    name: "General",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/general"),
+  },
+  {
+    path: "/ui/colors",
+    name: "Colors",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/colors"),
+  },
+  {
+    path: "/ui/lightbox",
+    name: "Lightbox",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/lightbox"),
+  },
+  {
+    path: "/ui/image-cropper",
+    name: "Image Cropper",
+    meta: { authRequired: true },
+    component: () => import("./views/ui/cropper"),
+  },
+  {
+    path: "/projects/grid",
+    name: "Projects Grid",
+    meta: { authRequired: true },
+    component: () => import("./views/projects/projects-grid"),
+  },
+  {
+    path: "/projects/list",
+    name: "Projects List",
+    meta: { authRequired: true },
+    component: () => import("./views/projects/projects-list"),
+  },
+  {
+    path: "/projects/overview",
+    name: "Project Overview",
+    meta: { authRequired: true },
+    component: () => import("./views/projects/overview"),
+  },
+  {
+    path: "/projects/create",
+    name: "Create New",
+    meta: { authRequired: true },
+    component: () => import("./views/projects/create"),
+  },
+  {
+    path: "/contacts/grid",
+    name: "User Grid",
+    meta: { authRequired: true },
+    component: () => import("./views/contacts/contacts-grid"),
+  },
+  {
+    path: "/contacts/list",
+    name: "User List",
+    meta: { authRequired: true },
+    component: () => import("./views/contacts/contacts-list"),
+  },
+  {
+    path: "/contacts/profile",
+    name: "Profile",
+    meta: { authRequired: true },
+    component: () => import("./views/contacts/contacts-profile"),
+  },
+  {
+    path: "/charts/apex",
+    name: "Apex chart",
+    meta: { authRequired: true },
+    component: () => import("./views/charts/apex"),
+  },
+  {
+    path: "/charts/chartjs",
+    name: "Chartjs chart",
+    meta: { authRequired: true },
+    component: () => import("./views/charts/chartjs/index"),
+  },
+  {
+    path: "/charts/chartist",
+    name: "Chartist chart",
+    meta: { authRequired: true },
+    component: () => import("./views/charts/chartist"),
+  },
+  {
+    path: "/charts/echart",
+    name: "Echart chart",
+    meta: { authRequired: true },
+    component: () => import("./views/charts/echart/index"),
+  },
+  {
+    path: "/icons/boxicons",
+    name: "Boxicons Icon",
+    meta: { authRequired: true },
+    component: () => import("./views/icons/boxicons"),
+  },
+  {
+    path: "/icons/materialdesign",
+    name: "Materialdesign Icon",
+    meta: { authRequired: true },
+    component: () => import("./views/icons/materialdesign"),
+  },
+  {
+    path: "/icons/dripicons",
+    name: "Dripicons Icon",
+    meta: { authRequired: true },
+    component: () => import("./views/icons/dripicons"),
+  },
+  {
+    path: "/icons/fontawesome",
+    name: "Fontawesome Icon",
+    meta: { authRequired: true },
+    component: () => import("./views/icons/fontawesome"),
+  },
+  {
+    path: "/maps/google",
+    name: "Google Maps",
+    meta: { authRequired: true },
+    component: () => import("./views/maps/google"),
+  },
+  {
+    path: "/maps/leaflet",
+    name: "Leaflet Maps",
+    meta: { authRequired: true },
+    component: () => import("./views/maps/leaflet/index"),
+  },
+  {
+    path: "/tables/basic",
+    name: "Basic Tables",
+    meta: { authRequired: true },
+    component: () => import("./views/tables/basictable"),
+  },
+  {
+    path: "/tables/advanced",
+    name: "Advanced Tables",
+    meta: { authRequired: true },
+    component: () => import("./views/tables/advancedtable"),
+  },
+  {
+    path: "/form/advanced",
+    name: "Form Advanced",
+    meta: { authRequired: true },
+    component: () => import("./views/forms/advanced"),
+  },
+  {
+    path: "/form/elements",
+    name: "Form Elements",
+    meta: { authRequired: true },
+    component: () => import("./views/forms/elements"),
+  },
+  {
+    path: "/form/layouts",
+    name: "Form Layouts",
+    meta: { authRequired: true },
+    component: () => import("./views/forms/layouts"),
+  },
+  {
+    path: "/form/editor",
+    name: "Form Editors",
+    meta: { authRequired: true },
+    component: () => import("./views/forms/editors"),
+  },
+  {
+    path: "/form/uploads",
+    name: "File Uploads",
+    meta: { authRequired: true },
+    component: () => import("./views/forms/uploads"),
+  },
+  {
+    path: "/form/validation",
+    name: "Form Validation",
+    meta: { authRequired: true },
+    component: () => import("./views/forms/validation"),
+  },
+  {
+    path: "/form/wizard",
+    name: "Form Wizard",
+    meta: { authRequired: true },
+    component: () => import("./views/forms/wizard"),
+  },
+  {
+    path: "/form/repeater",
+    name: "Form Repeater",
+    meta: { authRequired: true },
+    component: () => import("./views/forms/repeater"),
+  },
+  {
+    path: "/form/mask",
+    name: "Form Mask",
+    meta: { authRequired: true },
+    component: () => import("./views/forms/mask"),
+  },
+  {
+    path: "/pages/starter",
+    name: "Starter",
+    meta: { authRequired: true },
+    component: () => import("./views/utility/starter"),
+  },
+  {
+    path: "/pages/maintenance",
+    name: "Maintenance",
+    meta: { authRequired: true },
+    component: () => import("./views/utility/maintenance"),
+  },
+  {
+    path: "/pages/coming-soon",
+    name: "coming-soon",
+    meta: { authRequired: true },
+    component: () => import("./views/utility/coming-soon"),
+  },
+  {
+    path: "/pages/timeline",
+    name: "Timeline",
+    meta: { authRequired: true },
+    component: () => import("./views/utility/timeline"),
+  },
+  {
+    path: "/pages/faqs",
+    name: "FAQs",
+    meta: { authRequired: true },
+    component: () => import("./views/utility/faqs"),
+  },
+  {
+    path: "/pages/pricing",
+    name: "Pricing",
+    meta: { authRequired: true },
+    component: () => import("./views/utility/pricing"),
+  },
+  {
+    path: "/pages/404",
+    name: "Error-404",
+    meta: { authRequired: true },
+    component: () => import("./views/utility/404"),
+  },
+  {
+    path: "/pages/500",
+    name: "Error-500",
+    meta: { authRequired: true },
+    component: () => import("./views/utility/500"),
+  },
+  {
+    path: "/email/inbox",
+    name: "Inbox",
+    meta: { authRequired: true },
+    component: () => import("./views/email/inbox"),
+  },
+  {
+    path: "/email/reademail/:id",
+    name: "Read Email",
+    meta: { authRequired: true },
+    component: () => import("./views/email/reademail"),
+  },
+  {
+    path: "/email/templates/basic",
+    name: "Email template basic",
+    meta: { authRequired: true },
+    component: () => import("./views/email/templates/basic"),
+  },
+  {
+    path: "/email/templates/billing",
+    name: "Email template billing",
+    meta: { authRequired: true },
+    component: () => import("./views/email/templates/billing"),
+  },
+  {
+    path: "/email/templates/alert",
+    name: "Email template alert",
+    meta: { authRequired: true },
+    component: () => import("./views/email/templates/alert"),
+  },
+  {
+    path: "/tasks/list",
+    name: "Task list",
+    meta: { authRequired: true },
+    component: () => import("./views/tasks/task-list"),
+  },
+  {
+    path: "/tasks/kanban",
+    name: "Kanbanboard",
+    meta: { authRequired: true },
+    component: () => import("./views/tasks/kanbanboard"),
+  },
+  {
+    path: "/tasks/create",
+    name: "Create Task",
+    meta: { authRequired: true },
+    component: () => import("./views/tasks/task-create"),
+  },
+  {
+    path: "/auth/login-1",
+    name: "Login sample",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/login-sample"),
+  },
+  {
+    path: "/auth/login-2",
+    name: "Login-2-sample",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/login-2"),
+  },
+  {
+    path: "/auth/register-1",
+    name: "Register sample",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/register-sample"),
+  },
+  {
+    path: "/auth/register-2",
+    name: "Register-2",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/register-2"),
+  },
+  {
+    path: "/auth/recoverpwd",
+    name: "Recover pwd",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/recoverpw-sample"),
+  },
+  {
+    path: "/auth/recoverpwd-2",
+    name: "Recover pwd-2",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/recoverpwd-2"),
+  },
+  {
+    path: "/auth/lock-screen",
+    name: "Lock screen",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/lockscreen"),
+  },
+  {
+    path: "/auth/lock-screen-2",
+    name: "Lock screen-2",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/lockscreen-2"),
+  },
+  {
+    path: "/auth/confirm-mail",
+    name: "confirm-mail",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/confirm-mail"),
+  },
+  {
+    path: "/auth/confirm-mail-2",
+    name: "confirm-mail-2",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/confirm-mail-2"),
+  },
+  {
+    path: "/auth/email-verification",
+    name: "email-verification",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/email-verification"),
+  },
+  {
+    path: "/auth/email-verification-2",
+    name: "email-verification-2",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/email-verification-2"),
+  },
+  {
+    path: "/auth/two-step-verification",
+    name: "two-step-verification",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/two-step-verification"),
+  },
+  {
+    path: "/auth/two-step-verification-2",
+    name: "two-step-verification-2",
+    meta: { authRequired: true },
+    component: () => import("./views/sample-pages/two-step-verification-2"),
+  },
+];

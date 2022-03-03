@@ -4,57 +4,43 @@
             "text": "Chercher..."
         },
         "dropdown": {
-            "createnew": {
-                "text": "Créer un nouveau",
-                "list": {
-                    "projects": "De nouveaux projets",
-                    "users": "Créer des utilisateurs",
-                    "revenue": "Rapport de revenus",
-                    "settings": "Paramètres",
-                    "help": "Support d'aide"
-                }
-            },
             "megamenu": {
-                "text": "Méga menu",
+                "text": "Mega Menu",
                 "uicontent": {
                     "title": "Composants de l'interface utilisateur",
                     "list": {
-                        "widgets": "Widgets",
-                        "nestable": "Liste emboîtable",
-                        "rangeslider": "Curseurs de gamme",
-                        "masonry": "Articles de maçonnerie",
-                        "sweetalert": "Alertes douces",
-                        "treeview": "Page de l'arborescence",
-                        "tour": "Page de visite"
+                        "lightbox": "Boite à lumière",
+                        "rangeslider": "Curseur de plage",
+                        "sweetalert": "Sweet Alert",
+                        "rating": "Évaluation",
+                        "forms": "Formes",
+                        "tables": "les tables",
+                        "charts": "Graphiques"
                     }
                 },
                 "application": {
                     "title": "Applications",
                     "list": {
-                        "ecommerce": "Pages de commerce électronique",
-                        "crm": "Pages CRM",
-                        "email": "Email",
+                        "ecommerce": "Commerce électronique",
                         "calendar": "Calendrier",
-                        "contacts": "Contacts de l'équipe",
-                        "tasks": "Tableau des tâches",
-                        "template": "Modèles d'e-mails"
+                        "email": "Email",
+                        "projects": "Projets",
+                        "tasks": "Tâches",
+                        "contacts": "Contacts"
                     }
                 },
                 "extrapages": {
                     "title": "Pages supplémentaires",
                     "list": {
-                        "leftsidebaruser": "Barre latérale gauche avec utilisateur",
-                        "collapsed": "Menu réduit",
-                        "leftsidebar": "Petite barre latérale gauche",
-                        "header": "Nouveau style d'en-tête",
-                        "search": "Résultat de la recherche",
-                        "gallery": "Pages de la galerie",
-                        "maintenance": "Maintenance et à venir"
+                        "lightsidebar": "Barre latérale légère",
+                        "compactsidebar": "Barre latérale compacte",
+                        "horizontallayout": "Disposition horizontale",
+                        "maintenance": "Entretien",
+                        "comingsoon": "Bientôt disponible",
+                        "timeline": "Chronologie",
+                        "faqs": "FAQ"
                     }
-                },
-                "discount": "Vente à rabais spécial!",
-                "subtext": "Économisez jusqu'à 70%.",
-                "buttontext": "Télécharger maintenant"
+                }
             },
             "site": {
                 "list": {
@@ -62,45 +48,40 @@
                     "bitbucket": "Bitbucket",
                     "dribbble": "Dribble",
                     "dropbox": "Dropbox",
-                    "g-suite": "G Suite",
+                    "mailchimp": "Mail Chimp",
                     "slack": "Molle"
                 }
             },
             "notification": {
-                "badge": "5",
+                "badge": "3",
                 "text": "Notifications",
-                "subtext": "Tout effacer",
-                "1": {
-                    "title": "Doug Dukes a commenté le tableau de bord d'administration",
-                    "text": "Il y a 1 min"
+                "subtext": "Voir tout",
+                "order": {
+                    "title": "Votre commande est passée",
+                    "text": "Si plusieurs langues fusionnent la grammaire",
+                    "time": "Il y a 3 minutes"
                 },
-                "2": {
-                    "title": "Mario Drummond",
-                    "text": "Salut comment ca va? Et notre prochaine réunion"
+                "james": {
+                    "title": "James Lemire",
+                    "text": "It will seem like simplified English.",
+                    "time": "Il y a 1 heure"
                 },
-                "3": {
-                    "title": "Karen Robinson",
-                    "text": "Hou la la ! cet administrateur a l'air bien et un design génial"
+                "item": {
+                    "title": "Votre article est expédié",
+                    "text": "Si plusieurs langues fusionnent la grammaire",
+                    "time": "Il y a 3 minutes"
                 },
-                "4": {
-                    "title": "Nouvel utilisateur enregistré.",
-                    "text": "il y a 5 heures"
+                "salena": {
+                    "title": "Salena Layfield",
+                    "text": "As a skeptical Cambridge friend of mine occidental.",
+                    "time": "Il y a 1 heure"
                 },
-                "5": {
-                    "title": "Caleb Flakelar a commenté Admin",
-                    "text": "il y a 4 jours"
-                },
-                "6": {
-                    "title": "Carlos Crouch a aimé",
-                    "text": "Il y a 13 jours"
-                },
-                "button": "Voir tout"
+                "button": "Charger plus.."
             },
-            "name": {
-                "text": "Nik Patel",
+            "henry": {
+                "text": "Henri",
                 "list": {
-                    "greet": "Bienvenue !",
-                    "account": "Mon compte",
+                    "profile": "Profil",
                     "mywallet": "Mon portefeuille",
                     "settings": "Réglages",
                     "lockscreen": "Écran verrouillé",
@@ -110,177 +91,205 @@
         }
     },
     "menuitems": {
-        "navigation": {
-            "text": "La navigation"
+        "menu": {
+            "text": "Menu"
         },
-        "dashboard": {
+        "dashboards": {
             "text": "Tableaux de bord",
-            "badge": "3",
+            "badge": "04",
             "list": {
-                "sales": "Ventes",
-                "crm": "CRM",
-                "analytics": "Analytique"
+                "default": "Défaut",
+                "saas": "Saas",
+                "crypto": "Crypto",
+                "blog": "Blog"
+            }
+        },
+        "layouts": {
+            "text": "Disposition",
+            "list": {
+                "horizontal": "Horizontale",
+                "lightsidebar": "Barre latérale légère",
+                "compactsidebar": "Barre latérale compacte",
+                "iconsidebar": "Barre latérale des icônes",
+                "boxed": "Disposition en boîte",
+                "coloredsidebar": "Barre latérale colorée",
+                "vertical": "Verticale",
+                "lighttopbar": "Barre supérieure légère",
+                "coloredheader": "En-tête coloré"
             }
         },
         "apps": {
             "text": "Apps"
         },
+        "calendar": {
+            "text": "Calendrier"
+        },
         "chat": {
-            "text": "Bavarder"
+            "text": "Bavarder",
+            "badge": "Nouvelle"
+        },
+        "filemanager": {
+            "text": "Gestionnaire de fichiers",
+            "badge": "Nouvelle"
         },
         "ecommerce": {
             "text": "Commerce électronique",
-            "badge": "New",
             "list": {
-                "products": "Liste de produits",
-                "productsgrid": "Products Grid",
+                "products": "Des produits",
                 "productdetail": "Product Detail",
-                "createproduct": "Create Product",
                 "orders": "Ordres",
                 "customers": "Les clients",
-                "orderdetail": "Détails de la commande",
                 "cart": "Chariot",
                 "checkout": "Check-out",
-                "sellers": "Les vendeurs"
+                "shops": "Magasins",
+                "addproduct": "Ajouter un produit"
             }
         },
-        "calendar": {
-            "text": "Calendrier"
+        "crypto": {
+            "text": "Crypto",
+            "list": {
+                "wallet": "Portefeuille",
+                "buy/sell": "Acheter vendre",
+                "exchange": "Échange",
+                "lending": "Prêt",
+                "orders": "Ordres",
+                "kycapplication": "Application KYC",
+                "icolanding": "ICO Landing"
+            }
         },
         "email": {
             "text": "Email",
             "list": {
                 "inbox": "Boîte de réception",
                 "reademail": "Lire l'e-mail",
-                "template": "Modèles d'e-mails"
+                "template": {
+                    "text": "Modèles",
+                    "list": {
+                        "basic": "Action de base",
+                        "alert": "Email d'alerte",
+                        "billing": "E-mail de facturation"
+                    }
+                }
             }
         },
-        "companies": {
-            "text": "Entreprises"
+        "invoices": {
+            "text": "Factures",
+            "list": {
+                "invoicelist": "Liste des factures",
+                "invoicedetail": "Détail de la facture"
+            }
+        },
+        "projects": {
+            "text": "Projets",
+            "list": {
+                "grid": "Grille de projets",
+                "projectlist": "Liste des projets",
+                "overview": "Aperçu du projet",
+                "create": "Créer un nouveau"
+            }
         },
         "tasks": {
             "text": "Tâches",
             "list": {
-                "list": "liste",
-                "detail": "Détails",
-                "kanban": "Tableau Kanban"
+                "tasklist": "Liste de tâches",
+                "kanban": "Tableau Kanban",
+                "createtask": "Créer une tâche"
             }
-        },
-        "ticket": {
-            "text": "Des billets"
         },
         "contacts": {
             "text": "Contacts",
             "list": {
-                "members": "Liste des membres",
+                "usergrid": "Grille utilisateur",
+                "userlist": "liste d'utilisateur",
                 "profile": "Profil"
             }
         },
-        "filemanager": {
-            "text": "Gestionnaire de fichiers"
-        },
-        "custom": {
-            "text": "Douane"
-        },
-        "auth": {
-            "text": "Pages d'authentification",
+        "blog": {
+            "text": "Blog",
+            "badge": "Nouvelle",
             "list": {
-                "login": "S'identifier",
-                "login-2": "S'identifier 2",
-                "register": "S'inscrire",
-                "register-2": "S'inscrire 2",
-                "signin-signup": "Vous connecter vous inscrire",
-                "signin-signup-2": "Vous connecter vous inscrire 2",
-                "recoverpwd": "Récupérer mot de passe",
-                "recoverpwd-2": "Récupérer mot de passe 2",
-                "lock-screen": "Écran verrouillé",
-                "lock-screen-2": "Écran verrouillé 2",
-                "logout": "Se déconnecter",
-                "logout-2": "Se déconnecter 2",
-                "confirm-mail": "Confirmer le courrier",
-                "confirm-mail-2": "Confirmer le courrier 2"
+                "bloglist": "Liste des blogs",
+                "grid": "Grille de blog",
+                "detail": "Détails du blog"
             }
         },
-        "extrapages": {
-            "text": "Pages supplémentaires",
+        "pages": {
+            "text": "Pages"
+        },
+        "authentication": {
+            "text": "Authentification",
+            "badge": "Nouvelle",
             "list": {
-                "starter": "Entrée",
-                "timeline": "Chronologie",
-                "sitemap": "Plan du site",
-                "invoice": "Facture d'achat",
-                "faqs": "FAQ",
-                "search-results": "Résultats de recherche",
-                "pricing": "Tarification",
+                "login": "S'identifier",
+                "register": "S'inscrire",
+                "recoverpwd": "Récupérer mot de passe",
+                "lockscreen": "Écran verrouillé",
+                "login-2": "S'identifier 2",
+                "register-2": "S'inscrire 2",
+                "recoverpwd-2": "Récupérer mot de passe 2",
+                "lockscreen-2": "Écran verrouillé 2",
+                "confirm-mail": "Confirmer le courrier",
+                "confirm-mail-2": "Confirmer le courrier 2",
+                "verification": "Vérification de l'E-mail",
+                "verification-2": "Vérification de l'E-mail 2",
+                "verification-step": "Vérification en deux étapes",
+                "verification-step-2": "Vérification en deux étapes 2"
+            }
+        },
+        "utility": {
+            "text": "Utilitaire",
+            "list": {
+                "starter": "Page de démarrage",
                 "maintenance": "Entretien",
-                "comingsoon": "Bientôt disponible",
-                "lightbox": "Boite à lumière",
+                "timeline": "Chronologie",
+                "faqs": "FAQ",
+                "pricing": "Tarification",
                 "error404": "Erreur 404",
-                "error404-alt": "Erreur 404-alt",
-                "error500": "Erreur 500"
+                "error500": "Erreur 500",
+                "comingsoon": "Bientôt disponible"
             }
         },
         "components": {
             "text": "Composantes"
         },
-        "ui": {
-            "text": "Interface utilisateur de base",
+        "uielements": {
+            "text": "Éléments de l'interface utilisateur",
             "list": {
-                "avatars": "Les avatars",
+                "alerts": "Alerts",
                 "buttons": "Boutons",
                 "cards": "Cartes",
                 "carousel": "Carrousel",
                 "dropdowns": "Liste déroulante",
-                "video": "Embed Video",
-                "general": "Générale",
                 "grid": "la grille",
                 "images": "Images",
-                "listgroup": "Groupe de listes",
                 "modals": "Modals",
-                "notifications": "Notifications",
-                "portlet": "Portlets",
-                "progress": "Le progrès",
-                "ribbons": "Rubans",
-                "spinners": "Spinners",
-                "tabs": "Tablatures et accordéons",
-                "tooltip": "Info-bulles & Popovers",
-                "typography": "Typographie"
-            }
-        },
-        "extendedui": {
-            "text": "Interface utilisateur étendue",
-            "badge": "Chaud",
-            "list": {
                 "rangeslider": "Curseur de plage",
+                "progressbar": "Barres de progression",
+                "placeholder":"Espace réservé",
                 "sweetalert": "Sweet Alert",
-                "tour": "Page de visite",
-                "scrollspy": "Scrollspy"
-            }
-        },
-        "widgets": {
-            "text": "Widgets"
-        },
-        "icons": {
-            "text": "Icônes",
-            "list": {
-                "feather": "Plume",
-                "remix": "Remix",
-                "boxicons": "Boxicons",
-                "materialdesign": "Conception matérielle",
-                "dripicons": "Dripicons",
-                "fontawesome": "Police impressionnante 5",
-                "weather": "Temps"
+                "tabs": "Tablatures et accordéons",
+                "typography": "Typographie",
+                "video": "Vidéo",
+                "general": "Générale",
+                "colors": "Couleurs",
+                "lightbox": "Boite à lumière",
+                "cropper": "Recadrage d'image",
+                "drawer": "Tiroir"
             }
         },
         "forms": {
             "text": "Formes",
+            "badge": "8",
             "list": {
                 "elements": "Éléments de formulaire",
-                "advanced": "Formulaire avancé",
+                "layouts": "Dispositions de formulaire",
                 "validation": "Validation de formulaire",
+                "advanced": "Formulaire avancé",
+                "editor": "Éditeur de formulaires",
+                "fileupload": "Téléchargement de fichier de formulaire",
+                "repeater": "Répétiteur de formulaire",
                 "wizard": "Assistant de formulaire",
-                "mask": "Masque de forme",
-                "editor": "Éditeur de plumes",
-                "fileupload": "Téléchargement de fichier de formulaire"
+                "mask": "Masque de forme"
             }
         },
         "tables": {
@@ -293,33 +302,27 @@
         "charts": {
             "text": "Graphiques",
             "list": {
-                "apex": "Apex",
-                "chartjs": "Chartjs",
-                "c3": "C3",
-                "chartist": "Chartist",
-                "knob": "Knob"
+                "apex": "Graphique Apex",
+                "chartjs": "Graphique Chartjs",
+                "chartist": "Graphique Chartist",
+                "echart": "Graphique E"
+            }
+        },
+        "icons": {
+            "text": "Icônes",
+            "list": {
+                "boxicons": "Boxicons",
+                "materialdesign": "Conception matérielle",
+                "dripicons": "Dripicons",
+                "fontawesome": "Police géniale"
             }
         },
         "maps": {
             "text": "Plans",
             "list": {
-                "googlemap": "Google Maps"
+                "googlemap": "Google Maps",
+                "leafletmap": "Cartes de dépliant"
             }
-        },
-        "pages": {
-            "text": "Des pages"
-        },
-        "authstyle": {
-            "text": "Style d'authentification 1"
-        },
-        "authstyle2": {
-            "text": "Style d'authentification 2"
-        },
-        "errors": {
-            "text": "les erreurs"
-        },
-        "utility": {
-            "text": "Utilitaire"
         },
         "multilevel": {
             "text": "Multi niveaux",

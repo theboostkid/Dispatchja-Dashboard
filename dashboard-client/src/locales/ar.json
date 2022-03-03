@@ -4,105 +4,86 @@
       "text": "بحث..."
     },
     "dropdown": {
-      "createnew": {
-        "text": "خلق جديد إبداع جديد",
-        "list": {
-          "projects": "مشاريع جديدة",
-          "users": "أنشئ مستخدمين",
-          "revenue": "تقرير الإيرادات",
-          "settings": "الإعدادات",
-          "help": "ساعد لدعم"
-        }
-      },
       "megamenu": {
-        "text": "قائمة ميجا",
+        "text": "القائمة الضخمة",
         "uicontent": {
           "title": "مكونات واجهة المستخدم",
           "list": {
-            "widgets": "الحاجيات",
-            "nestable": "قائمة عش",
-            "rangeslider": "رينج سلايدر",
-            "masonry": "عناصر البناء",
-            "sweetalert": "تنبيهات حلوة",
-            "treeview": "صفحة Treeview",
-            "tour": "صفحة الجولة"
+            "lightbox": "صندوق مضئ",
+            "rangeslider": "شريط التمرير",
+            "sweetalert": "تنبيه لطيف",
+            "rating": "تقييم",
+            "forms": "نماذج",
+            "tables": "الجداول",
+            "charts": "الرسوم البيانية"
           }
         },
         "application": {
           "title": "التطبيقات",
           "list": {
-            "ecommerce": "صفحات التجارة الإلكترونية",
-            "crm": "صفحات CRM",
-            "email": "البريد الإلكتروني",
+            "ecommerce": "التجارة الإلكترونية",
             "calendar": "التقويم",
-            "contacts": "اتصالات الفريق",
-            "tasks": "مجلس المهام",
-            "template": "قوالب البريد الإلكتروني"
+            "email": "البريد الإلكتروني",
+            "projects": "المشاريع",
+            "tasks": "مهام",
+            "contacts": "جهات الاتصال"
           }
         },
         "extrapages": {
           "title": "صفحات اضافية",
           "list": {
-            "leftsidebaruser": "الشريط الجانبي الأيسر مع المستخدم",
-            "collapsed": "تم طي القائمة",
-            "leftsidebar": "شريط جانبي أيسر صغير",
-            "header": "نمط رأس جديد",
-            "search": "نتيجة البحث",
-            "gallery": "صفحات المعرض",
-            "maintenance": "الصيانة وقريبًا"
+            "lightsidebar": "شريط جانبي خفيف",
+            "compactsidebar": "شريط جانبي مضغوط",
+            "horizontallayout": "التخطيط الأفقي",
+            "maintenance": "اعمال صيانة",
+            "comingsoon": "قريبا",
+            "timeline": "الجدول الزمني",
+            "faqs": "الأسئلة الشائعة"
           }
-        },
-        "discount": "بيع خصم خاص!",
-        "subtext": "وفر حتى 70٪.",
-        "buttontext": "التحميل الان"
+        }
       },
       "site": {
         "list": {
-          "github": "GitHub",
+          "github": "جيثب",
           "bitbucket": "Bitbucket",
-          "dribbble": "Dribbble",
-          "dropbox": "Dropbox",
-          "g-suite": "G Suite",
-          "slack": "Slack"
+          "dribbble": "المراوغة",
+          "dropbox": "بصندوق الإسقاط",
+          "mailchimp": "بريد الشمبانزي",
+          "slack": "تثاقل"
         }
       },
       "notification": {
-        "badge": "5",
+        "badge": "3",
         "text": "إشعارات",
-        "subtext": "امسح الكل",
-        "1": {
-          "title": "علق دوج دوكس على لوحة تحكم المشرف",
-          "text": "قبل دقيقة واحدة"
+        "subtext": "عرض الكل",
+        "order": {
+          "title": "تم تقديم طلبك",
+          "text": "إذا دمجت عدة لغات القواعد",
+          "time": "قبل 3 دقائق"
         },
-        "2": {
-          "title": "ماريو دروموند",
-          "text": "اهلا كيف انت؟ ماذا عن اجتماعنا القادم"
+        "james": {
+          "title": "جيمس لومير",
+          "text": "سيبدو الأمر مثل اللغة الإنجليزية المبسطة.",
+          "time": "منذ 1 ساعة"
         },
-        "3": {
-          "title": "كارين روبنسون",
-          "text": "نجاح باهر ! هذا المشرف يبدو تصميمًا جيدًا ورائعًا"
+        "item": {
+          "title": "يتم شحن البند الخاص بك",
+          "text": "إذا دمجت عدة لغات القواعد",
+          "time": "قبل 3 دقائق"
         },
-        "4": {
-          "title": "مستخدم جديد مسجل.",
-          "text": "منذ 5 ساعات"
+        "salena": {
+          "title": "سالينا لايفيلد",
+          "text": "بصفتي صديقًا متشككًا في كامبريدج لأعمال الغرب.",
+          "time": "منذ 1 ساعة"
         },
-        "5": {
-          "title": "علق كاليب فلاكيلار على المسؤول",
-          "text": "قبل 4 أيام"
-        },
-        "6": {
-          "title": "أحب كارلوس كراوتش",
-          "text": "قبل 13 يوم"
-        },
-        "button": "مشاهدة الكل"
+        "button": "تحميل المزيد.."
       },
-      "name": {
-        "text": "Nik Patel",
+      "henry": {
+        "text": "هنري",
         "list": {
-          "greet": "أهلا بك !",
-          "account": "حسابي",
+          "profile": "الملف الشخصي",
           "mywallet": "محفظتي",
-          "settings": "الإعدادات",
+          "settings": "إعدادات",
           "lockscreen": "اقفل الشاشة",
           "logout": "تسجيل خروج"
         }
@@ -110,177 +91,205 @@
     }
   },
   "menuitems": {
-    "navigation": {
-      "text": "التنقل"
+    "menu": {
+      "text": "قائمة طعام"
     },
-    "dashboard": {
-      "text": "لوحة القيادة",
-      "badge": "3",
+    "dashboards": {
+      "text": "لوحات المعلومات",
+      "badge": "04",
       "list": {
-        "sales": "مبيعات",
-        "crm": "CRM",
-        "analytics": "تحليلات"
+        "default": "إفتراضي",
+        "saas": "ساس",
+        "crypto": "تشفير",
+        "blog": "مدونة"
+      }
+    },
+    "layouts": {
+      "text": "التخطيطات",
+      "list": {
+        "horizontal": "عرضي",
+        "lightsidebar": "شريط جانبي خفيف",
+        "compactsidebar": "شريط جانبي مضغوط",
+        "iconsidebar": "الشريط الجانبي للرموز",
+        "boxed": "تخطيط محاصر",
+        "coloredsidebar": "الشريط الجانبي الملون",
+        "vertical": "عمودي",
+        "lighttopbar": "شريط علوي خفيف",
+        "coloredheader": "رأس ملون"
       }
     },
     "apps": {
       "text": "تطبيقات"
     },
+    "calendar": {
+      "text": "التقويم"
+    },
     "chat": {
-      "text": "دردشة"
+      "text": "دردشة",
+      "badge": "جديد"
+    },
+    "filemanager": {
+      "text": "مدير الملفات",
+      "badge": "جديد"
     },
     "ecommerce": {
       "text": "التجارة الإلكترونية",
-      "badge": "جديد",
       "list": {
-        "products": "قائمة المنتجات",
-        "productsgrid": "شبكة المنتجات",
+        "products": "منتجات",
         "productdetail": "تفاصيل المنتج",
-        "createproduct": "إنشاء منتج",
-        "customers": "العملاء",
         "orders": "الطلب #٪ s",
-        "orderdetail": "تفاصيل الطلب",
-        "sellers": "الباعة",
+        "customers": "الزبائن",
         "cart": "عربة التسوق",
-        "checkout": "الدفع"
+        "checkout": "الدفع",
+        "shops": "محلات",
+        "addproduct": "أضف منتج"
       }
     },
-    "calendar": {
-      "text": "التقويم"
+    "crypto": {
+      "text": "تشفير",
+      "list": {
+        "wallet": "محفظة نقود",
+        "buy/sell": "شراء بيع",
+        "exchange": "تبادل",
+        "lending": "الإقراض",
+        "orders": "الطلب #٪ s",
+        "kycapplication": "تطبيق KYC",
+        "icolanding": "ICO Landing"
+      }
     },
     "email": {
       "text": "البريد الإلكتروني",
       "list": {
         "inbox": "صندوق الوارد",
         "reademail": "قراءة البريد الإلكتروني",
-        "template": "قوالب البريد الإلكتروني"
+        "template": {
+          "text": "القوالب",
+          "list": {
+            "basic": "الإجراء الأساسي",
+            "alert": "تنبيه البريد الإلكتروني",
+            "billing": "البريد الالكتروني لقوائم الدفع"
+          }
+        }
       }
     },
-    "companies": {
-      "text": "الشركات"
+    "invoices": {
+      "text": "فواتير",
+      "list": {
+        "invoicelist": "قائمة الفاتورة",
+        "invoicedetail": "تفاصيل الفاتورة"
+      }
+    },
+    "projects": {
+      "text": "المشاريع",
+      "list": {
+        "grid": "شبكة المشاريع",
+        "projectlist": "قائمة المشاريع",
+        "overview": "ملخص المشروع",
+        "create": "خلق جديد إبداع جديد"
+      }
     },
     "tasks": {
       "text": "مهام",
       "list": {
-        "list": "قائمة",
-        "detail": "تفاصيل",
-        "kanban": "مجلس كانبان"
+        "tasklist": "قائمة المهام",
+        "kanban": "مجلس كانبان",
+        "createtask": "إنشاء مهمة"
       }
-    },
-    "ticket": {
-      "text": "تذاكر"
     },
     "contacts": {
       "text": "جهات الاتصال",
       "list": {
-        "members": "قائمة الأعضاء",
+        "usergrid": "شبكة المستخدم",
+        "userlist": "قائمة المستخدم",
         "profile": "الملف الشخصي"
       }
     },
-    "filemanager": {
-      "text": "مدير الملفات"
-    },
-    "custom": {
-      "text": "مخصص"
-    },
-    "auth": {
-      "text": "صفحات المؤلف",
+    "blog": {
+      "text": "مدونة",
+      "badge": "جديد",
       "list": {
-        "login": "تسجيل الدخول",
-        "login-2": "تسجيل الدخول 2",
-        "register": "تسجيل",
-        "register-2": "التسجيل 2",
-        "signin-signup": "تسجيل الدخول - الاشتراك",
-        "signin-signup-2": "2 تسجيل الدخول - الاشتراك",
-        "recoverpwd": "إستعادة كلمة المرور",
-        "recoverpwd-2": "2 إستعادة كلمة المرور",
-        "lock-screen": "اقفل الشاشة",
-        "lock-screen-2": "2 اقفل الشاشة",
-        "logout": "تسجيل خروج",
-        "logout-2": "2 تسجيل خروج",
-        "confirm-mail": "تأكيد البريد",
-        "confirm-mail-2": "2 تأكيد البريد"
+        "bloglist": "قائمة المدونة",
+        "grid": "شبكة المدونة",
+        "detail": "تفاصيل المدونة"
       }
     },
-    "extrapages": {
-      "text": "صفحات اضافية",
+    "pages": {
+      "text": "الصفحات"
+    },
+    "authentication": {
+      "text": "المصادقة",
+      "badge": "جديد",
       "list": {
-        "starter": "بداية",
-        "timeline": "الجدول الزمني",
-        "sitemap": "خريطة الموقع",
-        "invoice": "فاتورة",
-        "faqs": "أسئلة وأجوبة",
-        "search-results": "نتائج البحث",
-        "pricing": "التسعير",
+        "login": "تسجيل الدخول",
+        "register": "تسجيل",
+        "recoverpwd": "إستعادة كلمة المرور",
+        "lockscreen": "اقفل الشاشة",
+        "login-2": "تسجيل الدخول 2",
+        "register-2": "التسجيل 2",
+        "recoverpwd-2": "استعادة كلمة المرور 2",
+        "lockscreen-2": "شاشة القفل 2",
+        "confirm-mail": "تأكيد البريد",
+        "confirm-mail-2": "تأكيد البريد 2",
+        "verification": "تأكيد بواسطة البريد الالكتروني",
+        "verification-2": "التحقق من البريد الإلكتروني 2",
+        "verification-step": "التحقق من خطوتين",
+        "verification-step-2": "التحقق بخطوتين 2"
+      }
+    },
+    "utility": {
+      "text": "خدمة",
+      "list": {
+        "starter": "صفحة المبتدئين",
         "maintenance": "اعمال صيانة",
-        "comingsoon": "قريبا",
-        "lightbox": "صندوق مضئ",
+        "timeline": "الجدول الزمني",
+        "faqs": "الأسئلة الشائعة",
+        "pricing": "التسعير",
         "error404": "خطأ 404",
-        "error404-alt": "خطأ 404-بديل",
-        "error500": "خطأ 500"
+        "error500": "خطأ 500",
+        "comingsoon": "قريبا"
       }
     },
     "components": {
       "text": "مكونات"
     },
-    "ui": {
-      "text": "واجهة المستخدم الأساسية",
+    "uielements": {
+      "text": "عناصر واجهة المستخدم",
       "list": {
-        "avatars": "الآلهة",
+        "alerts": "التنبيهات",
         "buttons": "أزرار",
         "cards": "البطاقات",
         "carousel": "دائري",
         "dropdowns": "هبوط قطرة",
-        "video": "تضمين الفيديو",
-        "general": "واجهة المستخدم العامة",
         "grid": "جريد",
-        "images": "الصور",
-        "listgroup": "قائمة المجموعة",
-        "modals": "وسائط",
-        "notifications": "إشعارات",
-        "portlet": "المداخل",
-        "progress": "التقدم",
-        "ribbons": "شرائط",
-        "spinners": "الغزالون",
+        "images": "صور",
+        "modals": "مشروط",
+        "rangeslider": "شريط التمرير",
+        "progressbar": "أشرطة التقدم",
+        "placeholder":"عنصر نائب",
+        "sweetalert": "تنبيه لطيف",
         "tabs": "علامات التبويب والأكورديون",
-        "tooltip": "تلميحات الأدوات والبوبوفر",
-        "typography": "الطباعة"
-      }
-    },
-    "extendedui": {
-      "text": "تمديد واجهة المستخدم",
-      "badge": "الحار",
-      "list": {
-        "rangeslider": "نطاق المنزلق",
-        "sweetalert": "تنبيه جميل",
-        "tour": "صفحة الجولة",
-        "scrollspy": "Scrollspy"
-      }
-    },
-    "widgets": {
-      "text": "الحاجيات"
-    },
-    "icons": {
-      "text": "الأيقونات",
-      "list": {
-        "feather": "ريشة",
-        "remix": "ريمكس",
-        "boxicons": "بوكسيكونس",
-        "materialdesign": "تصميم المواد",
-        "dripicons": "Dripicons",
-        "fontawesome": "رائع الخط 5",
-        "weather": "طقس"
+        "typography": "الطباعة",
+        "video": "فيديو",
+        "general": "جنرال لواء",
+        "colors": "الألوان",
+        "lightbox": "صندوق مضئ",
+        "cropper": "صورة كروبر",
+        "drawer": "الدرج"
       }
     },
     "forms": {
       "text": "نماذج",
+      "badge": "8",
       "list": {
-        "elements": "العناصر العامة",
-        "advanced": "المتقدمة",
-        "validation": "التحقق من الصحة",
-        "wizard": "ساحر",
-        "mask": "قناع",
-        "editor": "محرر الريشة",
-        "fileupload": "تحميلات الملف"
+        "elements": "عناصر النموذج",
+        "layouts": "تخطيطات النموذج",
+        "validation": "التحقق من صحة النموذج",
+        "advanced": "نموذج متقدم",
+        "editor": "محرر النماذج",
+        "fileupload": "تحميل ملف النموذج",
+        "repeater": "مكرر النموذج",
+        "wizard": "معالج النماذج",
+        "mask": "قناع النموذج"
       }
     },
     "tables": {
@@ -293,33 +302,27 @@
     "charts": {
       "text": "الرسوم البيانية",
       "list": {
-        "apex": "ذروة",
-        "chartjs": "تشارتجس",
-        "c3": "ج 3",
-        "chartist": "الجارتي",
-        "knob": "مقبض الباب"
+        "apex": "مخطط أبيكس",
+        "chartjs": "مخطط Chartjs",
+        "chartist": "مخطط رسومي",
+        "echart": "مخطط E"
+      }
+    },
+    "icons": {
+      "text": "أيقونات",
+      "list": {
+        "boxicons": "Boxicons",
+        "materialdesign": "التصميم المادي",
+        "dripicons": "Dripicons",
+        "fontawesome": "الخط رائع"
       }
     },
     "maps": {
       "text": "خرائط",
       "list": {
-        "googlemap": "خرائط جوجل"
+        "googlemap": "خرائط جوجل",
+        "leafletmap": "خرائط النشرة"
       }
-    },
-    "pages": {
-      "text": "الصفحات"
-    },
-    "authstyle": {
-      "text": "أسلوب المصادقة 1"
-    },
-    "authstyle2": {
-      "text": "أسلوب المصادقة 2"
-    },
-    "errors": {
-      "text": "أخطاء"
-    },
-    "utility": {
-      "text": "خدمة"
     },
     "multilevel": {
       "text": "متعدد المستويات",

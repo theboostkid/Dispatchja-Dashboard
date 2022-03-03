@@ -1,12 +1,10 @@
-export const state = () => ({
-  layoutType: "vertical",
-  layoutWidth: "fluid",
-  leftSidebarType: "light",
-  leftSidebarSize: "default",
-  menuPosition: "fixed",
-  topbar: "dark",
+export const state = {
+  layoutType: 'vertical',
+  layoutWidth: 'fluid',
+  leftSidebarType: 'dark',
+  topbar: 'dark',
   loader: false
-});
+}
 
 export const mutations = {
   CHANGE_LAYOUT(state, layoutType) {
@@ -18,46 +16,32 @@ export const mutations = {
   CHANGE_LEFT_SIDEBAR_TYPE(state, leftSidebarType) {
     state.leftSidebarType = leftSidebarType;
   },
-  CHANGE_LEFT_SIDEBAR_SIZE(state, leftSidebarSize) {
-    state.leftSidebarSize = leftSidebarSize;
-  },
   CHANGE_TOPBAR(state, topbar) {
     state.topbar = topbar;
   },
   LOADER(state, loader) {
-    state.loader = loader;
-  },
-  CHANGE_POSITION(state, menuPosition) {
-    state.menuPosition = menuPosition;
-  },
-};
+    state.loader = loader
+  }
+}
 
 export const actions = {
   changeLayoutType({ commit }, { layoutType }) {
-    commit("CHANGE_LAYOUT", layoutType);
+    commit('CHANGE_LAYOUT', layoutType);
   },
 
   changeLayoutWidth({ commit }, { layoutWidth }) {
-    commit("CHANGE_LAYOUT_WIDTH", layoutWidth);
+    commit('CHANGE_LAYOUT_WIDTH', layoutWidth)
   },
 
   changeLeftSidebarType({ commit }, { leftSidebarType }) {
-    commit("CHANGE_LEFT_SIDEBAR_TYPE", leftSidebarType);
-  },
-
-  changeLeftSidebarSize({ commit }, { leftSidebarSize }) {
-    commit("CHANGE_LEFT_SIDEBAR_SIZE", leftSidebarSize);
+    commit('CHANGE_LEFT_SIDEBAR_TYPE', leftSidebarType)
   },
 
   changeTopbar({ commit }, { topbar }) {
-    commit("CHANGE_TOPBAR", topbar);
+    commit('CHANGE_TOPBAR', topbar)
   },
 
   changeLoaderValue({ commit }, { loader }) {
-    commit("LOADER", loader);
-  },
-
-  changeMenuPosition({ commit }, { menuPosition }) {
-    commit("CHANGE_POSITION", menuPosition);
+    commit('LOADER', loader)
   }
-};
+}

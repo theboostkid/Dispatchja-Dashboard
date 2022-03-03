@@ -8,14 +8,14 @@ export const mutations = {
     SET_CURRENT_USER(state, newValue) {
         state.currentUser = newValue
         saveState('auth.currentUser', newValue)
-    },
+    }
 }
 
 export const getters = {
     // Whether the user is currently logged in.
     loggedIn(state) {
         return !!state.currentUser
-    },
+    }
 }
 
 export const actions = {
@@ -52,10 +52,10 @@ export const actions = {
     },
 
     // register the user
-    register({ commit, dispatch, getters }, { email, password } = {}) {
+    register({ commit, dispatch, getters }, { username, email, password } = {}) {
         if (getters.loggedIn) return dispatch('validate')
 
-        return getFirebaseBackend().registerUser(email, password).then((response) => {
+        return getFirebaseBackend().registerUser(username, email, password).then((response) => {
             const user = response
             commit('SET_CURRENT_USER', user)
             return user
@@ -89,5 +89,5 @@ export const actions = {
 // ===
 
 function saveState(key, state) {
-    window.localStorage.setItem(key, JSON.stringify(state))
+    window.sessionStorage.setItem(key, JSON.stringify(state))
 }

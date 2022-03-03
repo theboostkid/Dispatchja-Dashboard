@@ -1,4 +1,4 @@
-# minton
+# Skote - Vue based admin template
 
 ## Project setup
 ```

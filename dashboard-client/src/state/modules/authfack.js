@@ -37,9 +37,7 @@ export const actions = {
                 user => {
                     commit('registerSuccess', user);
                     dispatch('notification/success', 'Registration successful', { root: true });
-
                     router.push('/login');
-
                 },
                 error => {
                     commit('registerFailure', error);

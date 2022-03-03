@@ -21,11 +21,13 @@ class FirebaseAuthBackend {
     /**
      * Registers the user with given details
      */
-    registerUser = (email, password) => {
+    registerUser = (username, email, password) => {
         return new Promise((resolve, reject) => {
-            firebase.auth().createUserWithEmailAndPassword(email, password).then((user) => {
-                // eslint-disable-next-line no-redeclare
-                var user = firebase.auth().currentUser;
+            // eslint-disable-next-line no-unused-vars
+            firebase.auth().createUserWithEmailAndPassword(email, password).then((res) => {
+                let user = firebase.auth().currentUser.updateProfile({
+                     displayName: username
+                   });
                 resolve(user);
             }, (error) => {
                 reject(this._handleError(error));
@@ -38,8 +40,7 @@ class FirebaseAuthBackend {
      */
     loginUser = (email, password) => {
         return new Promise((resolve, reject) => {
-            firebase.auth().signInWithEmailAndPassword(email, password).then((user) => {
-                // eslint-disable-next-line no-redeclare
+            firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
                 var user = firebase.auth().currentUser;
                 resolve(user);
             }, (error) => {
