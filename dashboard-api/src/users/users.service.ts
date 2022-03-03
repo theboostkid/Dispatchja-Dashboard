@@ -133,7 +133,8 @@ export class UsersService {
 	}
 
 	async changePassword(id: string, password: string, shouldChangePassword: boolean = false) {
-		await this.usersRepository.update({ id }, { password, resetPasswordToken: "", shouldChangePassword })
+		const hashedPassword = await bcrypt.hash(password, 10);
+		await this.usersRepository.update({ id }, { password: hashedPassword, resetPasswordToken: "", shouldChangePassword })
 	}
 
 	async updateUser(id: string, updateUserDto: UpdateUserDTO) {

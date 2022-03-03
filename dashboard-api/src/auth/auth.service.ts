@@ -84,9 +84,8 @@ export class AuthService {
 		}
 
 		const password = generate({ length: 10, numbers: true });
-		const hashedPassword = await bcrypt.hash(password, 10);
-
-		await this.usersService.changePassword(user.id, hashedPassword, true);
+		
+		await this.usersService.changePassword(user.id, password, true);
 
 		this.emailService.sendEmail({
 			to: user.email,
