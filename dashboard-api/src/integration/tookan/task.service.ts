@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { lastValueFrom, map } from 'rxjs';
+import { lastValueFrom, map, Observable } from 'rxjs';
 import { Task, Item } from './schema/task.schema';
 import { TaskRepository } from './task.repository';
 import { Cron, CronExpression } from '@nestjs/schedule';
@@ -85,15 +85,20 @@ export class TaskService implements OnModuleInit {
 		return apiResults;
 	}
 
-	// updateTask(taskId: string, updateTaskDto: UpdateTaskDto): Observable<any> {
-	// 	return this._httpService.post(`${this.API_URL}get_all_tasks`,
-	// 		{
-	// 			"api_key": this.API_KEY,
-	// 			"job_id": taskId,
-	// 			"pickup_custom_field_template": "Template_1",
-	// 			"pickup_meta_data": updateTaskDto.pickupMetaData
-	// 		})
-	// }
+	updateTask(jobId: string): Observable<any> {
+		return this._httpService.post(`${this.API_URL}edit_tasks`,
+			{
+				"api_key": this.API_KEY,
+				"job_id": jobId,
+				"custom_field_template": "Order_Details",
+				"meta_data": [
+					{
+						"label": "Client_Name",
+						"data": "travis taylor"
+					}
+				]
+			})
+	}
 
 	/**
 	 * Maps tookan task properties to Task object properties

@@ -210,6 +210,26 @@ export class RestuarantController {
 		return this._restaurantService.updateInvoice(restaurantId, id, { status, totalAmountPaid })
 	}
 
+	@Patch("/transactions/:id")
+	@HttpCode(204)
+	async updateInvoiceTotals(
+		@Request() req,
+		@Param("id") id: string,
+		@Body() { totalAmountPaid }: UpdateInvoiceDTO
+	) {
+		const user = req.user as User;
+		if (!this._isUserAuthorized(user, {})) {
+			throw new ForbiddenException();
+		}
+
+		const transaction = await this._restaurantService.getTransactionById(id);
+		if (!transaction) {
+			throw new NotFoundException("Unable to create Invoice. Restaurant Not Found");
+		}
+
+
+	}
+
 	@Delete("/:restaurantId/invoices/:id")
 	@HttpCode(204)
 	async deleteRestaurantInvoice(

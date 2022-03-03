@@ -14,7 +14,7 @@ type GroupByOptions = {
 	endDate?: string;
 	returnItems?: boolean;
 	jobStatus?: number;
-}
+};
 
 @Injectable()
 export class RestuarantService implements OnModuleInit {
@@ -218,6 +218,11 @@ export class RestuarantService implements OnModuleInit {
 		const data = await this._tookanTaskRepository.aggregate(pipelines);
 
 		return this._getMappedTotals(data);
+	}
+
+
+	getTransactionById(id: string) {
+		return this._restaurantRepository.findOne({ id });
 	}
 
 	async getTransactions(restaurantName?: string, startDate?: string, endDate?: string, jobStatus?: number) {
