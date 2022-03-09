@@ -94,7 +94,7 @@ export default {
                   class="nav-link dropdown-toggle arrow-none"
                   v-if="!item.subItems"
                   id="topnav-components"
-                  :to="item.link"
+                  :to="{ name: item.linkName }"
                   role="button"
                 >
                   <i :class="`bx ${item.icon} me-2`"></i>{{ $t(item.label) }}
@@ -124,11 +124,12 @@ export default {
                       class="col dropdown-item side-nav-link-ref"
                       :key="index"
                       v-if="item.subItems.length < 11 && !hasItems(subitem)"
-                      :to="subitem.link"
+                      :to="{ name: subitem.linkName }"
                       >{{ $t(subitem.label) }}</router-link>
+                      
                     <div v-if="item.subItems.length > 11" :key="index">
                       <div v-if="index % 3 == 0" class="row">
-                        <div class="col-lg-4"><router-link class="dropdown-item side-nav-link-ref" :to="subitem.link">{{ $t(item.subItems[index].label)}}</router-link></div>
+                        <div class="col-lg-4"><router-link class="dropdown-item side-nav-link-ref" :to="{ name: subitem.linkName }">{{ $t(item.subItems[index].label)}}</router-link></div>
                         <div class="col-lg-4" v-if="item.subItems[index + 1].link"><router-link class="dropdown-item side-nav-link-ref" :to="item.subItems[index + 1].link">{{ $t(item.subItems[index + 1].label) }}</router-link></div>
                         <div class="col-lg-4" v-if="item.subItems[index + 2]"><router-link class="dropdown-item side-nav-link-ref" :to="item.subItems[index + 2].link">{{ $t(item.subItems[index + 2].label) }}</router-link></div> 
                       </div>
