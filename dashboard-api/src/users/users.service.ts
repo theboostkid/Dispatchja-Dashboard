@@ -1,16 +1,43 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, OnModuleInit } from '@nestjs/common';
 import { CreateUserDto, UserSearchQueryParams, UpdateUserDTO } from './dto/user.dto';
 import { UsersRepository } from './users.repository';
-import { User } from './schema/user.schema';
+import { Role, User } from './schema/user.schema';
 import { v4 as uuidv4 } from "uuid";
 import { generate } from 'generate-password';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/email/email.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class UsersService {
-	constructor(private readonly emailService: EmailService,
+export class UsersService implements OnModuleInit {
+	constructor(
+    	private readonly configService: ConfigService,
+		private readonly emailService: EmailService,
 		private usersRepository: UsersRepository) { }
+
+  /**
+   * Creates a admin user if no user is in the database
+   */
+  async onModuleInit() {
+    const { count } = await this.findUsers();
+
+    if (count == 0) {
+      console.log('[info] creating first admin user...');
+      try {
+        await this.create({
+          name: this.configService.get('ADMIN_NAME'),
+          email: this.configService.get('ADMIN_EMAIL'),
+          role: Role.SUPER_USER,
+          isActive: true,
+        });
+      } catch(e) {
+        if(e.status !== 409){
+          throw e;
+        }
+      }
+      
+    }
+  }
 
 	removeSensitiveFields(user: User): User {
 		let u = { ...user } as any

@@ -1,5 +1,5 @@
 import { plainToClass } from 'class-transformer';
-import { IsEnum, IsInt, IsNotEmpty, IsNumber, IsString, validateSync } from 'class-validator';
+import { IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumber, IsString, validateSync } from 'class-validator';
 
 enum Environment {
 	Development = "development",
@@ -38,6 +38,14 @@ class EnvironmentVariables {
 	@IsString()
 	@IsNotEmpty()
 	TOOKAN_API_KEY: string;
+
+	@IsString()
+	@IsNotEmpty()
+	ADMIN_NAME: string;
+
+	@IsEmail()
+	@IsNotEmpty()
+	ADMIN_EMAIL: string;
 }
 
 export function validate(config: Record<string, unknown>) {
