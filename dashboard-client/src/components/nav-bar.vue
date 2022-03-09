@@ -1,8 +1,5 @@
 <script>
 import axios from "axios";
-import simplebar from "simplebar-vue";
-
-import i18n from "../i18n";
 import { authComputed } from "@/state/helpers";
 
 /**
@@ -17,40 +14,14 @@ export default {
           language: "en",
           title: "English",
         },
-        {
-          flag: require("@/assets/images/flags/french.jpg"),
-          language: "fr",
-          title: "French",
-        },
-        {
-          flag: require("@/assets/images/flags/spain.jpg"),
-          language: "es",
-          title: "Spanish",
-        },
-        {
-          flag: require("@/assets/images/flags/chaina.png"),
-          language: "zh",
-          title: "Chinese",
-        },
-        {
-          flag: require("@/assets/images/flags/arabic.png"),
-          language: "ar",
-          title: "Arabic",
-        },
       ],
-      lan: i18n.locale,
       text: null,
       flag: null,
       value: null,
       myVar: 1,
     };
   },
-  components: { simplebar },
-  mounted() {
-    this.value = this.languages.find((x) => x.language === i18n.locale);
-    this.text = this.value.title;
-    this.flag = this.value.flag;
-  },
+
   methods: {
     toggleMenu() {
       this.$parent.toggleMenu();
@@ -84,12 +55,6 @@ export default {
           document.webkitCancelFullScreen();
         }
       }
-    },
-    setLanguage(locale, country, flag) {
-      this.lan = locale;
-      this.text = country;
-      this.flag = flag;
-      i18n.locale = locale;
     },
     logoutUser() {
       // eslint-disable-next-line no-unused-vars
@@ -139,232 +104,6 @@ export default {
         >
           <i class="fa fa-fw fa-bars"></i>
         </button>
-
-        <!-- App Search-->
-        <form class="app-search d-none d-lg-block">
-          <div class="position-relative">
-            <input
-              type="text"
-              class="form-control"
-              :placeholder="$t('navbar.search.text')"
-            />
-            <span class="bx bx-search-alt"></span>
-          </div>
-        </form>
-
-        <b-dropdown
-          variant="black"
-          class="dropdown-mega d-none d-lg-block ms-2"
-          toggle-class="header-item"
-          menu-class="dropdown-megamenu"
-        >
-          <template v-slot:button-content>
-            {{ $t("navbar.dropdown.megamenu.text") }}
-            <i class="mdi mdi-chevron-down"></i>
-          </template>
-
-          <div class="row">
-            <div class="col-sm-8">
-              <div class="row">
-                <div class="col-md-4">
-                  <h5 class="font-size-14 mt-0">
-                    {{ $t("navbar.dropdown.megamenu.uicontent.title") }}
-                  </h5>
-                  <ul class="list-unstyled megamenu-list">
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.lightbox")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t(
-                          "navbar.dropdown.megamenu.uicontent.list.rangeslider"
-                        )
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.sweetalert")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.rating")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.forms")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.tables")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.charts")
-                      }}</a>
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="col-md-4">
-                  <h5 class="font-size-14 mt-0">
-                    {{ $t("navbar.dropdown.megamenu.application.title") }}
-                  </h5>
-                  <ul class="list-unstyled megamenu-list">
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t(
-                          "navbar.dropdown.megamenu.application.list.ecommerce"
-                        )
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.application.list.calendar")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.application.list.email")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.application.list.projects")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.application.list.tasks")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.application.list.contacts")
-                      }}</a>
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="col-md-4">
-                  <h5 class="font-size-14 mt-0">
-                    {{ $t("navbar.dropdown.megamenu.extrapages.title") }}
-                  </h5>
-                  <ul class="list-unstyled megamenu-list">
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t(
-                          "navbar.dropdown.megamenu.extrapages.list.lightsidebar"
-                        )
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t(
-                          "navbar.dropdown.megamenu.extrapages.list.compactsidebar"
-                        )
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t(
-                          "navbar.dropdown.megamenu.extrapages.list.horizontallayout"
-                        )
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t(
-                          "navbar.dropdown.megamenu.extrapages.list.maintenance"
-                        )
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t(
-                          "navbar.dropdown.megamenu.extrapages.list.comingsoon"
-                        )
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.extrapages.list.timeline")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.extrapages.list.faqs")
-                      }}</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="row">
-                <div class="col-sm-6">
-                  <h5 class="font-size-14 mt-0">
-                    {{ $t("navbar.dropdown.megamenu.uicontent.title") }}
-                  </h5>
-                  <ul class="list-unstyled megamenu-list">
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.lightbox")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t(
-                          "navbar.dropdown.megamenu.uicontent.list.rangeslider"
-                        )
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.sweetalert")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.rating")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.forms")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.tables")
-                      }}</a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0);">{{
-                        $t("navbar.dropdown.megamenu.uicontent.list.charts")
-                      }}</a>
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="col-sm-5">
-                  <div>
-                    <img
-                      src="@/assets/images/megamenu-img.png"
-                      alt
-                      class="img-fluid mx-auto d-block"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </b-dropdown>
       </div>
 
       <div class="d-flex">
@@ -398,94 +137,6 @@ export default {
           </form>
         </b-dropdown>
 
-        <b-dropdown variant="white" right toggle-class="header-item">
-          <template v-slot:button-content>
-            <img class :src="flag" alt="Header Language" height="16" />
-            {{ text }}
-          </template>
-          <b-dropdown-item
-            class="notify-item"
-            v-for="(entry, i) in languages"
-            :key="`Lang${i}`"
-            :value="entry"
-            @click="setLanguage(entry.language, entry.title, entry.flag)"
-            :class="{ active: lan === entry.language }"
-          >
-            <img
-              :src="`${entry.flag}`"
-              alt="user-image"
-              class="me-1"
-              height="12"
-            />
-            <span class="align-middle">{{ entry.title }}</span>
-          </b-dropdown-item>
-        </b-dropdown>
-
-        <b-dropdown
-          class="d-none d-lg-inline-block noti-icon"
-          menu-class="dropdown-menu-lg dropdown-menu-end"
-          right
-          toggle-class="header-item"
-          variant="black"
-        >
-          <template v-slot:button-content>
-            <i class="bx bx-customize"></i>
-          </template>
-
-          <div class="px-lg-2">
-            <div class="row no-gutters">
-              <div class="col">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/github.png" alt="Github" />
-                  <span>{{ $t("navbar.dropdown.site.list.github") }}</span>
-                </a>
-              </div>
-              <div class="col">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img
-                    src="@/assets/images/brands/bitbucket.png"
-                    alt="bitbucket"
-                  />
-                  <span>{{ $t("navbar.dropdown.site.list.github") }}</span>
-                </a>
-              </div>
-              <div class="col">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img
-                    src="@/assets/images/brands/dribbble.png"
-                    alt="dribbble"
-                  />
-                  <span>{{ $t("navbar.dropdown.site.list.dribbble") }}</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="row no-gutters">
-              <div class="col">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/dropbox.png" alt="dropbox" />
-                  <span>{{ $t("navbar.dropdown.site.list.dropbox") }}</span>
-                </a>
-              </div>
-              <div class="col">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img
-                    src="@/assets/images/brands/mail_chimp.png"
-                    alt="mail_chimp"
-                  />
-                  <span>{{ $t("navbar.dropdown.site.list.mailchimp") }}</span>
-                </a>
-              </div>
-              <div class="col">
-                <a class="dropdown-icon-item" href="javascript: void(0);">
-                  <img src="@/assets/images/brands/slack.png" alt="slack" />
-                  <span>{{ $t("navbar.dropdown.site.list.slack") }}</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </b-dropdown>
-
         <div class="dropdown d-none d-lg-inline-block ms-1">
           <button
             type="button"
@@ -496,7 +147,7 @@ export default {
           </button>
         </div>
 
-        <b-dropdown
+        <!-- <b-dropdown
           right
           menu-class="dropdown-menu-lg p-0 dropdown-menu-end"
           toggle-class="header-item noti-icon"
@@ -630,7 +281,7 @@ export default {
               {{ $t("navbar.dropdown.notification.button") }}
             </a>
           </div>
-        </b-dropdown>
+        </b-dropdown> -->
 
         <b-dropdown
           right
@@ -639,11 +290,6 @@ export default {
           menu-class="dropdown-menu-end"
         >
           <template v-slot:button-content>
-            <img
-              class="rounded-circle header-profile-user"
-              src="@/assets/images/users/avatar-1.jpg"
-              alt="Header Avatar"
-            />
             <span class="d-none d-xl-inline-block ms-1">
               <div v-if="currentUser">
                {{currentUser.displayName}}
