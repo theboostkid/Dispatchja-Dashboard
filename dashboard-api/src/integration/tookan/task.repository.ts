@@ -15,7 +15,7 @@ export class TaskRepository {
 
 	async findAll(taskFilterQuery: FilterQuery<TaskDocument>, skip: number = 0, limit: number = 0): Promise<{ results: Task[], count: number }> {
 		const countQuery = this.taskModel.find(taskFilterQuery);
-		const query = this.taskModel.find(taskFilterQuery).sort({ _id: 1 }).skip(skip * limit)
+		const query = this.taskModel.find(taskFilterQuery).sort({ startedDatetime: -1 }).skip(skip * limit)
 
 		if (limit) {
 			query.limit(+limit)
