@@ -5,6 +5,7 @@ import RightBar from "@/components/right-bar";
 import Footer from "@/components/footer";
 
 import { layoutComputed } from "@/state/helpers";
+import Toast from '../../components/widgets/toast.vue';
 
 /**
  * Horizontal-layout
@@ -16,6 +17,7 @@ export default {
     HorizontalNav,
     Footer,
     RightBar,
+    Toast,
   },
   data() {
     return {};
@@ -57,6 +59,7 @@ export default {
 
 <template>
   <div>
+    
     <div id="preloader">
       <div id="status">
         <div class="spinner-chase">
@@ -71,6 +74,7 @@ export default {
     </div>
     <!-- Begin page -->
     <div id="layout-wrapper">
+      <Toast/>
       <HorizontalTopbar :type="topbar" :width="layoutWidth" />
       <HorizontalNav />
       <!-- ============================================================== -->

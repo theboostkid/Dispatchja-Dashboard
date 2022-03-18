@@ -5,28 +5,28 @@ export class RestaurantService extends Http {
     super();
   }
 
-  getStatistics(restaurantName, startDate, endDate) {
+  async getStatistics(restaurantName, startDate, endDate) {
     let queryString =  "?";
     if(restaurantName)
-      queryString += `restaurantName=${restaurantName}`
+      queryString += `restaurantName=${restaurantName}&`
     if(startDate)
-      queryString += `startDate=${startDate}`;
+      queryString += `startDate=${startDate}&`;
     if(endDate)
-       queryString += `endDate=${endDate}`;
+       queryString += `endDate=${endDate}&`;
 
-    return this.httpClient.get(`/restaurants/statistics${queryString}`);
+    return await this.httpClient().get(`/restaurants/statistics${queryString}`);
   }
 
   updateRestaurantDetails(restaurantId, invoiceFrequencyInWeeks, email) {
-    return this.httpClient.patch(`/restaurants/${restaurantId}`, { invoiceFrequencyInWeeks, email })
+    return this.httpClient().patch(`/restaurants/${restaurantId}`, { invoiceFrequencyInWeeks, email })
   }
 
-  getRestaurant() {
-    return this.httpClient.get(`/restaurants`);
+  getRestaurants() {
+    return this.httpClient().get(`/restaurants`);
   }
 
   deleteRestaurant(restaurantId) {
-    return this.httpClient.delete(`/restaurants/${restaurantId}`);
+    return this.httpClient().delete(`/restaurants/${restaurantId}`);
   }
 
 }

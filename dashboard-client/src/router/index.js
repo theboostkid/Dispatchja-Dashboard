@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import VueMeta from 'vue-meta'
 
 import routes from './routes'
+import store from '../state/store'
 
 Vue.use(VueRouter)
 Vue.use(VueMeta, {
@@ -30,7 +31,21 @@ const router = new VueRouter({
 
 // Before each route evaluates...
 router.beforeEach((routeTo, routeFrom, next) => {
-  next()
+  if(routeTo.meta.authRequired){
+    if(store.getters['auth/loggedIn']){
+      if(routeTo.meta.allowedRoles?.includes(store.state.auth.currentUser.role)) {
+        next();
+      } else {
+        next(false)
+      }
+    }
+    else{
+      next({ name: 'login' });
+    }
+  }
+  else {
+    next();
+  }
 })
 
 router.beforeResolve(async (routeTo, routeFrom, next) => {

@@ -2,9 +2,108 @@
   <Layout>
     <PageHeader :title="title" :items="items" />
 
+    <b-modal
+    title="Add New User"
+    title-class="text-black font-18"
+    v-model="isUserDialogOpen"
+    @ok.prevent="saveUser"
+    >
+      <b-form>
+        <b-form-group
+        label="Name"
+        id="input-group-1"
+        class="mb-3"
+        label-for="input-1"
+        >
+          <b-form-input
+          id="input-1"
+          v-model="newUser.name"
+          type="text"
+          />
+        </b-form-group>
+
+        <b-form-group
+        label="Email"
+        id="input-group-2"
+        class="mb-3"
+        label-for="input-2"
+        >
+          <b-form-input
+          id="input-2"
+          v-model="newUser.email"
+          type="email"
+          />
+        </b-form-group>
+
+        <b-form-group
+        label="Tooken Id"
+        id="input-group-3"
+        class="mb-3"
+        label-for="input-3"
+        >
+          <b-form-input
+          id="input-3"
+          v-model="newUser.tookenUserId"
+          type="text"
+          />
+        </b-form-group>
+
+        <b-form-group
+        label="Role"
+        id="input-group-4"
+        class="mb-3 form-label"
+        label-for="input-4"
+        >
+          <b-form-select
+          id="input-4"
+          class="form-select"
+          type="text"
+          v-model="newUser.role"
+          :options="userRoles"
+          >
+            <template #first>
+              <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
+            </template>
+          </b-form-select>
+        </b-form-group>
+
+        <b-form-group
+        label="Merchant Name"
+        id="input-group-5"
+        class="mb-3 form-label"
+        label-for="input-5"
+        >
+          <b-form-select
+          id="input-5"
+          class="form-select"
+          type="text"
+          v-model="newUser.restaurantName"
+          :options="selectRestaurants"
+          >
+            <template #first>
+              <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
+            </template>
+          </b-form-select>
+        </b-form-group>
+
+          <div class="col-12 mb-3">
+            <b-form-checkbox
+              class="form-check"
+              id="customControlInline"
+              name="checkbox-1"
+              value="true"
+              unchecked-value="false"
+              v-model="newUser.isActive"
+            >
+              Is Account Active ?
+            </b-form-checkbox>
+          </div>
+      </b-form>
+    </b-modal>
+
      <div class="row mb-4">
       <div class="col">
-        <b-button variant="primary">
+        <b-button variant="primary" @click="isUserDialogOpen=true">
           Add User
         </b-button>
       </div>
@@ -12,88 +111,34 @@
 
     <div class="row">
       <div
-        v-for="user in userGridData"
-        :key="user.id"
-        class="col-xl-3 col-sm-6"
+        class="col-xl-12 col-sm-6"
       >
-        <div class="card text-center">
-          <div class="row justify-content-end">
-            <div class="col-xl-2 d-flex justify-content-end px-4">
-              <b-dropdown
-                  variant="white"
-                  toggle-class="text-muted p-0"
-                  toggle-tag="div"
-                >
-                <template v-slot:button-content>
-                  <i class="mdi mdi-dots-horizontal font-size-18"></i>
-                </template>
-                <b-dropdown-item> Edit</b-dropdown-item>
-                <b-dropdown-item> <span class="text-danger">Delete</span> </b-dropdown-item>
-              </b-dropdown>
-            </div>
-          </div>
-          <div class="card-body">
-            <div v-if="!user.image" class="avatar-sm mx-auto mb-4">
-              <span
-                class="avatar-title rounded-circle bg-soft bg-primary text-primary font-size-16"
-                >{{ user.name.charAt(0) }}</span
-              >
-            </div>
-            <div v-if="user.image" class="mb-4">
-              <img
-                class="rounded-circle avatar-sm"
-                :src="`${user.image}`"
-                alt
-              />
-            </div>
-            <h5 class="font-size-15 mb-1">
-              <a href="javascript: void(0);" class="text-dark">{{
-                user.name
-              }}</a>
-            </h5>
-            <p class="text-muted">{{ user.email }}</p>
-            <p class="text-dark">{{ user.userType }} </p>
-          </div>
-          <div class="card-footer bg-transparent border-top">
-            <div class="row">
-              <div class="col">
-                Last Active: 
-                <div>
-                  {{ user.lastActive }}
-                </div>
-              </div>
-              <div class="col">
-                Last Login: 
-                <div>
-                  {{ user.lastLogin }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pagination --> 
-    <div class="row">
-      <div class="col-lg-12">
-        <ul
-          class="pagination pagination-rounded justify-content-center mt-2 mb-5"
+        
+        <DataTable
+        :headers="headers"
+        :items="users"
         >
-          <li class="page-item disabled">
-            <a href="#" class="page-link">
-              <i class="mdi mdi-chevron-left"></i>
-            </a>
-          </li>
-          <li @click="paginate(page)" class="page-item" :class="{ 'active': page == pagination.page } " v-for="page in totalPages" :key="page">
-            <a href="#" @click.prevent class="page-link">{{ page }}</a>
-          </li>
-          <li class="page-item">
-            <a href="#" class="page-link">
-              <i class="mdi mdi-chevron-right"></i>
-            </a>
-          </li>
-        </ul>
+          <template #actions="{ item }">
+            <div class="row">
+              <div class="col-xl-3 col-lg-4 col-sm-6" @click="removeUser(item)">
+                <i class="mdi mdi-18px mdi-delete"></i>
+              </div>
+              <div class="col-xl-3 col-lg-4 col-sm-6" @click="editUser(item)">
+                <i class="mdi mdi-18px mdi-file-edit-outline"></i>
+              </div>
+            </div>
+          </template>
+
+          <template #isActive="{ item }">
+            <span :class=" item.isActive ? 'badge bg-success font-size-13' : 'badge bg-warning font-size-13' " >
+              {{ item.isActive ? 'Active' : 'In-Active' }}
+            </span>
+          </template>
+
+          <template #lastLoginDate="{ item }">
+              {{ item.lastLoginDate ? new Date(item.lastLoginDate).toISOString().substr(0, 10) : 'Never' }}
+          </template>
+        </DataTable>
       </div>
     </div>
 </Layout>
@@ -103,7 +148,9 @@
 import Layout from "../../layouts/horizontal.vue";
 import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
+import DataTable from '../../../components/tables/data-table.vue';
+import { notificationMethods } from '../../../state/helpers'
 
 /**
  * Starter component
@@ -114,7 +161,7 @@ export default {
     meta: [{ name: "description", content: appConfig.description }]
   },
 
-  components: { Layout, PageHeader },
+  components: { Layout, PageHeader, DataTable },
 
   data() {
     return {
@@ -125,87 +172,100 @@ export default {
           active: true
         }
       ],
-
-      userGridData: [
-        {
-            id: 1,
-            name: 'David McHenry',
-            email: 'david@skote.com',
-            userType: 'UI/UX Designer',
-            lastLogin: '5/5/2022',
-            lastActive: '5/5/2022'
-        },
-        {
-            id: 2,
-            name: 'Frank Kirk',
-            email: 'frank@skote.com',
-            userType: 'Frontend Developer',
-            lastLogin: '5/5/2022',
-            lastActive: '5/5/2022'
-        },
-        {
-            id: 3,
-            name: 'Rafael Morales',
-            email: 'Rafael@skote.com',
-            userType: 'Backend Developer',
-            lastLogin: '5/5/2022',
-            lastActive: '5/5/2022'
-        },
-        {
-            id: 4,
-            name: 'Mark Ellison',
-            email: 'mark@skote.com',
-            userType: 'Full Stack Developer',
-            lastLogin: '5/5/2022',
-            lastActive: '5/5/2022'
-        },
-        {
-            id: 5,
-            name: 'Minnie Walter',
-            email: 'minnie@skote.com',
-            userType: 'Frontend Developer',
-            lastLogin: '5/5/2022',
-            lastActive: '5/5/2022'
-        },
-        {
-            id: 6,
-            name: 'Shirley Smith',
-            email: 'shirley@skote.com',
-            userType: 'UI/UX Designer',
-            lastLogin: '5/5/2022',
-            lastActive: '5/5/2022'
-        },
-        {
-            id: 7,
-            name: 'John Santiago',
-            email: 'john@skote.com',
-            userType: 'Full Stack Developer',
-            lastLogin: '5/5/2022',
-            lastActive: '5/5/2022'
-        },
-        {
-            id: 8,
-            name: 'Colin Melton',
-            email: 'colin@skote.com',
-            userType: 'Backend Developer',
-            lastLogin: '5/5/2022',
-            lastActive: '5/5/2022'
-        },
-      ],
-
       pagination: {
         itemsPerPage: 6,
         page: 1
       },
+      userRoles: [
+        { value: 'superuser', text: 'Super User'},
+        { value: 'admin', text: 'Admin'},
+        { value: 'restaurant-staff', text: 'Restaurant Staff'},
+        { value: 'restaurant-admin', text: 'Restaurant Admin'}
+      ],
+      headers:[
+        {
+          label: "Status",
+          key: "isActive"
+        },
+        {
+          label: "Name",
+          key: "name"
+        },
+        {
+          label: "email",
+          key: "email"
+        },
+        {
+          label: "role",
+          key: "role"
+        },
+        {
+          label: "Last Login",
+          key: "lastLoginDate"
+        }, 
+        {
+          label: "Actions",
+          key: "actions"
+        }
+      ],
+      isUserDialogOpen: false,
+      newUser: {}
     };
   },
 
-  beforeMount() {
-    this.getUsers();
+  async beforeMount() {
+    await this.getUsers();
+    await this.getRestaurants();
+  },
+
+  computed: {
+    ...mapState('userModule', ['users', 'totalUsers']),
+    ...mapState('restaurantModule', ['restaurants', 'totalRestaurants']),
+
+    totalPages(){
+      return Math.ceil(this.totalUsers / this.pagination.itemsPerPage)
+    },
+
+    selectRestaurants() {
+      return this.restaurants.map((restaurant) => { return {value: restaurant._id, text: restaurant.name }} )
+    }
   },
 
   methods: {
-    ...mapActions('users', ['getUsers'])
+    ...mapActions('userModule', ['getUsers', 'createUser', 'deleteUser', 'updateUser']),
+    ...mapActions('restaurantModule', ['getRestaurants']),
+    ...notificationMethods,
+
+    async saveUser() {
+      const result = await this.createUser(this.newUser);
+
+      if(result.status == 201) {
+        this.clearDialog();
+        this.isUserDialogOpen = false;
+      } 
+      else {
+        console.log('toast');
+      }
+    },
+
+    clearDialog(){
+      this.newUser = {}
+    },
+
+    editUser(user){
+      console.log(user);
+    },
+
+    removeUser(user){
+      console.log(user);
+      this.deleteUser(user.id);
+    }
   }
 };
 </script>
+
+<style scoped>
+  .col-sm-6:hover {
+    color: #556ee6;
+  }
+</style>

@@ -33,21 +33,24 @@
       "text": "Dashboard",
       "badge": "04"
     },
-    "invoices": {
-      "text": "Invoices",
+    "statements": {
+      "text": "Satements",
       "badge": "05"
     },
     "reports": {
       "text": "Reports",
       "badge": "06"
     },
-    "users": {
-      "text": "Users",
-      "badge": "07"
-    },
     "agentreckon": {
       "text": "Agent Reckon",
       "badge": "06"
+    },
+    "settings": {
+      "text": "Settings",
+      "list": {
+        "users": "Users",
+        "statement-frequency": "Statement Frequency"
+      }
     }
   }
 }

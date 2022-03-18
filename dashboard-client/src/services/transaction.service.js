@@ -1,6 +1,6 @@
 import { Http } from '../utils/http'
 
-export class InvoiceService extends Http {
+export class TransactionService extends Http {
   constructor(){
     super();
   }
@@ -14,23 +14,23 @@ export class InvoiceService extends Http {
   }
 
   updateInvoiceFrequency(restaurantId, invoiceFrequency) {
-    return this.httpClient.patch(`/restaurants/${restaurantId}` )
+    return this.httpClient.patch(`/restaurants/${restaurantId}`, {invoiceFrequency} )
   }
 
   update(restaurantId, updatedInvoice) {
-    return this.httpClient.patch(`/restaurants/${restaurantId}`)
+    return this.httpClient.patch(`/restaurants/${restaurantId}`, {updatedInvoice})
   }
 
-  getTransaction(restaurantName, startDate, endDate) {
+  async getTransaction(restaurantName, startDate, endDate) {
     let queryString = "?";
     if(restaurantName)
-      queryString += `restaurantName=${restaurantName}`;
+      queryString += `restaurantName=${restaurantName}&`;
     if(startDate)
-      queryString += `startDate=${startDate}`;
+      queryString += `startDate=${startDate}&`;
     if(endDate)
-      queryString += `endDate=${endDate}`;
+      queryString += `endDate=${endDate}&`;
 
-    return this.httpClient(`/restaurants/transactions${queryString}`);
+    return await this.httpClient().get(`/restaurants/transactions${queryString}`);
   }
 
 

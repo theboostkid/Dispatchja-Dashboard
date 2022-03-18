@@ -1,5 +1,5 @@
 <script>
-import { layoutMethods } from "@/state/helpers";
+import { layoutMethods, authComputed } from "@/state/helpers";
 import { menuItems } from "./horizontal-menu";
 
 export default {
@@ -52,6 +52,10 @@ export default {
       }
     }
   },
+  computed: {
+    ...authComputed,
+  },
+
   methods: {
     ...layoutMethods,
     /**
@@ -89,105 +93,104 @@ export default {
           <ul class="navbar-nav">
             <!-- Menu data -->
             <template v-for="(item, index) of menuItems">
-              <li class="nav-item dropdown" :key="index">
-                <router-link
-                  class="nav-link dropdown-toggle arrow-none"
-                  v-if="!item.subItems"
-                  id="topnav-components"
-                  :to="{ name: item.linkName }"
-                  role="button"
-                >
-                  <i :class="`bx ${item.icon} me-2`"></i>{{ $t(item.label) }}
-                  <div class="arrow-down" v-if="hasItems(item)"></div>
-                </router-link>
-
-                <a
-                  v-if="item.subItems"
-                  class="nav-link dropdown-toggle arrow-none"
-                  @click="onMenuClick($event)"
-                  id="topnav-components"
-                  role="button"
-                >
-                  <i :class="`bx ${item.icon} me-1`"></i>
-                  {{ $t(item.label) }}
-                  <div class="arrow-down"></div>
-                </a>
-
-                <div
-                  class="dropdown-menu"
-                  aria-labelledby="topnav-dashboard"
-                  v-if="hasItems(item)"
-                  :class="{'dropdown-mega-menu-xl px-2': item.subItems.length > 11}"
-                >
-                  <template v-for="(subitem, index) of item.subItems">
-                    <router-link
-                      class="col dropdown-item side-nav-link-ref"
-                      :key="index"
-                      v-if="item.subItems.length < 11 && !hasItems(subitem)"
-                      :to="{ name: subitem.linkName }"
-                      >{{ $t(subitem.label) }}</router-link>
-                      
-                    <div v-if="item.subItems.length > 11" :key="index">
-                      <div v-if="index % 3 == 0" class="row">
-                        <div class="col-lg-4"><router-link class="dropdown-item side-nav-link-ref" :to="{ name: subitem.linkName }">{{ $t(item.subItems[index].label)}}</router-link></div>
-                        <div class="col-lg-4" v-if="item.subItems[index + 1].link"><router-link class="dropdown-item side-nav-link-ref" :to="item.subItems[index + 1].link">{{ $t(item.subItems[index + 1].label) }}</router-link></div>
-                        <div class="col-lg-4" v-if="item.subItems[index + 2]"><router-link class="dropdown-item side-nav-link-ref" :to="item.subItems[index + 2].link">{{ $t(item.subItems[index + 2].label) }}</router-link></div> 
+              <template v-if="Array.isArray(item.allowed) && item.allowed.includes(currentUser.role)">
+                <li class="nav-item dropdown" :key="index">
+                  <router-link
+                    class="nav-link dropdown-toggle arrow-none"
+                    v-if="!item.subItems"
+                    id="topnav-components"
+                    :to="{ name: item.linkName }"
+                    role="button"
+                  >
+                    <i :class="`bx ${item.icon} me-2`"></i>{{ $t(item.label) }}
+                    <div class="arrow-down" v-if="hasItems(item)"></div>
+                  </router-link>
+                  <a
+                    v-if="item.subItems"
+                    class="nav-link dropdown-toggle arrow-none"
+                    @click="onMenuClick($event)"
+                    id="topnav-components"
+                    role="button"
+                  >
+                    <i :class="`bx ${item.icon} me-1`"></i>
+                    {{ $t(item.label) }}
+                    <div class="arrow-down"></div>
+                  </a>
+                  <div
+                    class="dropdown-menu"
+                    aria-labelledby="topnav-dashboard"
+                    v-if="hasItems(item)"
+                    :class="{'dropdown-mega-menu-xl px-2': item.subItems.length > 11}"
+                  >
+                    <template v-for="(subitem, index) of item.subItems">
+                      <router-link
+                        class="col dropdown-item side-nav-link-ref"
+                        :key="index"
+                        v-if="item.subItems.length < 11 && !hasItems(subitem)"
+                        :to="{ name: subitem.linkName }"
+                        >{{ $t(subitem.label) }}</router-link>
+                
+                      <div v-if="item.subItems.length > 11" :key="index">
+                        <div v-if="index % 3 == 0" class="row">
+                          <div class="col-lg-4"><router-link class="dropdown-item side-nav-link-ref" :to="{ name: subitem.linkName }">{{ $t(item.subItems[index].label)}}</router-link></div>
+                          <div class="col-lg-4" v-if="item.subItems[index + 1].link"><router-link class="dropdown-item side-nav-link-ref" :to="item.subItems[index + 1].link">{{ $t(item.subItems[index + 1].label) }}</router-link></div>
+                          <div class="col-lg-4" v-if="item.subItems[index + 2]"><router-link class="dropdown-item side-nav-link-ref" :to="item.subItems[index + 2].link">{{ $t(item.subItems[index + 2].label) }}</router-link></div>
+                        </div>
                       </div>
-                    </div>
-
-                    <div class="dropdown" v-if="hasItems(subitem)" :key="index">
-                      <a
-                        class="dropdown-item dropdown-toggle"
-                        href="javascript: void(0);"
-                        @click="onMenuClick($event)"
-                        >{{ $t(subitem.label) }}
-                        <div class="arrow-down"></div>
-                      </a>
-                      <div class="dropdown-menu">
-                        <template
-                          v-for="(subSubitem, index) of subitem.subItems"
-                        >
-                          <router-link
-                            class="dropdown-item side-nav-link-ref"
-                            :key="index"
-                            v-if="!hasItems(subSubitem)"
-                            :to="subSubitem.link"
-                            >{{ $t(subSubitem.label) }}</router-link
+                      <div class="dropdown" v-if="hasItems(subitem)" :key="index">
+                        <a
+                          class="dropdown-item dropdown-toggle"
+                          href="javascript: void(0);"
+                          @click="onMenuClick($event)"
+                          >{{ $t(subitem.label) }}
+                          <div class="arrow-down"></div>
+                        </a>
+                        <div class="dropdown-menu">
+                          <template
+                            v-for="(subSubitem, index) of subitem.subItems"
                           >
-                          <div
-                            class="dropdown"
-                            v-if="hasItems(subSubitem)"
-                            :key="index"
-                          >
-                            <a
-                              class="dropdown-item dropdown-toggle"
-                              href="javascript: void(0);"
-                              @click="onMenuClick($event)"
-                              >{{ $t(subSubitem.label) }}
-                              <div class="arrow-down"></div>
-                            </a>
-                            <div class="dropdown-menu">
-                              <template
-                                v-for="(
-                                  subSubSubitem, index
-                                ) of subSubitem.subItems"
-                              >
-                                <router-link
-                                  class="dropdown-item side-nav-link-ref"
-                                  :key="index"
-                                  :to="subSubSubitem.link"
-                                  routerLinkActive="active"
-                                  >{{ $t(subSubSubitem.label) }}</router-link
+                            <router-link
+                              class="dropdown-item side-nav-link-ref"
+                              :key="index"
+                              v-if="!hasItems(subSubitem)"
+                              :to="subSubitem.link"
+                              >{{ $t(subSubitem.label) }}</router-link
+                            >
+                            <div
+                              class="dropdown"
+                              v-if="hasItems(subSubitem)"
+                              :key="index"
+                            >
+                              <a
+                                class="dropdown-item dropdown-toggle"
+                                href="javascript: void(0);"
+                                @click="onMenuClick($event)"
+                                >{{ $t(subSubitem.label) }}
+                                <div class="arrow-down"></div>
+                              </a>
+                              <div class="dropdown-menu">
+                                <template
+                                  v-for="(
+                                    subSubSubitem, index
+                                  ) of subSubitem.subItems"
                                 >
-                              </template>
+                                  <router-link
+                                    class="dropdown-item side-nav-link-ref"
+                                    :key="index"
+                                    :to="subSubSubitem.link"
+                                    routerLinkActive="active"
+                                    >{{ $t(subSubSubitem.label) }}</router-link
+                                  >
+                                </template>
+                              </div>
                             </div>
-                          </div>
-                        </template>
+                          </template>
+                        </div>
                       </div>
-                    </div>
-                  </template>
-                </div>
-              </li>
+                    </template>
+                  </div>
+                </li>
+              </template>
             </template>
           </ul>
         </div>

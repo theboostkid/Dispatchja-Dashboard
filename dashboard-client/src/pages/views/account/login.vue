@@ -1,68 +1,3 @@
-<script>
-import Layout from "../../layouts/auth";
-import {
-  authMethods,
-  authFackMethods,
-  notificationMethods,
-} from "@/state/helpers";
-import { mapState } from "vuex";
-
-import appConfig from "@/app.config";
-import { required, email } from "vuelidate/lib/validators";
-
-/**
- * Login component
- */
-export default {
-  page: {
-    title: "Login",
-    meta: [
-      {
-        name: "description",
-        content: appConfig.description,
-      },
-    ],
-  },
-  components: {
-    Layout,
-  },
-  data() {
-    return {
-      email: "admin@themesbrand.com",
-      password: "123456",
-      submitted: false,
-      authError: null,
-      tryingToLogIn: false,
-      isAuthError: false,
-    };
-  },
-  validations: {
-    email: {
-      required,
-      email,
-    },
-    password: {
-      required,
-    },
-  },
-  computed: {
-    ...mapState("authfack", ["status"]),
-    notification() {
-      return this.$store ? this.$store.state.notification : null;
-    },
-  },
-  methods: {
-    ...authMethods,
-    ...authFackMethods,
-    ...notificationMethods,
-    // Try to log the user in with the username
-    // and password they provided.
-    tryToLogIn() {
-    },
-  },
-};
-</script>
-
 <template>
   <Layout>
     <div class="row justify-content-center">
@@ -97,7 +32,7 @@ export default {
             </div>
             <b-alert
               v-model="isAuthError"
-              variant="danger"
+              :variant="notification.type"
               class="mt-3"
               dismissible
               >{{ authError }}</b-alert
@@ -228,3 +163,79 @@ export default {
     <!-- end row -->
   </Layout>
 </template>
+
+<script>
+import Layout from "../../layouts/auth";
+import {
+  authMethods,
+  notificationMethods,
+} from "@/state/helpers";
+
+import appConfig from "@/app.config";
+import { required, email } from "vuelidate/lib/validators";
+
+/**
+ * Login component
+ */
+export default {
+  page: {
+    title: "Login",
+    meta: [
+      {
+        name: "description",
+        content: appConfig.description,
+      },
+    ],
+  },
+  components: {
+    Layout,
+  },
+  data() {
+    return {
+      email: "admin@gmail.com",
+      password: "SBwF4J627j",
+      submitted: false,
+      authError: null,
+      tryingToLogIn: false,
+      isAuthError: false,
+      notification: {
+        message: "",
+        type: ""
+      }
+    };
+  },
+  validations: {
+    email: {
+      required,
+      email,
+    },
+    password: {
+      required,
+    },
+  },
+  methods: {
+    ...authMethods,
+    ...notificationMethods,
+    // Try to log the user in with the username
+    // and password they provided.
+    async tryToLogIn() {
+      this.submitted = true;
+
+      this.$v.$touch();
+
+      if(this.$v.$invalid) return; 
+      const { email, password } = this;
+      const { status, message} = await this.logIn({email, password});
+
+      this.authError = message
+      this.notification.type = status != 200 ? "danger" : "success"
+      this.isAuthError = true
+
+      if (status == 200) {
+        this.$router.push({ name: 'Dashboard'})
+      }
+    },
+  },
+};
+</script>
+

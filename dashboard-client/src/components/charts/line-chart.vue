@@ -20,6 +20,11 @@
 </template>
 
 <script>
+const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD"
+});
+
 export default {
   props: {
     title: String,
@@ -42,9 +47,10 @@ export default {
         colors: ["#556ee6", "#34c38f"],
         dataLabels: {
           enabled: false,
+          formatter: function (val) { console.log('value: ', val); return formatter.format(val) }
         },
         stroke: {
-          width: [3, 3],
+          width: [4, 4, 4, 4],
           curve: "straight",
         },
         grid: {
@@ -65,6 +71,9 @@ export default {
           title: {
             text: "Money",
           },
+          labels: {
+            formatter: (value) => formatter.format(value)
+          }
         },
         legend: {
           position: "top",
@@ -73,21 +82,22 @@ export default {
           offsetY: -25,
           offsetX: -5,
         },
-        responsive: [
-          {
-            breakpoint: 600,
-            options: {
-              chart: {
-                toolbar: {
-                  show: false,
-                },
-              },
-              legend: {
-                show: false,
-              },
-            },
-          },
-        ],
+        
+        // responsive: [
+        //   {
+        //     breakpoint: 600,
+        //     options: {
+        //       chart: {
+        //         toolbar: {
+        //           show: false,
+        //         },
+        //       },
+        //       legend: {
+        //         show: false,
+        //       },
+        //     },
+        //   },
+        // ],
       },
       series: [
         {

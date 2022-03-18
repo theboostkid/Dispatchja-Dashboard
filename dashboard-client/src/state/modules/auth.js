@@ -1,6 +1,9 @@
+import { AuthService } from '../../services/auth.service'
+
+const service = new AuthService();
 
 export const state = {
-    currentUser: sessionStorage.getItem('authUser'),
+    currentUser: JSON.parse(sessionStorage.getItem('auth.currentUser')),
 }
 
 export const mutations = {
@@ -21,12 +24,25 @@ export const actions = {
 
     // Logs in the current user.
     // eslint-disable-next-line no-unused-vars
-    logIn({ commit, dispatch, getters }, { email, password } = {}) {
+    async logIn({ commit, dispatch, getters }, { email, password } = {}) {
+      const result = await service.login(email, password);
+      console.log(result);
+      if(result.status == 200) {
+        const { data, status } = result;
+        commit('SET_CURRENT_USER', data.user)
+        return {message: 'Successfull', status}
+      } else {
+        return result;
+      }
     },
 
     // Logs out the current user.
     // eslint-disable-next-line no-unused-vars
-    logOut({ commit }) {
+    async logOut({ commit }, userId) {
+      const result = await service.logout(userId);
+      if(result.status == 204){
+        commit('SET_CURRENT_USER', null);
+      }
     },
 
     // register the user

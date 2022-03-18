@@ -4,14 +4,16 @@ export const menuItems = [
       label: "menuitems.dashboard.text",
       icon: "bx-home-circle",
       link: "/dashboard",
-      linkName: "Dashboard"
+      linkName: "Dashboard",
+      allowed:['superuser', 'admin']
   },
   {
       id: 2,
-      label: "menuitems.invoices.text",
+      label: "menuitems.statements.text",
       icon: "bx-home-circle",
-      link: "/invoices",
-      linkName: "Invoices"
+      link: "/statements",
+      linkName: "Statements",
+      allowed:['superuser', 'admin', 'restaurant-staff', 'restaurant-admin']
   },
   
   {
@@ -20,20 +22,39 @@ export const menuItems = [
       icon: "bx-home-circle",
       link: "/reports",
       linkName: "Report",
+      allowed:['superuser', 'admin']
   },
   {
       id: 4,
       label: "menuitems.agentreckon.text",
       icon: "bx-home-circle",
       link: "/reckon",
-      linkName: "Riders Reckon"
+      linkName: "Riders Reckon",
+      allowed:['superuser']
   },
   {
     id: 5,
-    label: "menuitems.users.text",
-    icon: "bx-home-circle",
-    link: "/users",
-    linkName: "Users"
-},
+    label: 'menuitems.settings.text',
+    icon: 'bx-home-circle',
+    allowed:['superuser', 'restaurant-admin'],
+    subItems: [
+      {
+          id: 6,
+          label: 'menuitems.settings.list.users',
+          link: '/settings/users',
+          linkName: "Users",
+          allowed:['superuser', 'restaurant-admin'],
+          parentId: 5
+      },
+      {
+          id: 7,
+          label: 'menuitems.settings.list.statement-frequency',
+          link: '/dashboard/statement-frequency',
+          linkName: "Statement Frequency",
+          allowed:['superuser', 'restaurant-admin'],
+          parentId: 5
+      },
+    ]
+  },
 ];
 
