@@ -5,207 +5,210 @@ export type TaskDocument = Task & Document;
 
 @Schema()
 export class Item {
-	@Prop()
-	id?: string;
+  @Prop()
+  id?: string;
 
-	@Prop()
-	name?: string;
+  @Prop()
+  name?: string;
 
-	@Prop()
-	quantity?: number;
+  @Prop()
+  quantity?: number;
 
-	@Prop()
-	price?: number;
+  @Prop()
+  price?: number;
 
-	@Prop()
-	taxRate?: number;
+  @Prop()
+  taxRate?: number;
 
-	@Prop()
-	taxValue?: number;
+  @Prop()
+  taxValue?: number;
 
-	@Prop()
-	itemDiscount?: number;
+  @Prop()
+  itemDiscount?: number;
 
-	@Prop()
-	totalItemPrice?: number;
+  @Prop()
+  totalItemPrice?: number;
 
-	@Prop()
-	paymentMethod?: string;
+  @Prop()
+  paymentMethod?: string;
 
-	@Prop()
-	instructions?: string
+  @Prop()
+  instructions?: string;
 }
 export const ItemSchema = SchemaFactory.createForClass(Item);
 
 @Schema()
 export class Task {
-	@Prop()
-	fleetId?: string;
+  @Prop()
+  fleetId?: string;
 
-	@Prop()
-	fleetName?: string;
+  @Prop()
+  fleetName?: string;
 
-	@Prop()
-	fleetPhone?: string;
+  @Prop()
+  fleetPhone?: string;
 
-	@Prop()
-	fleetLatitude?: string;
+  @Prop()
+  fleetLatitude?: string;
 
-	@Prop()
-	fleetLongitude?: string;
+  @Prop()
+  fleetLongitude?: string;
 
-	@Prop()
-	fleetImage?: string;
+  @Prop()
+  fleetImage?: string;
 
-	@Prop()
-	orderId?: string;
+  @Prop()
+  orderId?: string;
 
-	@Prop()
-	jobPickupName?: string;
+  @Prop()
+  jobPickupName?: string;
 
-	@Prop()
-	jobPickupPhone?: string;
+  @Prop()
+  jobPickupPhone?: string;
 
-	@Prop()
-	userId?: number;
+  @Prop()
+  userId?: number;
 
-	@Prop()
-	timezone?: string;
+  @Prop()
+  timezone?: string;
 
-	@Prop()
-	jobLatitude?: string;
+  @Prop()
+  jobLatitude?: string;
 
-	@Prop()
-	jobLongitude?: string;
+  @Prop()
+  jobLongitude?: string;
 
-	@Prop()
-	jobAddress?: string;
+  @Prop()
+  jobAddress?: string;
 
-	@Prop()
-	jobStatus?: number;
+  @Prop()
+  jobStatus?: number;
 
-	@Prop()
-	jobDescription?: string;
+  @Prop()
+  jobDescription?: string;
 
-	@Prop()
-	hasPickup?: number;
+  @Prop()
+  hasPickup?: number;
 
-	@Prop()
-	pickupDeliveryRelationship?: string;
+  @Prop()
+  pickupDeliveryRelationship?: string;
 
-	@Prop()
-	completedByAdmin?: number;
+  @Prop()
+  completedByAdmin?: number;
 
-	@Prop()
-	jobPickupDatetime?: string;
+  @Prop()
+  jobPickupDatetime?: string;
 
-	@Prop()
-	jobId?: number;
+  @Prop()
+  jobId?: number;
 
-	@Prop()
-	jobDeliveryDatetime?: string;
+  @Prop()
+  jobDeliveryDatetime?: string;
 
-	@Prop()
-	jobType?: number;
+  @Prop()
+  jobType?: number;
 
-	@Prop()
-	creationDatetime?: string;
+  @Prop()
+  creationDatetime?: string;
 
-	@Prop()
-	dateCreated?: string;
+  @Prop()
+  dateCreated?: Date;
 
-	@Prop()
-	customerComment?: string;
+  @Prop()
+  customerComment?: string;
 
-	@Prop()
-	jobPickupLatitude?: string;
+  @Prop()
+  jobPickupLatitude?: string;
 
-	@Prop()
-	jobPickupLongitude?: string;
+  @Prop()
+  jobPickupLongitude?: string;
 
-	@Prop()
-	jobPickupAddress?: string;
+  @Prop()
+  jobPickupAddress?: string;
 
-	@Prop()
-	customerId?: number;
+  @Prop()
+  customerId?: number;
 
-	@Prop()
-	customerUsername?: string;
+  @Prop()
+  customerUsername?: string;
 
-	@Prop()
-	customerPhone?: string;
+  @Prop()
+  customerPhone?: string;
 
-	@Prop()
-	customerEmail?: string;
+  @Prop()
+  customerEmail?: string;
 
-	@Prop()
-	daysStarted?: string;
+  @Prop()
+  daysStarted?: string;
 
-	@Prop()
-	startedDatetime?: string;
+  @Prop()
+  startedDatetime?: string;
 
-	@Prop()
-	completedDatetime?: string;
+  @Prop()
+  completedDatetime?: string;
 
-	@Prop()
-	acknowledgedDatetime?: string;
+  @Prop()
+  completeBefore?: string;
 
-	@Prop()
-	arrivedDatetime?: string;
+  @Prop()
+  acknowledgedDatetime?: string;
 
-	@Prop()
-	totalDistanceTravelled?: number;
+  @Prop()
+  arrivedDatetime?: string;
 
-	@Prop()
-	teamId?: number;
+  @Prop()
+  totalDistanceTravelled?: number;
 
-	@Prop()
-	fleetRating?: number;
+  @Prop()
+  teamId?: number;
 
-	@Prop()
-	trackingLink?: number;
+  @Prop()
+  fleetRating?: number;
 
-	@Prop()
-	updateAddressLink?: number;
+  @Prop()
+  trackingLink?: number;
 
-	@Prop()
-	isRatingCommentEnabled?: number;
+  @Prop()
+  updateAddressLink?: number;
 
-	@Prop()
-	restaurantName?: string;
+  @Prop()
+  isRatingCommentEnabled?: number;
 
-	@Prop()
-	restaurantPhone?: string;
+  @Prop()
+  merchantName?: string;
 
-	@Prop()
-	restaurantAddress?: string;
+  @Prop()
+  merchantPhone?: string;
 
-	@Prop()
-	restaurantId?: string;
+  @Prop()
+  merchantAddress?: string;
 
-	@Prop()
-	clientName?: string;
+  @Prop()
+  merchantId?: string;
 
-	@Prop()
-	clientPhone?: string;
+  @Prop()
+  clientName?: string;
 
-	@Prop()
-	clientAddress?: string;
+  @Prop()
+  clientPhone?: string;
 
-	@Prop()
-	totalPrice?: number;
+  @Prop()
+  clientAddress?: string;
 
-	@Prop()
-	deliveryFee?: number;
+  @Prop()
+  totalPrice?: number;
 
-	@Prop()
-	instructions?: string;
+  @Prop()
+  deliveryFee?: number;
 
-	@Prop()
-	paymentMethod?: string;
+  @Prop()
+  instructions?: string;
 
-	@Prop({ type: [ItemSchema] })
-	items?: Item[];
+  @Prop()
+  paymentMethod?: string;
+
+  @Prop({ type: [ItemSchema] })
+  items?: Item[];
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
