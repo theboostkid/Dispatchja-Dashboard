@@ -12,6 +12,7 @@ import { GroupByOptions } from './types/groupbyOptions';
 import * as fs from 'fs';
 import * as fsp from 'fs/promises';
 import * as csv from 'csv-parser';
+import { SearchQueryParams } from './dto/task.dto';
 @Injectable()
 export class TaskService implements OnModuleInit {
   private readonly API_URL: string;
@@ -452,12 +453,14 @@ export class TaskService implements OnModuleInit {
     return this._tookanTaskRepository.findOne({ id });
   }
 
-  async getTasks(
-    merchantName?: string,
-    startDate?: string,
-    endDate?: string,
-    jobStatus?: number,
-  ) {
+  async getTasks({
+    merchantName,
+    startDate,
+    endDate,
+    jobStatus,
+    orderId,
+    fleetId,
+  }: SearchQueryParams) {
     const pipelines = [];
 
     if (merchantName) {
@@ -467,6 +470,18 @@ export class TaskService implements OnModuleInit {
     } else {
       pipelines.push({
         $match: { jobStatus: jobStatus || 2 },
+      });
+    }
+
+    if (orderId) {
+      pipelines.push({
+        $match: { orderId },
+      });
+    }
+
+    if (fleetId) {
+      pipelines.push({
+        $match: { fleetId },
       });
     }
 
@@ -482,7 +497,6 @@ export class TaskService implements OnModuleInit {
       pipelines.push({ $match: dateFilterPipeline });
     }
 
-    console.log(pipelines);
     const data = await this._tookanTaskRepository.aggregate(pipelines);
 
     return this._getMappedTotals(data, true, true);

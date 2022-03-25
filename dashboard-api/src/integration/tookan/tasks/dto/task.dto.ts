@@ -2,6 +2,14 @@ import { IsOptional, IsIn, IsString } from 'class-validator';
 
 export class SearchQueryParams {
   @IsOptional()
+  @IsString()
+  fleetId?: number;
+
+  @IsOptional()
+  @IsString()
+  orderId?: string;
+
+  @IsOptional()
   @IsIn(['weekly', 'monthly'])
   period?: string;
 
