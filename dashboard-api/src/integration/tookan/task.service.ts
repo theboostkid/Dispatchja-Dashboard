@@ -10,6 +10,7 @@ import { GetAllTasksRequest } from './types/tasks';
 import { MerchantService } from 'src/merchant/merchant.service';
 import { GroupByOptions } from './types/groupbyOptions';
 import * as fs from 'fs';
+import * as fsp from 'fs/promises';
 import * as csv from 'csv-parser';
 @Injectable()
 export class TaskService implements OnModuleInit {
@@ -41,6 +42,15 @@ export class TaskService implements OnModuleInit {
       console.info('[info] finish running cronjob: ', new Date());
     } catch (e) {
       console.error('[error] running cronjob: ', e);
+    }
+  }
+
+  @Cron(CronExpression.EVERY_2_HOURS)
+  async uploadCleanUpCron() {
+    const directory = process.cwd() + '/uploads/';
+    const files = await fsp.readdir(directory);
+    if (files.length > 0) {
+      await Promise.all(files.map((e) => fsp.unlink(`${directory}${e}`)));
     }
   }
 
