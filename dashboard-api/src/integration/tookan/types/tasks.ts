@@ -1,5 +1,3 @@
-import { IsOptional, IsIn, IsString } from 'class-validator';
-
 export class GetAllTasksRequest {
   api_key: string;
   job_type: number;
@@ -14,25 +12,4 @@ export class GetAllTasksRequest {
   job_id?: Array<number>;
   order_id?: Array<string>;
   team_id?: number;
-}
-
-export class SearchQueryParams {
-  @IsOptional()
-  @IsIn(['weekly', 'monthly'])
-  period?: string;
-
-  @IsOptional()
-  @IsString()
-  merchantName?: string;
-
-  @IsOptional()
-  @IsString()
-  startDate?: string;
-
-  @IsOptional()
-  @IsString()
-  endDate?: string;
-
-  @IsOptional()
-  jobStatus?: number;
 }
