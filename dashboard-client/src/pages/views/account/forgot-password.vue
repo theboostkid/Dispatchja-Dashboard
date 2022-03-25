@@ -1,6 +1,4 @@
 <script>
-import axios from "axios";
-
 import Layout from "../../layouts/auth";
 import { authMethods } from "@/state/helpers";
 import appConfig from "@/app.config";

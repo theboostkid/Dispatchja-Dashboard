@@ -9,6 +9,8 @@ import vco from "v-click-outside"
 import router from './router/index'
 import Scrollspy from 'vue2-scrollspy';
 import VueSweetalert2 from 'vue-sweetalert2';
+import MyToast from '@/components/widgets/toast'
+import globalMixin from './mixins/global.mixin'
 
 import "../src/design/app.scss";
 
@@ -45,7 +47,8 @@ Vue.use(VueGoogleMaps, {
   installComponents: true
 })
 Vue.component('apexchart', VueApexCharts)
-
+Vue.component('MyToast', MyToast)
+Vue.mixin(globalMixin)
 new Vue({
   router,
   store,

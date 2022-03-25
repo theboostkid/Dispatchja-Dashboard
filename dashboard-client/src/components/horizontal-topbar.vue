@@ -134,7 +134,7 @@ export default {
               <img src="@/assets/images/logo-light.svg" alt height="22" />
             </span>
             <span class="logo-lg">
-              <img src="@/assets/images/logo-light.png" alt height="19" />
+              <img src="@/assets/images/logo-light.png" alt height="100" />
             </span>
           </router-link>
         </div>
@@ -326,12 +326,12 @@ export default {
             {{ $t("navbar.dropdown.henry.list.lockscreen") }}
           </b-dropdown-item>
           <b-dropdown-divider></b-dropdown-divider>
-          <a href="/logout" class="dropdown-item text-danger">
+          <router-link to="/logout" class="dropdown-item text-danger">
             <i
               class="bx bx-power-off font-size-16 align-middle me-1 text-danger"
             ></i>
             {{ $t("navbar.dropdown.henry.list.logout") }}
-          </a>
+          </router-link>
         </b-dropdown>
 
         <!-- <div class="dropdown d-inline-block">

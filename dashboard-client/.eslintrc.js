@@ -4,7 +4,7 @@ module.exports = {
     node: true
   },
   rules: {
-    "no-console": 5
+    "no-console": 1
   },
   parserOptions: {
     sourceType: 'module',

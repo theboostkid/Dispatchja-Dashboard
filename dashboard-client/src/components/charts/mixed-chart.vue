@@ -17,6 +17,11 @@
 </template>
 
 <script>
+const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD"
+});
+
 export default {
   props: {
     title: String,
@@ -30,13 +35,20 @@ export default {
       chartOptions: {
         chart: {
           stacked: false,
+          zoom: {
+            enabled: false,
+          },
           toolbar: {
             show: false,
           },
         },
+        dataLabels: {
+          enabled: false,
+          formatter: function (val) { console.log('value: ', val); return formatter.format(val) }
+        },
         stroke: {
-          width: [0, 2, 4],
-          curve: "smooth",
+          width: [4, 4, 4],
+          curve: "straight",
         },
         plotOptions: {
           bar: {
@@ -55,7 +67,6 @@ export default {
             stops: [0, 100, 100, 100],
           },
         },
-        labels: [],
         markers: {
           size: 0,
         },
@@ -69,6 +80,9 @@ export default {
           title: {
             text: "Money",
           },
+          labels: {
+            formatter: (value) => formatter.format(value)
+          }
         },
         tooltip: {
           shared: true,
@@ -90,16 +104,20 @@ export default {
   },
 
   methods: {
-    renderChart(labelList, series) {
-      this.$refs.chart.setOption({
+    renderChart(categories, categoryText, series) {
+      this.$refs.chart.updateOptions({
         xaxis: {
-          categories: labelList,
+          categories: categories,
           title: {
-            text: "Months",
+            text: categoryText,
           },
         },
-        series,
+
+        colors: series.color
       });
+
+      if(Array.isArray(series) && series.length > 0)
+        this.$refs.chart.updateSeries(series, true);
     },
   },
 };

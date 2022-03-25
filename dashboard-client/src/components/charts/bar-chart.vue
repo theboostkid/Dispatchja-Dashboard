@@ -112,16 +112,18 @@ export default {
   },
 
   methods: {
-    renderChart(labelList, series) {
-      this.$refs.chart.setOption({
+    renderChart(categories, categoryText, series) {
+      this.$refs.chart.updateOptions({
         xaxis: {
-          categories: labelList,
+          categories: categories,
           title: {
-            text: "Months",
+            text: categoryText,
           },
-        },
-        series,
+        }
       });
+
+      if(Array.isArray(series) && series.length > 0)
+        this.$refs.chart.updateSeries(series, true);
     },
   },
 };

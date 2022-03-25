@@ -77,11 +77,12 @@ export default {
       <div class="d-flex">
         <!-- LOGO -->
         <div class="navbar-brand-box">
+
           <router-link to="/" class="logo logo-dark">
             <span class="logo-sm">
               <img src="@/assets/images/logo.svg" alt height="22" />
             </span>
-            <span class="logo-lg">
+            <span class="logo-xl">
               <img src="@/assets/images/logo-dark.png" alt height="17" />
             </span>
           </router-link>
@@ -94,6 +95,7 @@ export default {
               <img src="@/assets/images/logo-light.png" alt height="19" />
             </span>
           </router-link>
+
         </div>
 
         <button
