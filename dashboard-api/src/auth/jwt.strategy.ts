@@ -6,19 +6,24 @@ import { Request } from 'express';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor(private readonly configService: ConfigService) {
+    super({
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: Request) => {
+          return request?.cookies?.AccessToken;
+        },
+      ]),
+      ignoreExpiration: true,
+      secretOrKey: configService.get<string>('JWT_SECRET'),
+      passReqToCallback: true,
+    });
+  }
 
-	constructor(private readonly configService: ConfigService) {
-		super({
-			jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
-				return request?.cookies?.AccessToken;
-			}]),
-			ignoreExpiration: true,
-			secretOrKey: configService.get<string>('JWT_SECRET'),
-			passReqToCallback: true
-		});
-	}
-
-	async validate(req, payload: any) {
-		return { id: payload.userId, role: payload.role, restaurantName: payload.restaurantName };
-	}
+  async validate(req, payload: any) {
+    return {
+      id: payload.userId,
+      role: payload.role,
+      merchantName: payload.merchantName,
+    };
+  }
 }

@@ -4,59 +4,58 @@ import { Document } from 'mongoose';
 export type UserDocument = User & Document;
 
 export enum Role {
-	SUPER_USER = "superuser",
-	ADMIN = "admin",
-	RESTUARANT = "restaurant",
-	RESTUARANT_STAFF = "restaurant-staff",
+  SUPER_USER = 'superuser',
+  ADMIN = 'admin',
+  RESTUARANT = 'merchant',
+  RESTUARANT_STAFF = 'merchant-staff',
 }
 
 @Schema()
 export class User {
-	@Prop()
-	id: string;
+  @Prop()
+  id: string;
 
-	@Prop()
-	name: string;
+  @Prop()
+  name: string;
 
-	@Prop()
-	email: string;
+  @Prop()
+  email: string;
 
-	@Prop()
-	tookanUserId?: string;
+  @Prop()
+  tookanUserId?: string;
 
-	@Prop()
-	password: string;
+  @Prop()
+  password: string;
 
-	@Prop()
-	resetPasswordToken?: string;
+  @Prop()
+  resetPasswordToken?: string;
 
-	@Prop()
-	restaurantName?: string;
+  @Prop()
+  merchantName?: string;
 
-	@Prop()
-	restaurantId?: string;
+  @Prop()
+  merchantId?: string;
 
-	@Prop(Role)
-	role: Role;
+  @Prop(Role)
+  role: Role;
 
-	@Prop()
-	isDeleted?: boolean;
+  @Prop()
+  isDeleted?: boolean;
 
-	@Prop()
-	isActive: boolean;
+  @Prop()
+  isActive: boolean;
 
-	@Prop()
-	loginAttempts: number;
+  @Prop()
+  loginAttempts: number;
 
-	@Prop()
-	shouldChangePassword?: boolean;
+  @Prop()
+  shouldChangePassword?: boolean;
 
-	@Prop()
-	lastLogoutDate?: string;
+  @Prop()
+  lastLogoutDate?: string;
 
-	@Prop()
-	lastLoginDate?: string;
+  @Prop()
+  lastLoginDate?: string;
 }
-
 
 export const UserSchema = SchemaFactory.createForClass(User);

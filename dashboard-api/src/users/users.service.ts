@@ -114,15 +114,15 @@ export class UsersService implements OnModuleInit {
 		return this.usersRepository.findOne({ id, isDeleted: false });
 	}
 
-	async searchUsers({ search, restaurant, skip, limit, paginated }: UserSearchQueryParams) {
+	async searchUsers({ search, merchant, skip, limit, paginated }: UserSearchQueryParams) {
 		const filter = { isDeleted: false }
 
 		if (search) {
 			filter["name"] = new RegExp('.*' + search + '.*');
 		}
 
-		if (restaurant) {
-			filter["restaurantName"] = restaurant
+		if (merchant) {
+			filter["merchantName"] = merchant
 		}
 
 		if (!paginated) {

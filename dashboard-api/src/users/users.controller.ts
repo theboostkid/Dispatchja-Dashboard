@@ -9,11 +9,11 @@ import { Role, User } from './schema/user.schema';
 export class UsersController {
 	constructor(private readonly userService: UsersService) { }
 
-	private _isUserAuthorized(user, { restaurantName = null }) {
-		const isAdmin = user.role === Role.SUPER_USER || (Role.RESTUARANT && user.restaurantName == restaurantName);
-		const restaurantNameMatch = restaurantName && user.restaurantName == restaurantName;
+	private _isUserAuthorized(user, { merchantName = null }) {
+		const isAdmin = user.role === Role.SUPER_USER || (Role.RESTUARANT && user.merchantName == merchantName);
+		const merchantNameMatch = merchantName && user.merchantName == merchantName;
 
-		return isAdmin || restaurantNameMatch
+		return isAdmin || merchantNameMatch
 	}
 
 	@Get("/")
@@ -23,7 +23,7 @@ export class UsersController {
 	) {
 
 		const user = req.user as User;
-		if (!this._isUserAuthorized(user, { restaurantName: searchQuery.restaurant })) {
+		if (!this._isUserAuthorized(user, { merchantName: searchQuery.merchant })) {
 			throw new ForbiddenException();
 		}
 
@@ -44,14 +44,14 @@ export class UsersController {
 		@Body() userDto: CreateUserDto) {
 
 		const user = req.user as User;
-		if (!this._isUserAuthorized(user, { restaurantName: userDto.restaurantName })) {
+		if (!this._isUserAuthorized(user, { merchantName: userDto.merchantName })) {
 			throw new ForbiddenException();
 		}
 
 
 		if (user.role !== Role.SUPER_USER && user.role !== Role.ADMIN) {
-			if (userDto.restaurantName !== user.restaurantName) {
-				throw new BadRequestException(["Cannot assign user to a different restaurant"]);
+			if (userDto.merchantName !== user.merchantName) {
+				throw new BadRequestException(["Cannot assign user to a different merchant"]);
 			}
 			if (userDto.role === Role.ADMIN || userDto.role === Role.SUPER_USER) {
 				throw new BadRequestException(["Cannot elevate user role"]);
@@ -75,13 +75,13 @@ export class UsersController {
 		@Body() userDto: UpdateUserDTO) {
 
 		const user = req.user as User;
-		if (!this._isUserAuthorized(user, { restaurantName: userDto.restaurantName })) {
+		if (!this._isUserAuthorized(user, { merchantName: userDto.merchantName })) {
 			throw new ForbiddenException();
 		}
 
 		if (user.role !== Role.SUPER_USER && user.role !== Role.ADMIN) {
-			if (userDto.restaurantName !== user.restaurantName) {
-				throw new BadRequestException(["Cannot assign user to a different restaurant"]);
+			if (userDto.merchantName !== user.merchantName) {
+				throw new BadRequestException(["Cannot assign user to a different merchant"]);
 			}
 			if (userDto.role === Role.ADMIN || userDto.role === Role.SUPER_USER) {
 				throw new BadRequestException(["Cannot elevate user role"]);
@@ -125,7 +125,7 @@ export class UsersController {
 		}
 
 		const user = req.user as User;
-		if (!this._isUserAuthorized(user, { restaurantName: u.restaurantName })) {
+		if (!this._isUserAuthorized(user, { merchantName: u.merchantName })) {
 			throw new ForbiddenException();
 		}
 
@@ -148,7 +148,7 @@ export class UsersController {
 		}
 
 		const user = req.user as User;
-		if (!this._isUserAuthorized(user, { restaurantName: u.restaurantName })) {
+		if (!this._isUserAuthorized(user, { merchantName: u.merchantName })) {
 			throw new ForbiddenException();
 		}
 

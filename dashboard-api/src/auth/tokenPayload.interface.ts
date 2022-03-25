@@ -1,5 +1,5 @@
 export interface TokenPayload {
-	userId: string;
-	role: string;
-	restaurantName: string;
+  userId: string;
+  role: string;
+  merchantName: string;
 }

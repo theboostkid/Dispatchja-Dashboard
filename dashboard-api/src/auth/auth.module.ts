@@ -23,8 +23,8 @@ import { EmailModule } from 'src/email/email.module';
           expiresIn: `${configService.get('JWT_EXPIRATION_TIME')}s`,
         },
       }),
-    })
+    }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy]
+  providers: [AuthService, LocalStrategy, JwtStrategy],
 })
-export class AuthModule { }
+export class AuthModule {}

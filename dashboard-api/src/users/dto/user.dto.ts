@@ -12,9 +12,9 @@ export class CreateUserDto {
 
 	tookanUserId?: string;
 
-	restaurantName?: string;
+	merchantName?: string;
 
-	restaurantId?: string;
+	merchantId?: string;
 
 	resetPasswordToken?: string;
 
@@ -39,7 +39,7 @@ export class UserSearchQueryParams {
 
 	@IsOptional()
 	@IsString()
-	restaurant?: string;
+	merchant?: string;
 
 	@IsOptional()
 	@IsBoolean()
