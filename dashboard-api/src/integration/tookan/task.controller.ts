@@ -16,8 +16,10 @@ import RoleGuard from 'src/auth/role.guard';
 import { Role } from 'src/users/schema/user.schema';
 import { TaskService } from './task.service';
 import { SearchQueryParams } from './dto/task.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('/tookan/tasks')
+@UseGuards(AuthGuard('jwt'))
 export class TasksController {
   constructor(private readonly _taskService: TaskService) {}
 

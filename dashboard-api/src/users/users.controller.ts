@@ -1,5 +1,27 @@
-import { Controller, Request, Get, Post, Put, Patch, Delete, Body, ForbiddenException, Param, HttpCode, ParseUUIDPipe, Query, UseGuards, NotFoundException, BadRequestException } from '@nestjs/common';
-import { CreateUserDto, UserSearchQueryParams, UpdatePasswordDTO, UpdateUserDTO } from './dto/user.dto';
+import {
+  Controller,
+  Request,
+  Get,
+  Post,
+  Put,
+  Patch,
+  Delete,
+  Body,
+  ForbiddenException,
+  Param,
+  HttpCode,
+  ParseUUIDPipe,
+  Query,
+  UseGuards,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import {
+  CreateUserDto,
+  UserSearchQueryParams,
+  UpdatePasswordDTO,
+  UpdateUserDTO,
+} from './dto/user.dto';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Role, User } from './schema/user.schema';
@@ -7,155 +29,149 @@ import { Role, User } from './schema/user.schema';
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
 export class UsersController {
-	constructor(private readonly userService: UsersService) { }
+  constructor(private readonly userService: UsersService) {}
 
-	private _isUserAuthorized(user, { merchantName = null }) {
-		const isAdmin = user.role === Role.SUPER_USER || (Role.RESTUARANT && user.merchantName == merchantName);
-		const merchantNameMatch = merchantName && user.merchantName == merchantName;
+  private _isUserAuthorized(user, { merchantName = null }) {
+    const isAdmin =
+      user.role === Role.SUPER_USER ||
+      (Role.RESTUARANT && user.merchantName == merchantName);
+    const merchantNameMatch = merchantName && user.merchantName == merchantName;
 
-		return isAdmin || merchantNameMatch
-	}
+    return isAdmin || merchantNameMatch;
+  }
 
-	@Get("/")
-	async findAll(
-		@Request() req,
-		@Query() searchQuery: UserSearchQueryParams,
-	) {
+  @Get('/')
+  async findAll(@Request() req, @Query() searchQuery: UserSearchQueryParams) {
+    const user = req.user as User;
+    if (!this._isUserAuthorized(user, { merchantName: searchQuery.merchant })) {
+      throw new ForbiddenException();
+    }
 
-		const user = req.user as User;
-		if (!this._isUserAuthorized(user, { merchantName: searchQuery.merchant })) {
-			throw new ForbiddenException();
-		}
+    if (user.role === Role.RESTUARANT_STAFF) {
+      throw new ForbiddenException();
+    }
 
-		if (user.role === Role.RESTUARANT_STAFF) {
-			throw new ForbiddenException();
-		}
+    const { results, count } = await this.userService.searchUsers(searchQuery);
+    return {
+      results: results.map((u) => this.userService.removeSensitiveFields(u)),
+      count: count,
+    };
+  }
 
-		const { results, count } = await this.userService.searchUsers(searchQuery)
-		return {
-			results: results.map((u) => this.userService.removeSensitiveFields(u)),
-			count: count
-		}
-	}
+  @Post()
+  async create(@Request() req, @Body() userDto: CreateUserDto) {
+    const user = req.user as User;
+    if (!this._isUserAuthorized(user, { merchantName: userDto.merchantName })) {
+      throw new ForbiddenException();
+    }
 
-	@Post()
-	async create(
-		@Request() req,
-		@Body() userDto: CreateUserDto) {
+    if (user.role !== Role.SUPER_USER && user.role !== Role.ADMIN) {
+      if (userDto.merchantName !== user.merchantName) {
+        throw new BadRequestException([
+          'Cannot assign user to a different merchant',
+        ]);
+      }
+      if (userDto.role === Role.ADMIN || userDto.role === Role.SUPER_USER) {
+        throw new BadRequestException(['Cannot elevate user role']);
+      }
+    }
 
-		const user = req.user as User;
-		if (!this._isUserAuthorized(user, { merchantName: userDto.merchantName })) {
-			throw new ForbiddenException();
-		}
+    if (user.role == Role.ADMIN) {
+      if (userDto.role === Role.ADMIN || userDto.role === Role.SUPER_USER) {
+        throw new BadRequestException([
+          'Cannot create user as this role due to lesser privilege.',
+        ]);
+      }
+    }
 
+    const createdUser = await this.userService.create(userDto);
+    return this.userService.removeSensitiveFields(createdUser);
+  }
 
-		if (user.role !== Role.SUPER_USER && user.role !== Role.ADMIN) {
-			if (userDto.merchantName !== user.merchantName) {
-				throw new BadRequestException(["Cannot assign user to a different merchant"]);
-			}
-			if (userDto.role === Role.ADMIN || userDto.role === Role.SUPER_USER) {
-				throw new BadRequestException(["Cannot elevate user role"]);
-			}
-		}
+  @Put('/:id')
+  async update(
+    @Request() req,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() userDto: UpdateUserDTO,
+  ) {
+    const user = req.user as User;
+    if (!this._isUserAuthorized(user, { merchantName: userDto.merchantName })) {
+      throw new ForbiddenException();
+    }
 
-		if (user.role == Role.ADMIN) {
-			if (userDto.role === Role.ADMIN || userDto.role === Role.SUPER_USER) {
-				throw new BadRequestException(["Cannot create user as this role due to lesser privilege."]);
-			}
-		}
+    if (user.role !== Role.SUPER_USER && user.role !== Role.ADMIN) {
+      if (userDto.merchantName !== user.merchantName) {
+        throw new BadRequestException([
+          'Cannot assign user to a different merchant',
+        ]);
+      }
+      if (userDto.role === Role.ADMIN || userDto.role === Role.SUPER_USER) {
+        throw new BadRequestException(['Cannot elevate user role']);
+      }
+    }
 
-		const createdUser = await this.userService.create(userDto)
-		return this.userService.removeSensitiveFields(createdUser);
-	}
+    if (user.role == Role.ADMIN) {
+      if (userDto.role === Role.ADMIN || userDto.role === Role.SUPER_USER) {
+        throw new BadRequestException(['Cannot elevate user role']);
+      }
+    }
 
-	@Put('/:id')
-	async update(
-		@Request() req,
-		@Param('id', ParseUUIDPipe) id: string,
-		@Body() userDto: UpdateUserDTO) {
+    const updatedUser = await this.userService.updateUser(id, userDto);
+    return this.userService.removeSensitiveFields(updatedUser);
+  }
 
-		const user = req.user as User;
-		if (!this._isUserAuthorized(user, { merchantName: userDto.merchantName })) {
-			throw new ForbiddenException();
-		}
+  @Patch('/:id/change-password')
+  @HttpCode(204)
+  changePassword(
+    @Request() req,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() passwordDto: UpdatePasswordDTO,
+  ) {
+    const user = req.user as User;
+    if (user.id !== id) {
+      throw new ForbiddenException();
+    }
 
-		if (user.role !== Role.SUPER_USER && user.role !== Role.ADMIN) {
-			if (userDto.merchantName !== user.merchantName) {
-				throw new BadRequestException(["Cannot assign user to a different merchant"]);
-			}
-			if (userDto.role === Role.ADMIN || userDto.role === Role.SUPER_USER) {
-				throw new BadRequestException(["Cannot elevate user role"]);
-			}
-		}
+    return this.userService.changePassword(id, passwordDto.password);
+  }
 
-		if (user.role == Role.ADMIN) {
-			if (userDto.role === Role.ADMIN || userDto.role === Role.SUPER_USER) {
-				throw new BadRequestException(["Cannot elevate user role"]);
-			}
-		}
+  @Patch('/:id/generate-new-password')
+  @HttpCode(204)
+  async resetPassword(@Request() req, @Param('id', ParseUUIDPipe) id: string) {
+    const u = await this.userService.findUser(id);
+    if (!u) {
+      throw new NotFoundException();
+    }
 
-		const updatedUser = await this.userService.updateUser(id, userDto);
-		return this.userService.removeSensitiveFields(updatedUser);
-	}
+    const user = req.user as User;
+    if (!this._isUserAuthorized(user, { merchantName: u.merchantName })) {
+      throw new ForbiddenException();
+    }
 
-	@Patch('/:id/change-password')
-	@HttpCode(204)
-	changePassword(
-		@Request() req,
-		@Param('id', ParseUUIDPipe) id: string,
-		@Body() passwordDto: UpdatePasswordDTO) {
+    if (user.role !== Role.SUPER_USER) {
+      throw new ForbiddenException();
+    }
 
-		const user = req.user as User;
-		if (user.id !== id) {
-			throw new ForbiddenException();
-		}
+    return this.userService.generateNewPassword(id);
+  }
 
-		return this.userService.changePassword(id, passwordDto.password)
-	}
+  @Delete('/:id')
+  @HttpCode(204)
+  async delete(@Request() req, @Param('id', ParseUUIDPipe) id: string) {
+    const u = await this.userService.findUser(id);
+    if (!u) {
+      throw new NotFoundException();
+    }
 
-	@Patch('/:id/generate-new-password')
-	@HttpCode(204)
-	async resetPassword(
-		@Request() req,
-		@Param('id', ParseUUIDPipe) id: string) {
+    const user = req.user as User;
+    if (!this._isUserAuthorized(user, { merchantName: u.merchantName })) {
+      throw new ForbiddenException();
+    }
 
-		const u = await this.userService.findUser(id);
-		if (!u) {
-			throw new NotFoundException();
-		}
+    if (user.role === Role.RESTUARANT_STAFF) {
+      throw new ForbiddenException();
+    }
 
-		const user = req.user as User;
-		if (!this._isUserAuthorized(user, { merchantName: u.merchantName })) {
-			throw new ForbiddenException();
-		}
-
-		if (user.role !== Role.SUPER_USER) {
-			throw new ForbiddenException();
-		}
-
-		return this.userService.generateNewPassword(id)
-	}
-
-	@Delete('/:id')
-	@HttpCode(204)
-	async delete(
-		@Request() req,
-		@Param('id', ParseUUIDPipe) id: string) {
-
-		const u = await this.userService.findUser(id);
-		if (!u) {
-			throw new NotFoundException();
-		}
-
-		const user = req.user as User;
-		if (!this._isUserAuthorized(user, { merchantName: u.merchantName })) {
-			throw new ForbiddenException();
-		}
-
-		if (user.role === Role.RESTUARANT_STAFF) {
-			throw new ForbiddenException();
-		}
-
-		return this.userService.delete(id)
-	}
+    return this.userService.delete(id);
+  }
 }
