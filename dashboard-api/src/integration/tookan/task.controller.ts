@@ -15,7 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import RoleGuard from 'src/auth/role.guard';
 import { Role } from 'src/users/schema/user.schema';
 import { TaskService } from './task.service';
-import { SearchQueryParams } from './types/tasks';
+import { SearchQueryParams } from './dto/task.dto';
 
 @Controller('/tookan/tasks')
 export class TasksController {
@@ -23,7 +23,7 @@ export class TasksController {
 
   @Post('/upload')
   @HttpCode(204)
-  // @UseGuards(RoleGuard([Role.ADMIN]))
+  @UseGuards(RoleGuard([Role.SUPER_USER, Role.ADMIN]))
   @UseInterceptors(
     FileInterceptor('file', {
       dest: './uploads',
@@ -39,6 +39,14 @@ export class TasksController {
   }
 
   @Get('/')
+  @UseGuards(
+    RoleGuard([
+      Role.ADMIN,
+      Role.SUPER_USER,
+      Role.RESTUARANT,
+      Role.RESTUARANT_STAFF,
+    ]),
+  )
   getTasks(@Query() searchQuery: SearchQueryParams) {
     const { merchantName, startDate, endDate, jobStatus } = searchQuery;
     return this._taskService.getTasks(
@@ -50,6 +58,14 @@ export class TasksController {
   }
 
   @Get('/statistics')
+  @UseGuards(
+    RoleGuard([
+      Role.ADMIN,
+      Role.SUPER_USER,
+      Role.RESTUARANT,
+      Role.RESTUARANT_STAFF,
+    ]),
+  )
   getMerchantStatistic(@Query() searchQuery: SearchQueryParams) {
     const { period, merchantName, startDate, endDate, jobStatus } = searchQuery;
     return this._taskService.getStatistic(
