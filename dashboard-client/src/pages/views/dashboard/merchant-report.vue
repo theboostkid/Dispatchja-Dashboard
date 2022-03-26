@@ -4,18 +4,28 @@
 
     <div class="row">
       <div class="col-3 mb-5">
-        <label for="restaurants">Please select a merchant</label>
+        <label for="merchants">Please select a merchant</label>
         <b-form-select
           id="input-5"
           class="form-select"
           type="text"
-          v-model="selectedRestaurant"
-          :options="restaurantOptions"
-          @change="getRestaurantStats"
+          v-model="selectedMerchant"
+          @change="getMerchantStats"
         >
           <template #first>
             <b-form-select-option class="mb-5" :value="null" disabled>-- Please select an option --</b-form-select-option>
           </template>
+
+          <b-form-select-option class="mb-5" value="all"> All </b-form-select-option>
+
+          <b-form-select-option  
+            v-for="merchant in allMerchants" 
+            class="mb-5" 
+            :value="merchant.name"
+            :key="merchant.name"
+          >  
+            {{ merchant.name }}
+          </b-form-select-option>
         </b-form-select>
       </div>
     </div>
@@ -117,13 +127,13 @@ export default {
 
   data() {
     return {
-      title: "Restaurant Reports",
+      title: "Merchant Reports",
       items: [
         {
           text: "reports",
         },
         {
-          text: "restaurant reports",
+          text: "Merchant reports",
           active: true
         }
       ],
@@ -137,8 +147,8 @@ export default {
           key: "order_id"
         },
         {
-          label: "Restaurant Name",
-          key: "restaurant_name"
+          label: "Merchant Name",
+          key: "merchant_name"
         },
         {
           label: "Customer Name",
@@ -171,7 +181,7 @@ export default {
       ],
       tableItems: [],
 
-      selectedRestaurant: "",
+      selectedMerchant: "",
 
       lineGraphCategories: [
         'Jan', 
@@ -192,35 +202,29 @@ export default {
   },
 
   async beforeMount() {
-    await this.getRestaurants();
+    await this.getMerchants();
+    console.log(this.allMerchants);
   },
 
   computed: {
-    ...mapState('restaurantModule', [
-      'restaurants', 
-      'totalRestaurants', 
-      'restaurantMonthlyStatistics', 
-      'restaurantOverallMonthlyStatistics'
+    ...mapState('merchantModule', [
+      'allMerchants', 
+      'totalMerchants', 
+      'singleMerchantPeriodSummaries', 
+      'overallMerchantPeriodSummaries'
       ]),
 
-    ...mapGetters('transactionModule', ['completedRestaurantTransactions', 'failedRestaurantTransactions', 'canceledRestaurantTransactions']),
-
-    restaurantOptions() {
-      return [ 
-        {value: 'all', text: 'All' }, 
-        ...this.restaurants.map((restaurant) => { return {value: restaurant.name, text: restaurant.name }} )
-      ]
-    }
+    ...mapGetters('transactionModule', ['completedMerchantTransactions', 'failedMerchantTransactions', 'cancelledMerchantTransactions']),
   },
 
   methods: {
-    ...mapActions('restaurantModule', ['getRestaurants', 'getRestaurantStatistics']),
+    ...mapActions('merchantModule', ['getMerchants', 'getMerchantStatistics']),
     ...mapActions('transactionModule', ['getTransactions']),
 
     setTransactionChart(){
-      const groupedTransactionsCompleted = this.aggregateByDate(this.completedRestaurantTransactions);
-      const groupedTransactionsFailed = this.aggregateByDate(this.failedRestaurantTransactions);
-      const groupedTransactionsCancel = this.aggregateByDate(this.canceledRestaurantTransactions);
+      const groupedTransactionsCompleted = this.aggregateByDate(this.completedMerchantTransactions);
+      const groupedTransactionsFailed = this.aggregateByDate(this.failedMerchantTransactions);
+      const groupedTransactionsCancel = this.aggregateByDate(this.cancelledMerchantTransactions);
 
       const orderedCompletedTransactions = this.orderByDate(groupedTransactionsCompleted, 12);
       const orderedFailedTransactions = this.orderByDate(groupedTransactionsFailed, 12);
@@ -250,7 +254,7 @@ export default {
     },
 
     setPaymentMethodChart() {
-      const orderedMonthlyStatistice = this.orderByDate(this.restaurantMonthlyStatistics, 12);
+      const orderedMonthlyStatistice = this.orderByDate(this.singleMerchantPeriodSummaries, 12);
 
       const cashSeries = {
         name: 'Cash Payments',
@@ -266,13 +270,12 @@ export default {
     },
 
     setDeliveryCountChart(){
-      const orderedList = this.orderByDate(this.restaurantMonthlyStatistics, 12) 
-
+      const orderedList = this.orderByDate(this.singleMerchantPeriodSummaries, 12) 
       const series = {
         name: 'Total Deliveries',
-        data: orderedList.map( stat=> stat.totalJobs || 0 )
+        data: orderedList.map( stat => stat ? stat.totalJobs : 0 )
       }
-      console.log(series);
+      console.log(series.data);
 
       this.$refs['graphDeliveries'].renderChart(this.lineGraphCategories, 'monthly', [series])
     },
@@ -319,22 +322,21 @@ export default {
       const orderedTransactions = [];
 
       for (let i = 0; i < arrayLength; i++) {
+        if(orderedTransactions[i]) continue;
+          
+        orderedTransactions[i] = 0;
         const transaction = transactions[i];
         const arrIndex = transaction?.dateCreated?.substr(6, 7) || transaction?.month?.substr(6, 7) || undefined;
-        if(arrIndex == 0 || arrIndex)
-          orderedTransactions[arrIndex -1] = transaction;
-        else 
-          orderedTransactions[i] = 0;
+        orderedTransactions[Number(arrIndex) -1] = transaction;
       }
       return orderedTransactions;
     },
 
-    async getRestaurantStats(){
-      console.log(this.selectedRestaurant);
+    async getMerchantStats(){
       const startDate = new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10);
       const endDate = new Date(new Date().getFullYear(), 12 , 0).toISOString().substr(0, 10);
-      await this.getRestaurantStatistics({ restaurantName: this.selectedRestaurant, startDate, endDate });
-      await this.getTransactions({ restaurantName: this.selectedRestaurant, startDate, endDate })
+      await this.getMerchantStatistics({ merchantName: this.selectedMerchant, startDate, endDate });
+      await this.getTransactions({ merchantName: this.selectedMerchant, startDate, endDate })
       this.setTransactionChart();
       this.setPaymentMethodChart();
       this.setDeliveryCountChart();

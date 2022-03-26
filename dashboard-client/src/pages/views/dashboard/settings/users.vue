@@ -77,8 +77,8 @@
           id="input-5"
           class="form-select"
           type="text"
-          v-model="newUser.restaurantName"
-          :options="selectRestaurants"
+          v-model="newUser.merchantName"
+          :options="selectmerchants"
           >
             <template #first>
               <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
@@ -101,7 +101,7 @@
       </b-form>
     </b-modal>
 
-     <div class="row mb-4">
+    <div class="row mb-4">
       <div class="col">
         <b-button variant="primary" @click="isUserDialogOpen=true">
           Add User
@@ -145,12 +145,12 @@
 </template>
 
 <script>
-import Layout from "../../layouts/horizontal.vue";
+import Layout from "../../../layouts/horizontal.vue";
 import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
 import { mapActions, mapState } from 'vuex'
-import DataTable from '../../../components/tables/data-table.vue';
-import { notificationMethods } from '../../../state/helpers'
+import DataTable from '../../../../components/tables/data-table.vue';
+import { notificationMethods } from '../../../../state/helpers'
 
 /**
  * Starter component
@@ -179,8 +179,8 @@ export default {
       userRoles: [
         { value: 'superuser', text: 'Super User'},
         { value: 'admin', text: 'Admin'},
-        { value: 'restaurant-staff', text: 'Restaurant Staff'},
-        { value: 'restaurant-admin', text: 'Restaurant Admin'}
+        { value: 'merchant-staff', text: 'merchant Staff'},
+        { value: 'merchant-admin', text: 'merchant Admin'}
       ],
       headers:[
         {
@@ -215,25 +215,25 @@ export default {
 
   async beforeMount() {
     await this.getUsers();
-    await this.getRestaurants();
+    await this.getMerchants();
   },
 
   computed: {
     ...mapState('userModule', ['users', 'totalUsers']),
-    ...mapState('restaurantModule', ['restaurants', 'totalRestaurants']),
+    ...mapState('merchantModule', ['allMerchants', 'totalmerchants']),
 
     totalPages(){
       return Math.ceil(this.totalUsers / this.pagination.itemsPerPage)
     },
 
-    selectRestaurants() {
-      return this.restaurants.map((restaurant) => { return {value: restaurant._id, text: restaurant.name }} )
+    selectmerchants() {
+      return this.allMerchants.map((merchant) => { return {value: merchant._id, text: merchant.name }} )
     }
   },
 
   methods: {
     ...mapActions('userModule', ['getUsers', 'createUser', 'deleteUser', 'updateUser']),
-    ...mapActions('restaurantModule', ['getRestaurants']),
+    ...mapActions('merchantModule', ['getMerchants']),
     ...notificationMethods,
 
     async saveUser() {

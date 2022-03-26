@@ -18,9 +18,24 @@
           :headers="headers"
           :items="filteredTransactions"
           >
+            <template #total="{ item }">
+              {{ formatAsMoney(item.totalCardTransactions + item.totalCashTransactions) }}
+            </template>
           
             <template #jobStatus="{ item }">
               {{ decipherStatusCode(item.jobStatus) }}
+            </template>
+
+            <template #dateCreated="{ item }">
+              {{ new Date(item.dateCreated).toISOString().substr(0, 10)}}
+            </template>
+
+            <template #totalWithoutDeliveryFeeAndDiscount="{ item }">
+              {{ formatAsMoney(item.totalWithoutDeliveryFeeAndDiscount) }}
+            </template>
+
+            <template #deliveryFee="{ item }">
+              {{ formatAsMoney(item.deliveryFee) }}
             </template>
           </DataTable>
         </div>
@@ -55,7 +70,7 @@
         <label class="mt-3">Filter Merchant:</label>
         <multiselect 
           v-model="selectedMerchants" 
-          :options="restaurantOptions"
+          :options="merchantOptions"
           :multiple="true"
           id="input-5"
           type="text"
@@ -82,7 +97,7 @@
     <template v-if="filteredStatements.length > 0">
       <div class="row mt-5 pt-2">
         <template v-for="statistic in filteredStatements" >
-          <div class="col-md-4" v-if="statistic.restaurantName" :key="statistic.restaurantName">
+          <div class="col-md-4" v-if="statistic.merchantName" :key="statistic.merchantName">
             <div class="card">
               <div class="row justify-content-end">
                 <div class="col-xl-2 d-flex justify-content-end px-4">
@@ -106,9 +121,9 @@
                     <div class="avatar-sm mx-auto mb-3 mt-1">
                       <span
                         :class="`avatar-title rounded-circle bg-soft bg-blue text-blue font-size-16`"
-                      >{{ statistic.restaurantName.charAt(0) }}</span>
+                      >{{ statistic.merchantName.charAt(0) }}</span>
                     </div>
-                    <h5 class=" pb-1">{{ statistic.restaurantName }}</h5>
+                    <h5 class=" pb-1">{{ statistic.merchantName }}</h5>
                     <h6>Statement: <span class="btn-link">#12930</span></h6>
                   </div>
                 </div>
@@ -274,7 +289,7 @@ export default {
         },
         {
           label: 'Merchant Name',
-          key: 'restaurantName'
+          key: 'merchantName'
         },
         {
           label: 'Customer Name',
@@ -311,31 +326,31 @@ export default {
   async mounted(){
     const startDate = new Date(new Date().getFullYear() - 2, 0, 1).toISOString().substr(0, 10);
     const endDate = new Date(new Date().getFullYear(), 12 , 0).toISOString().substr(0, 10);
-    if(this.restaurantOverallMonthlyStatistics.length < 1){
-      await this.getRestaurantStatistics({ startDate, endDate });
+    if(this.overallMerchantPeriodSummaries.length < 1){
+      await this.getMerchantStatistics({ startDate, endDate });
     }
-    if(this.overallTransactions.length < 1){
+    if(this.allTransactions.length < 1){
       await this.getTransactions({ startDate, endDate });
     }
   },
 
   computed: {
-    ...mapState('restaurantModule', ['restaurantIndividualBreakdownStatistics', 'restaurantOverallMonthlyStatistics']),
-    ...mapState('transactionModule', ['overallTransactions']),
+    ...mapState('merchantModule', ['overallMerchantSummaries', 'overallMerchantPeriodSummaries']),
+    ...mapState('transactionModule', ['allTransactions']),
   
     totalPages: function () {
-      return Math.ceil(this.restaurantIndividualBreakdownStatistics.length / this.pagination.itemsPerPage)
+      return Math.ceil(this.overallMerchantSummaries.length / this.pagination.itemsPerPage)
     },
 
-    restaurantOptions: function(){
-      return this.restaurantIndividualBreakdownStatistics.map((stat) => stat.restaurantName).filter(Boolean)
+    merchantOptions: function(){
+      return this.overallMerchantSummaries.map((stat) => stat.merchantName).filter(Boolean)
     },
 
 
     filteredStatements: function(){
-      return this.restaurantIndividualBreakdownStatistics.filter(item => {
+      return this.overallMerchantSummaries.filter(item => {
         if(this.selectedMerchants.length > 0){
-          if(this.selectedMerchants.includes(item.restaurantName)){
+          if(this.selectedMerchants.includes(item.merchantName)){
             return item;
           }
         }
@@ -350,12 +365,12 @@ export default {
     },
 
     filteredTransactions: function(){
-      return this.overallTransactions.filter( transaction=> transaction.restaurantName == this.selectedStatement.restaurantName)
+      return this.allTransactions.filter( transaction=> transaction.merchantName == this.selectedStatement.merchantName)
     }
   },
 
   methods: {
-    ...mapActions('restaurantModule', ['getRestaurantStatistics']),
+    ...mapActions('merchantModule', ['getMerchantStatistics']),
     ...mapActions('transactionModule', ['getTransactions']),
     
     paginate(nextPageNum) {

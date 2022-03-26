@@ -20,11 +20,7 @@ import App from './App.vue'
 
 import i18n from './i18n'
 
-import { configureFakeBackend } from './services/fake-backend';
-
 import tinymce from 'vue-tinymce-editor'
-
-configureFakeBackend();
 
 Vue.component('tinymce', tinymce)
 Vue.use(VueRouter)

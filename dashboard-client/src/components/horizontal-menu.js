@@ -41,7 +41,7 @@ export const menuItems = [
       {
           id: 6,
           label: 'menuitems.settings.list.users',
-          link: '/settings/users',
+          link: 'dashboard/settings/users',
           linkName: "Users",
           allowed:['superuser', 'restaurant-admin'],
           parentId: 5
@@ -49,11 +49,19 @@ export const menuItems = [
       {
           id: 7,
           label: 'menuitems.settings.list.statement-frequency',
-          link: '/dashboard/statement-frequency',
+          link: '/dashboard/settings/statement-frequency',
           linkName: "Statement Frequency",
           allowed:['superuser', 'restaurant-admin'],
           parentId: 5
       },
+      {
+        id: 8,
+        label: 'menuitems.settings.list.merchant-information',
+        link: '/dashboard/settings/merchants',
+        linkName: "Merchants",
+        allowed:['superuser', 'restaurant-admin'],
+        parentId: 5
+    },
     ]
   },
 ];

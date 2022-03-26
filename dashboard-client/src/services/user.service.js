@@ -5,16 +5,16 @@ export class UserService extends Http {
     super()
   }
 
-  async create(name, email, role, tookanUserId, restaurantName, isActive) {
-    return await this.httpClient().post('/users', { name, email, role, tookanUserId, restaurantName, isActive});
+  async create(name, email, role, tookanUserId, merchantName, isActive) {
+    return await this.httpClient().post('/users', { name, email, role, tookanUserId, merchantName, isActive});
   }
 
-  async getUsers( search, restaurant, paginated, skip, limit ) {
+  async getUsers( search, merchant, paginated, skip, limit ) {
     let queryString = "?"
     if(search)
       queryString += `search=${search}&`
-    if(restaurant)
-      queryString += `restaurant=${restaurant}&`
+    if(merchant)
+      queryString += `merchant=${merchant}&`
     if(paginated)
       queryString += `paginated=${paginated}&`
     if(skip)
@@ -33,8 +33,8 @@ export class UserService extends Http {
     return await this.httpClient().patch(`users/${userId}/generate-new-password`);
   }
 
-  async update(userId, name, email, role, tookanUserId, restaurantName, isActive) {
-    return await this.httpClient().put(`users/${userId}`, {name, email, role, tookanUserId, restaurantName, isActive})
+  async update(userId, name, email, role, tookanUserId, merchantName, isActive) {
+    return await this.httpClient().put(`users/${userId}`, {name, email, role, tookanUserId, merchantName, isActive})
   }
 
   async delete(userId) {

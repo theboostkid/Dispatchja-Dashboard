@@ -193,7 +193,7 @@ export default {
   data() {
     return {
       email: "admin@gmail.com",
-      password: "SBwF4J627j",
+      password: "uvb9Qy2d7x",
       submitted: false,
       authError: null,
       tryingToLogIn: false,

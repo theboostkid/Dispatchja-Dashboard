@@ -119,7 +119,7 @@ export default {
         },
         {
           label: "Merchant Name",
-          key: "restaurantName"
+          key: "merchantName"
         },
         {
           label: "Customer name",
@@ -142,13 +142,9 @@ export default {
   async mounted(){
     const startDate = new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10);
     const endDate = new Date(new Date().getFullYear(), 12 , 0).toISOString().substr(0, 10);
-    if(this.overallTransactions.length < 1){
-      await this.getTransactions({ startDate, endDate });
-    }
     
-    if(this.restaurantOverallMonthlyStatistics.length < 1){
-      await this.getRestaurantStatistics({ startDate, endDate });
-    }
+    await this.getTransactions({ startDate, endDate });
+    await this.getMerchantStatistics({ startDate, endDate });
     
     this.setDeliveryTable();
     this.setTransactionChart();
@@ -156,19 +152,19 @@ export default {
   },
 
   computed: {
-    ...mapState('transactionModule', ['overallTransactions']),
-    ...mapGetters('transactionModule', ['completedTransactions', 'failedTransactions', 'canceledTransactions']),
-    ...mapState('restaurantModule', ['restaurantOverallMonthlyStatistics'])
+    ...mapState('transactionModule', ['allTransactions']),
+    ...mapGetters('transactionModule', ['completedTransactions', 'failedTransactions', 'cancelledTransactions']),
+    ...mapState('merchantModule', ['overallMerchantPeriodSummaries'])
   },
 
   methods: {
     ...mapActions('transactionModule', ['getTransactions']),
-    ...mapActions('restaurantModule', ['getRestaurantStatistics']),
+    ...mapActions('merchantModule', ['getMerchantStatistics']),
 
     setTransactionChart(){
       const groupedTransactionsCompleted = this.aggregateByDate(this.completedTransactions);
       const groupedTransactionsFailed = this.aggregateByDate(this.failedTransactions);
-      const groupedTransactionsCancel = this.aggregateByDate(this.canceledTransactions);
+      const groupedTransactionsCancel = this.aggregateByDate(this.cancelledTransactions);
 
       const orderedCompletedTransactions = this.orderByDate(groupedTransactionsCompleted, 12);
       const orderedFailedTransactions = this.orderByDate(groupedTransactionsFailed, 12);
@@ -181,24 +177,24 @@ export default {
         data: orderedFailedTransactions.map(transaction => transaction.total || 0)
       }
 
-      const completeSeries = { 
+      const completedSeries = { 
         name: 'Completed Transaction', 
         color: "#008000",
         data: orderedCompletedTransactions.map(transaction => transaction.total || 0)
       }
 
-      const cancelSeries = { 
+      const cancelledSeries = { 
         name: 'Cancel Transaction', 
         color: "#B22222",
         data: orderedCancelTransactions.map(transaction => transaction.total || 0)
       }
 
-      this.$refs['graphTransactions'].renderChart(this.lineGraphCategories, 'monthly', [ failedSeries, completeSeries, cancelSeries ])
+      this.$refs['graphTransactions'].renderChart(this.lineGraphCategories, 'monthly', [ failedSeries, completedSeries, cancelledSeries ])
 
     },
 
     setPaymentMethodChart() {
-      const orderedMonthlyStatistice = this.orderByDate(this.restaurantOverallMonthlyStatistics, 12);
+      const orderedMonthlyStatistice = this.orderByDate(this.overallMerchantPeriodSummaries, 12);
 
       const cashSeries = {
         name: 'Cash Payments',
@@ -215,7 +211,7 @@ export default {
 
     setDeliveryTable(){
     
-      this.deleveryTableItems = this.overallTransactions.map( transaction => { 
+      this.deleveryTableItems = this.allTransactions.map( transaction => { 
         let jobStatus = '';
 
         if(transaction.jobStatus == 2){
@@ -232,7 +228,7 @@ export default {
           orderTotal: transaction.totalPriceWithDiscount,
           orderBy: transaction.customerUsername,
           deliveryFee: transaction.deliveryFee,
-          restaurantName: transaction.restaurantName,
+          merchantName: transaction.merchantName,
           customerName: transaction.clientName,
           status: jobStatus
         }
@@ -282,12 +278,12 @@ export default {
       const orderedTransactions = [];
 
       for (let i = 0; i < arrayLength; i++) {
+        if(orderedTransactions[i]) continue;
+
+        orderedTransactions[i] = 0;
         const transaction = transactions[i];
         const arrIndex = transaction?.dateCreated?.substr(6, 7) || transaction?.month?.substr(6, 7) || undefined;
-        if(arrIndex == 0 || arrIndex)
-          orderedTransactions[arrIndex -1] = transaction;
-        else 
-          orderedTransactions[i] = 0;
+        orderedTransactions[arrIndex -1] = transaction;
       }
       return orderedTransactions;
     }

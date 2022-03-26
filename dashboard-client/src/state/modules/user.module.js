@@ -31,8 +31,8 @@ export const actions = {
     }
   },
   
-  async createUser({ dispatch }, { name, email, role, tookanUserId, restaurantName, isActive }) {
-    const result = await service.create(name, email, role, tookanUserId, restaurantName, isActive);
+  async createUser({ dispatch }, { name, email, role, tookanUserId, merchantName, isActive }) {
+    const result = await service.create(name, email, role, tookanUserId, merchantName, isActive);
     console.log(result);
     if(result.status == 201) 
       dispatch('getUsers');
@@ -40,8 +40,8 @@ export const actions = {
     return result
   },
 
-  async updateUser({ dispatch }, {userId, name, email, role, tookanUserId, restaurantName, isActive}) {
-    const result = await service.update(userId, name, email, role, tookanUserId, restaurantName, isActive);
+  async updateUser({ dispatch }, {userId, name, email, role, tookanUserId, merchantName, isActive}) {
+    const result = await service.update(userId, name, email, role, tookanUserId, merchantName, isActive);
     dispatch('getUsers');
     console.log(result);
   },

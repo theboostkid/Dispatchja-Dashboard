@@ -18,14 +18,14 @@ export const menuItems = [
         subItems: [
           {
             id: 4,
-            label: "menuitems.reports.list.restaurant-reports",
+            label: "menuitems.reports.list.merchant-reports",
             link: "/reports/overall",
             parentId: 3
           },
           {
             id: 5,
             label: "menuitems.reports.list.overall-reports",
-            link: "/reports/restaurant",
+            link: "/reports/merchant",
             parentId: 3
           }
         ]
