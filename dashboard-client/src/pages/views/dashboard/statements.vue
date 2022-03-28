@@ -66,7 +66,7 @@
         </div>
       </div>
 
-      <div class="col-9">
+      <div class="col-3">
         <label class="mt-3">Filter Merchant:</label>
         <multiselect 
           v-model="selectedMerchants" 
@@ -74,7 +74,21 @@
           :multiple="true"
           id="input-5"
           type="text"
-        />
+          :taggable="false"
+          :optionHeight="20"
+        >
+          <template #tag>
+            <span></span>
+          </template>
+
+          <template #selection="{ values, isOpen }">
+            <span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} merchants selected</span>
+            
+            <span @click="clearFilters" v-if="selectedMerchants.length > 0" style="position: absolute; right: 15px; top: 10px; cursor: pointer; z-index: 5;">
+              <i class="mdi mdi-close-thick"/>
+            </span>
+          </template>
+        </multiselect>
       </div>
 
       <!--Search Field-->
@@ -418,6 +432,10 @@ export default {
       if(code == 10) {
         return 'Deleted'
       }
+    },
+
+    clearFilters(){
+      this.selectedMerchants=[];
     }
   }
 };

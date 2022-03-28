@@ -5,16 +5,16 @@
     <div class="row">
       <div class="col-sm-3 col-md-3">
         <WidgetCard
-        title="Total Invoices (month)"
-        data="150"
+        :title="'Total statements ('+ new Date().getFullYear() + ')'"
+        :data="totalStatments"
         icon="fas fa-file-invoice"
         />
       </div>
       
       <div class="col-sm-3 col-md-3">
         <WidgetCard
-        title="Completed Transactions (month)"
-        data="120"
+        :title="'Completed Transactions ('+new Date().getFullYear() +')'"
+        :data="totalCompletedTransactions"
         icon="fas fa-file-invoice-dollar"
         />
       </div>
@@ -135,7 +135,7 @@ export default {
         }
       ],
       deleveryTableItems: [
-      ]
+      ],
     };
   },
 
@@ -154,7 +154,15 @@ export default {
   computed: {
     ...mapState('transactionModule', ['allTransactions']),
     ...mapGetters('transactionModule', ['completedTransactions', 'failedTransactions', 'cancelledTransactions']),
-    ...mapState('merchantModule', ['overallMerchantPeriodSummaries'])
+    ...mapState('merchantModule', ['overallMerchantPeriodSummaries', 'overallMerchantSummaries']),
+
+    totalCompletedTransactions(){
+      return this.completedTransactions.length.toString()
+    },
+
+    totalStatments(){
+      return this.formatAsMoney(this.overallMerchantSummaries.totalCardTransactions + this.overallMerchantSummaries.totalCashTransactions || 0)
+    }
   },
 
   methods: {

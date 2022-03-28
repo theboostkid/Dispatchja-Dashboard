@@ -33,24 +33,24 @@
     <div class="row">
       <div class="col-xl-3">
         <WidgetCard
-        title="Total Delivery (month)"
-        data="130"
+        :title="'Total Delivery (' + new Date().getFullYear() +')'"
+        :data="totalDeliveries"
         icon="fas fa-shipping-fast"
         />
       </div>
 
       <div class="col-xl-3">
         <WidgetCard
-        title="Total Deliver Earnings (month)"
-        data="$300"
+        :title="'Total Deliver Earnings (' + new Date().getFullYear() +')'"
+        :data="totalDeliveryEarnings"
         icon="fas fa-money-bill-alt"
         />
       </div>
 
       <div class="col-xl-3">
         <WidgetCard
-        title="Total Credit Card Fees (month)"
-        data="$500"
+        :title="'Total Credit Card Fees (' + new Date().getFullYear() +')'"
+        :data="totalCreditCardFees"
         icon="fas fa-money-check-alt"
         />
       </div>
@@ -197,13 +197,11 @@ export default {
         'Nov', 
         'Dec'
       ],
-
     };
   },
 
   async beforeMount() {
     await this.getMerchants();
-    console.log(this.allMerchants);
   },
 
   computed: {
@@ -211,10 +209,23 @@ export default {
       'allMerchants', 
       'totalMerchants', 
       'singleMerchantPeriodSummaries', 
+      'singleMerchantSummary',
       'overallMerchantPeriodSummaries'
       ]),
 
     ...mapGetters('transactionModule', ['completedMerchantTransactions', 'failedMerchantTransactions', 'cancelledMerchantTransactions']),
+
+    totalCreditCardFees(){
+      return '$0'
+    },
+
+    totalDeliveryEarnings(){
+      return this.formatAsMoney(this.singleMerchantSummary.totalDeliveryFee || 0) || '$0';
+    },
+
+    totalDeliveries(){
+      return this.singleMerchantSummary.totalJobs ? this.singleMerchantSummary.totalJobs.toString() : '0';
+    }
   },
 
   methods: {
