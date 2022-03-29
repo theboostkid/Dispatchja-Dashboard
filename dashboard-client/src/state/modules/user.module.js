@@ -36,14 +36,14 @@ export const actions = {
     console.log(result);
     if(result.status == 201) 
       dispatch('getUsers');
-
     return result
   },
 
-  async updateUser({ dispatch }, {userId, name, email, role, tookanUserId, merchantName, isActive}) {
-    const result = await service.update(userId, name, email, role, tookanUserId, merchantName, isActive);
-    dispatch('getUsers');
+  async updateUser({ dispatch }, {id, name, email, role, tookanUserId, merchantName, isActive}) {
+    const result = await service.update(id, name, email, role, tookanUserId, merchantName, isActive);
     console.log(result);
+    dispatch('getUsers');
+    return result;
   },
 
   async deleteUser({ dispatch }, userId) {

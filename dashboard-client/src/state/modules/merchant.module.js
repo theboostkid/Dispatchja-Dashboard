@@ -73,12 +73,13 @@ export const actions = {
     }
   },
   
-  async updateMerchant({ dispatch }, { merchantId, invoiceFrequencyInWeeks, email }) {
-    const result = await service.updateMerchantDetails(merchantId, invoiceFrequencyInWeeks, email);
-    console.log(result);
+  async updateMerchant({ dispatch }, { name, id, email, address, province, country, startDate, endDate, statementFrequencyInWeeks, isActive}) {
+    const result = await service.updateMerchant(name, id, email, address, province, country, startDate, endDate, statementFrequencyInWeeks, isActive);
+    
     if(result.status == 200) {
       dispatch('getMerchants')
     }
+    return result;
   },
 
   async getMerchantStatistics({ commit }, { merchantName, startDate, endDate }) {
@@ -92,6 +93,13 @@ export const actions = {
         commit('SET_OVERALL_MERCHANT_SUMMARIES', result.data.merchantSummary);
         commit('SET_OVERALL_MERCHANT_PERIOD_SUMMARY', result.data.periodSummary);
       }
+    }
+  },
+
+  async deleteMerchant({ dispatch }, id){
+    const result = await service.deleteMerchant(id);
+    if(result.status == 204) {
+      dispatch('getMerchants')
     }
   }
 }

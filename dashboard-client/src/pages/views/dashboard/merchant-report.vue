@@ -220,11 +220,11 @@ export default {
     },
 
     totalDeliveryEarnings(){
-      return this.formatAsMoney(this.singleMerchantSummary.totalDeliveryFee || 0) || '$0';
+      return this.formatAsMoney(this.singleMerchantSummary?.totalDeliveryFee || 0) || '$0';
     },
 
     totalDeliveries(){
-      return this.singleMerchantSummary.totalJobs ? this.singleMerchantSummary.totalJobs.toString() : '0';
+      return this.singleMerchantSummary?.totalJobs ? this.singleMerchantSummary.totalJobs.toString() : '0';
     }
   },
 

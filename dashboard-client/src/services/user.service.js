@@ -6,6 +6,7 @@ export class UserService extends Http {
   }
 
   async create(name, email, role, tookanUserId, merchantName, isActive) {
+    console.log({name, email, role, tookanUserId, merchantName, isActive});
     return await this.httpClient().post('/users', { name, email, role, tookanUserId, merchantName, isActive});
   }
 
@@ -33,8 +34,8 @@ export class UserService extends Http {
     return await this.httpClient().patch(`users/${userId}/generate-new-password`);
   }
 
-  async update(userId, name, email, role, tookanUserId, merchantName, isActive) {
-    return await this.httpClient().put(`users/${userId}`, {name, email, role, tookanUserId, merchantName, isActive})
+  async update(id, name, email, role, tookanUserId, merchantName, isActive) {
+    return await this.httpClient().put(`users/${id}`, {name, email, role, tookanUserId, merchantName, isActive})
   }
 
   async delete(userId) {

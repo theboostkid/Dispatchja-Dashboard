@@ -3,11 +3,25 @@
     <PageHeader :title="title" :items="items" />
 
     <b-modal
-    title="Add New User"
+    :title="(dialogMode == 'add' ? 'Add New' : 'Edit') + ' User'"
     title-class="text-black font-18"
     v-model="isUserDialogOpen"
     @ok.prevent="saveUser"
+    @cancel="closeDialog"
     >
+      <b-form-group
+      label="Tooken Id"
+      id="input-group-3"
+      class="mb-3"
+      label-for="input-3"
+      >
+        <b-form-input
+        id="input-3"
+        v-model="userInfo.tookanUserId"
+        type="text"
+        />
+      </b-form-group>
+
       <b-form>
         <b-form-group
         label="Name"
@@ -17,7 +31,7 @@
         >
           <b-form-input
           id="input-1"
-          v-model="newUser.name"
+          v-model="userInfo.name"
           type="text"
           />
         </b-form-group>
@@ -30,21 +44,8 @@
         >
           <b-form-input
           id="input-2"
-          v-model="newUser.email"
+          v-model="userInfo.email"
           type="email"
-          />
-        </b-form-group>
-
-        <b-form-group
-        label="Tooken Id"
-        id="input-group-3"
-        class="mb-3"
-        label-for="input-3"
-        >
-          <b-form-input
-          id="input-3"
-          v-model="newUser.tookenUserId"
-          type="text"
           />
         </b-form-group>
 
@@ -58,7 +59,7 @@
           id="input-4"
           class="form-select"
           type="text"
-          v-model="newUser.role"
+          v-model="userInfo.role"
           :options="userRoles"
           >
             <template #first>
@@ -77,7 +78,7 @@
           id="input-5"
           class="form-select"
           type="text"
-          v-model="newUser.merchantName"
+          v-model="userInfo.merchantName"
           :options="selectmerchants"
           >
             <template #first>
@@ -93,7 +94,7 @@
               name="checkbox-1"
               value="true"
               unchecked-value="false"
-              v-model="newUser.isActive"
+              v-model="userInfo.isActive"
             >
               Is Account Active ?
             </b-form-checkbox>
@@ -103,7 +104,7 @@
 
     <div class="row mb-4">
       <div class="col">
-        <b-button variant="primary" @click="isUserDialogOpen=true">
+        <b-button variant="primary" @click="openAddUserDialog">
           Add User
         </b-button>
       </div>
@@ -123,7 +124,7 @@
               <div class="col-xl-3 col-lg-4 col-sm-6" @click="removeUser(item)">
                 <i class="mdi mdi-18px mdi-delete"></i>
               </div>
-              <div class="col-xl-3 col-lg-4 col-sm-6" @click="editUser(item)">
+              <div class="col-xl-3 col-lg-4 col-sm-6" @click="openEditUserDialog(item)">
                 <i class="mdi mdi-18px mdi-file-edit-outline"></i>
               </div>
             </div>
@@ -165,6 +166,7 @@ export default {
 
   data() {
     return {
+      dialogMode: 'add',
       title: "Users",
       items: [
         {
@@ -209,7 +211,7 @@ export default {
         }
       ],
       isUserDialogOpen: false,
-      newUser: {}
+      userInfo: {}
     };
   },
 
@@ -237,27 +239,40 @@ export default {
     ...notificationMethods,
 
     async saveUser() {
-      const result = await this.createUser(this.newUser);
+      console.log(this.userInfo);
+      if(this.dialogMode == 'add') {
+        const result = await this.createUser(this.userInfo);
 
-      if(result.status == 201) {
-        this.clearDialog();
-        this.isUserDialogOpen = false;
-      } 
-      else {
-        console.log('toast');
+        if(result.status == 201) {
+          this.closeDialog();
+        } 
+
+      } else if(this.dialogMode == 'edit') {
+        const result = await this.updateUser(this.userInfo);
+        if(result.status == 200) {
+          this.closeDialog();
+        } 
       }
     },
 
-    clearDialog(){
-      this.newUser = {}
+    closeDialog(){
+      this.userInfo = {}
+      this.isUserDialogOpen = false;
     },
 
-    editUser(user){
-      console.log(user);
+    openAddUserDialog(){
+      this.dialogMode = 'add';
+      this.isUserDialogOpen = true
+    },
+
+    openEditUserDialog(user){
+      this.dialogMode = 'edit';
+      this.userInfo = {...user};
+      console.log(this.userInfo);
+      this.isUserDialogOpen = true;
     },
 
     removeUser(user){
-      console.log(user);
       this.deleteUser(user.id);
     }
   }
@@ -266,6 +281,7 @@ export default {
 
 <style scoped>
   .col-sm-6:hover {
-    color: #556ee6;
+    color: #FEDB00;
+    cursor: pointer;
   }
 </style>

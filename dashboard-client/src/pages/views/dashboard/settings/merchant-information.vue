@@ -3,10 +3,11 @@
     <PageHeader :title="title" :items="items" />
 
     <b-modal
-    title="Add New Merchant"
+    :title="(dialogMode == 'add' ? 'Add New' : 'Edit') + '  Merchant'"
     title-class="text-black font-18"
-    v-model="isUserDialogOpen"
+    v-model="isModalOpen"
     @ok.prevent="saveMerchant"
+    @cancel="closeModal"
     >
       <b-form>
         <b-form-group
@@ -17,7 +18,7 @@
         >
           <b-form-input
           id="input-1"
-          v-model="newMerchant.merchantId"
+          v-model="merchantInfo.merchantId"
           type="text"
           />
         </b-form-group>
@@ -30,7 +31,7 @@
         >
           <b-form-input
           id="input-2"
-          v-model="newMerchant.name"
+          v-model="merchantInfo.name"
           type="text"
           />
         </b-form-group>
@@ -43,7 +44,7 @@
         >
           <b-form-input
           id="input-3"
-          v-model="newMerchant.email"
+          v-model="merchantInfo.email"
           type="email"
           />
         </b-form-group>
@@ -56,7 +57,7 @@
         >
           <b-form-input
           id="input-2"
-          v-model="newMerchant.address"
+          v-model="merchantInfo.address"
           type="text"
           />
         </b-form-group>
@@ -70,7 +71,7 @@
           <b-form-select
           id="input-5"
           class="form-select"
-          v-model="newMerchant.country"
+          v-model="merchantInfo.country"
           >
             <template #first>
               <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
@@ -91,7 +92,7 @@
           <b-form-select
           id="input-6"
           class="form-select"
-          v-model="newMerchant.province"
+          v-model="merchantInfo.province"
           >
             <template #first>
               <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
@@ -103,7 +104,7 @@
           </b-form-select>
         </b-form-group>
 
-        <div class="row">
+        <div class="row" v-if="dialogMode != 'edit'">
           <div class="col">
             <b-form-group
             label="Start Date"
@@ -113,7 +114,7 @@
             >
               <b-form-input
               id="input-7"
-              v-model="newMerchant.startDate"
+              v-model="merchantInfo.startDate"
               type="date"
               />
             </b-form-group>
@@ -128,14 +129,14 @@
               >
                 <b-form-input
                 id="input-8"
-                v-model="newMerchant.endDate"
+                v-model="merchantInfo.endDate"
                 type="date"
                 />
               </b-form-group>
           </div>
         </div>
 
-        <div class="row">
+        <div class="row" v-if="dialogMode != 'edit'">
           <div class="col-6">
             <b-form-group
             label="Statement Frequency (weeks)"
@@ -145,7 +146,7 @@
             >
               <b-form-input
               id="input-9"
-              v-model="newMerchant.statementFrequencyInWeeks"
+              v-model="merchantInfo.statementFrequencyInWeeks"
               type="number"
               />
             </b-form-group>
@@ -157,9 +158,7 @@
             class="form-check"
             id="customControlInline"
             name="checkbox-1"
-            value="true"
-            unchecked-value="false"
-            v-model="newMerchant.isActive"
+            v-model="merchantInfo.isActive"
           >
             Is Account Active ?
           </b-form-checkbox>
@@ -169,7 +168,7 @@
 
     <div class="row mb-4">
       <div class="col">
-        <b-button variant="primary" @click="isUserDialogOpen=true">
+        <b-button variant="primary" @click="openAddDialog">
           Add Merchant
         </b-button>
       </div>
@@ -180,7 +179,18 @@
     subtitle="This table shows information about each merchant"
     :headers="headers"
     :items="allMerchants"
-    />
+    >
+      <template #actions="{ item }">
+        <div class="row">
+          <div class="col-xl-3 col-lg-4 col-sm-6" @click="removeMerchant(item)">
+            <i class="mdi mdi-18px mdi-delete"></i>
+          </div>
+          <div class="col-xl-3 col-lg-4 col-sm-6" @click="openEditDialog(item)">
+            <i class="mdi mdi-18px mdi-file-edit-outline"></i>
+          </div>
+        </div>
+      </template>
+    </DataTable>
   </Layout>
 </template>
 
@@ -210,12 +220,13 @@ export default {
     if(this.countries.length < 1) 
       await this.loadCountries();
 
-    this.getProvinces(this.newMerchant?.country);
+    this.getProvinces(this.merchantInfo?.country);
   },
 
   data() {
     return {
-      isUserDialogOpen: false,
+      dialogMode: 'add',
+      isModalOpen: false,
       title: "Merchants",
       items: [
         {
@@ -251,10 +262,14 @@ export default {
           label: "Country",
           key: "country"
         },
+        {
+          label: "Actions",
+          key: "actions"
+        },
       ],
 
       tableItems: [],
-      newMerchant: {
+      merchantInfo: {
         country: 'Jamaica'
       },
     };
@@ -265,28 +280,59 @@ export default {
   },
 
   methods: {
-    ...mapActions('merchantModule', ['createMerchant', 'getMerchants']),
+    ...mapActions('merchantModule', ['createMerchant', 'getMerchants', 'updateMerchant', 'deleteMerchant']),
 
     async saveMerchant(){
-      this.newMerchant.statementFrequencyInWeeks = Number(this.newMerchant.statementFrequencyInWeeks)
-      const result = await this.createMerchant(this.newMerchant);
-      if (result.status == 201) {
-        this.closeModal();
+      this.merchantInfo.statementFrequencyInWeeks = Number(this.merchantInfo.statementFrequencyInWeeks);
+      if(this.dialogMode == 'add'){
+        const result = await this.createMerchant(this.merchantInfo);
+        if (result.status == 201) {
+          this.closeModal();
+        }
+      } else if (this.dialogMode == 'edit'){
+        const result = await this.updateMerchant(this.merchantInfo);
+        if(result.status == 200){
+          this.closeModal();
+        }
       }
     },
 
+    openAddDialog(){
+      this.isModalOpen = true;
+      this.dialogMode = 'add';
+    },
+
+    openEditDialog(merchantInfo){
+      this.dialogMode = 'edit'
+      this.merchantInfo = { ...merchantInfo };
+      this.merchantInfo.startDate = this.merchantInfo.lastStatementDate;
+      this.merchantInfo.endDate = this.merchantInfo.nextStatementDate;
+      this.isModalOpen = true;
+    },
+    
     closeModal(){
-      this.newMerchant = {
+      this.merchantInfo = {
         country: "Jamaica"
       }
-      this.modal.hide();
+      this.isModalOpen = false
+    },
+
+    async removeMerchant(merchantInfo){
+      await this.deleteMerchant(merchantInfo.id);
     }
   },
 
   watch: {
-    'newMerchant.country'(){
-      this.getProvinces(this.newMerchant?.country);
+    'merchantInfo.country'(){
+      this.getProvinces(this.merchantInfo?.country);
     }
   }
 };
 </script>
+
+<style scoped>
+  .col-sm-6:hover {
+    color: #FEDB00;
+    cursor: pointer;
+  }
+</style>
