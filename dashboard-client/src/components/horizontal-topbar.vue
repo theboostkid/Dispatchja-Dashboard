@@ -1,5 +1,5 @@
 <script>
-import { layoutComputed } from "@/state/helpers";
+import { layoutComputed, authComputed } from "@/state/helpers";
 
 /**
  * Horizontal-topbar component
@@ -17,6 +17,7 @@ export default {
   },
   computed: {
     ...layoutComputed,
+    ...authComputed
   },
   data() {
     return {
@@ -299,7 +300,7 @@ export default {
         <b-dropdown right variant="black" toggle-class="header-item">
           <template v-slot:button-content>
             <span class="d-none d-xl-inline-block ms-1">{{
-              $t("navbar.dropdown.henry.text")
+              currentUser.name
             }}</span>
             <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
           </template>
@@ -311,19 +312,6 @@ export default {
               {{ $t("navbar.dropdown.henry.list.profile") }}
               </span>
             </router-link>
-          </b-dropdown-item>
-          <b-dropdown-item href="javascript: void(0);">
-            <i class="bx bx-wallet font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.mywallet") }}
-          </b-dropdown-item>
-          <b-dropdown-item class="d-block" href="javascript: void(0);">
-            <span class="badge bg-success float-end">11</span>
-            <i class="bx bx-wrench font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.settings") }}
-          </b-dropdown-item>
-          <b-dropdown-item href="javascript: void(0);">
-            <i class="bx bx-lock-open font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.lockscreen") }}
           </b-dropdown-item>
           <b-dropdown-divider></b-dropdown-divider>
           <router-link to="/logout" class="dropdown-item text-danger">

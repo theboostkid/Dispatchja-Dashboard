@@ -9,7 +9,7 @@
 
         <div class="avatar-sm ms-auto">
           <div
-            class="avatar-title bg-light rounded-circle text-primary font-size-20"
+            class="avatar-title bg-dark rounded-circle text-primary font-size-20"
           >
             <i :class="icon"></i>
           </div>
