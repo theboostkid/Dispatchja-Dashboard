@@ -299,7 +299,16 @@ export default {
 
 <style scoped>
   .actions:hover{
-    color: red;
+    color: #FEDB00;
     cursor: pointer;
   }
+  
+   .multiselect__option--highlight:after {
+    color: #333133 !important;
+  }
+
+  .multiselect__option--highlight{
+    color: #333133 !important;
+  }
+
 </style>

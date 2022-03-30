@@ -134,7 +134,7 @@
                   <div class="text-center py-5 border-end">
                     <div class="avatar-sm mx-auto mb-3 mt-1">
                       <span
-                        :class="`avatar-title rounded-circle bg-soft bg-blue text-blue font-size-16`"
+                        :class="`avatar-title rounded-circle text-black font-size-16`"
                       >{{ statistic.merchantName.charAt(0) }}</span>
                     </div>
                     <h5 class=" pb-1">{{ statistic.merchantName }}</h5>
@@ -441,3 +441,14 @@ export default {
 };
 
 </script>
+
+<style >
+  .multiselect__option--highlight:after {
+    color: #333133 !important;
+  }
+
+  .multiselect__option--highlight{
+    color: #333133 !important;
+  }
+
+</style>
