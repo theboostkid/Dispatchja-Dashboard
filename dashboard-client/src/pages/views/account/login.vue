@@ -8,7 +8,7 @@
               <div class="col-7">
                 <div class="text-primary p-4">
                   <h5 class="text-primary">Welcome Back !</h5>
-                  <p>Sign in to continue to Skote.</p>
+                  <p>Sign in to continue to Dispatch Dashboard.</p>
                 </div>
               </div>
               <div class="col-5 align-self-end">
@@ -117,8 +117,7 @@
 
         <div class="mt-5 text-center">
           <p>
-            © {{ new Date().getFullYear() }} Skote. Crafted with
-            <i class="mdi mdi-heart text-danger"></i> by Themesbrand
+            © {{ new Date().getFullYear() }} Created by Black Sigma
           </p>
         </div>
         <!-- end row -->

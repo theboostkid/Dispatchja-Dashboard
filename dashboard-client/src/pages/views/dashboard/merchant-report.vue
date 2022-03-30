@@ -5,28 +5,19 @@
     <div class="row">
       <div class="col-3 mb-5">
         <label for="merchants">Please select a merchant</label>
-        <b-form-select
-          id="input-5"
-          class="form-select"
-          type="text"
-          v-model="selectedMerchant"
-          @change="getMerchantStats"
-        >
-          <template #first>
-            <b-form-select-option class="mb-5" :value="null" disabled>-- Please select an option --</b-form-select-option>
-          </template>
-
-          <b-form-select-option class="mb-5" value="all"> All </b-form-select-option>
-
-          <b-form-select-option  
-            v-for="merchant in allMerchants" 
-            class="mb-5" 
-            :value="merchant.name"
-            :key="merchant.name"
-          >  
-            {{ merchant.name }}
-          </b-form-select-option>
-        </b-form-select>
+        <multiselect 
+          v-model="selectedMerchant" 
+          :options="allMerchants"  
+          label="name" 
+          track-by="name"
+          name="name"
+          :taggable="false"
+          :optionHeight="20"
+          :preserve-search="true"
+          deselect-label=""
+          :allow-empty="false"
+          @input="getMerchantStats"
+        />
       </div>
     </div>
 
@@ -106,6 +97,7 @@ import MixedGraph from "@/components/charts/mixed-chart.vue"
 import BarChart from '../../../components/charts/bar-chart.vue';
 import DataTable from '../../../components/tables/data-table.vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import Multiselect from "vue-multiselect";
 
 /**
  * Starter component
@@ -122,7 +114,8 @@ export default {
     LineGraph, 
     MixedGraph, 
     BarChart, 
-    DataTable
+    DataTable,
+    Multiselect
   },
 
   data() {
@@ -346,8 +339,8 @@ export default {
     async getMerchantStats(){
       const startDate = new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10);
       const endDate = new Date(new Date().getFullYear(), 12 , 0).toISOString().substr(0, 10);
-      await this.getMerchantStatistics({ merchantName: this.selectedMerchant, startDate, endDate });
-      await this.getTransactions({ merchantName: this.selectedMerchant, startDate, endDate })
+      await this.getMerchantStatistics({ merchantName: this.selectedMerchant.name, startDate, endDate });
+      await this.getTransactions({ merchantName: this.selectedMerchant.name, startDate, endDate })
       this.setTransactionChart();
       this.setPaymentMethodChart();
       this.setDeliveryCountChart();
@@ -356,5 +349,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+  
+   .multiselect__option--highlight:after {
+    color: #333133 !important;
+  }
+
+  .multiselect__option--highlight{
+    color: #333133 !important;
+  }
+
 </style>
