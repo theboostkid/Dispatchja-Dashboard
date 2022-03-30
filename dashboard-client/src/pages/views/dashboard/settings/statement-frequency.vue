@@ -23,6 +23,7 @@
                   id="input-7"
                   v-model="merchantInfo.startDate"
                   type="date"
+                  disabled
                   />
                 </b-form-group>
               </div>
@@ -38,6 +39,7 @@
                     id="input-8"
                     v-model="merchantInfo.endDate"
                     type="date"
+                    disabled
                     />
                   </b-form-group>
               </div>
@@ -143,8 +145,8 @@ export default {
     openEditDialog(item){
       console.log(item);
       this.merchantInfo = { ...item };
-      this.merchantInfo.startDate = this.merchantInfo.lastStatementDate;
-      this.merchantInfo.endDate = this.merchantInfo.nextStatementDate;
+      this.merchantInfo.startDate = this.merchantInfo.statements[this.merchantInfo.statements.length -1].startDate;
+      this.merchantInfo.endDate = this.merchantInfo.statements[this.merchantInfo.statements.length -1].endDate;
       this.isDialogOpen = true;
     },
 

@@ -128,10 +128,6 @@ export default {
         {
           label: "Status",
           key: "status"
-        },
-        {
-          label: "Actions",
-          key: "action"
         }
       ],
       deleveryTableItems: [

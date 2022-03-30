@@ -16,7 +16,7 @@
           :title-class="['d-flex', 'justify-content-center']"
           subtitle="This table shows a breakdown of the delivery transactions"
           :headers="headers"
-          :items="filteredTransactions"
+          :items="selectedStatement.transactions"
           >
             <template #total="{ item }">
               {{ formatAsMoney(item.totalCardTransactions + item.totalCashTransactions) }}
@@ -138,7 +138,11 @@
                       >{{ statistic.merchantName.charAt(0) }}</span>
                     </div>
                     <h5 class=" pb-1">{{ statistic.merchantName }}</h5>
-                    <h6>Statement: <span class="btn-link">#12930</span></h6>
+                    <h6>Statement:</h6>
+                    <h6>
+                      {{ new Date(statistic.period.startDate).toDateString().split(' ').slice(1).join(' ') }} - 
+                      {{ new Date(statistic.period.endDate).toDateString().split(' ').slice(1).join(' ')  }}
+                    </h6>
                   </div>
                 </div>
                 <div class="col-xl-5">
@@ -147,21 +151,21 @@
                       <div class="col-xs-6 mb-3">
                         <div>
                           <p class="text-muted mb-2 text-truncate">Subtotal</p>
-                          <h5> {{ formatAsMoney(statistic.totalWithoutDeliveryFeeAndDiscount) }}</h5>
+                          <h5> {{ formatAsMoney(statistic.subtotal) }}</h5>
                         </div>
                       </div>
 
                       <div class="col-xs-6 mb-3">
                         <div>
                           <p class="text-muted mb-2 text-truncate">Delivery Fees</p>
-                          <h5>{{ formatAsMoney(statistic.totalDeliveryFee) }}</h5>
+                          <h5>{{ formatAsMoney(statistic.deliveryFee) }}</h5>
                         </div>
                       </div>
 
                       <div class="col-xs-6">
                         <div>
                           <span class="text-muted mb-2 text-truncate">Total</span>
-                          <h5>{{ formatAsMoney(statistic.totalCardTransactions + statistic.totalCashTransactions) }}</h5>
+                          <h5>{{ formatAsMoney(statistic.total) }}</h5>
                         </div>
                       </div>
                     </div>
@@ -213,7 +217,6 @@
               <i href="#" class="fas fa-file-excel" style="font-size: 70px;"></i>
             </div>
             <h4 class="my-4">No Invoices</h4>
-            <p class="text-muted">Please select "Add Invoices" to begin adding invoices to this list</p>
         </div>
       </div>
     </template>
@@ -338,18 +341,15 @@ export default {
   },
 
   async mounted(){
+    await this.getMerchants();
     const startDate = new Date(new Date().getFullYear() - 2, 0, 1).toISOString().substr(0, 10);
     const endDate = new Date(new Date().getFullYear(), 12 , 0).toISOString().substr(0, 10);
-    if(this.overallMerchantPeriodSummaries.length < 1){
-      await this.getMerchantStatistics({ startDate, endDate });
-    }
-    if(this.allTransactions.length < 1){
-      await this.getTransactions({ startDate, endDate });
-    }
+    await this.getMerchantStatistics({ startDate, endDate });
+    await this.getTransactions({ startDate, endDate });
   },
 
   computed: {
-    ...mapState('merchantModule', ['overallMerchantSummaries', 'overallMerchantPeriodSummaries']),
+    ...mapState('merchantModule', ['overallMerchantSummaries', 'overallMerchantPeriodSummaries', 'allMerchants']),
     ...mapState('transactionModule', ['allTransactions']),
   
     totalPages: function () {
@@ -357,34 +357,65 @@ export default {
     },
 
     merchantOptions: function(){
-      return this.overallMerchantSummaries.map((stat) => stat.merchantName).filter(Boolean)
+      return this.statements.map((stat) => stat.merchantName).filter(Boolean)
     },
 
-
     filteredStatements: function(){
-      return this.overallMerchantSummaries.filter(item => {
+      return this.statements.map(item => {
+        console.log(this.selectedMerchants);
+        console.log(item.merchantName);
         if(this.selectedMerchants.length > 0){
           if(this.selectedMerchants.includes(item.merchantName)){
-            return item;
+            return item.statements;
           }
         }
         else{
-          return item
+          return item.statements
         }
-      })
+      }) 
+      .reduce((prevArr, currArr) => prevArr.concat(currArr).filter(Boolean), [])
+
     },
     
-    paginatedItems: function(){
-      return []
+    statements: function(){
+      const merchantStatements = this.allMerchants.map( merchant => {
+        const statements = merchant.statements.map(statementPeriod => {
+          const merchantName = merchant.name
+          const period = { startDate: statementPeriod.startDate, endDate: statementPeriod.endDate }
+          let transactions = [];
+          let deliveryFee = 0;
+          let subtotal = 0;
+          let total = 0;
+
+          for (let i = 0; i < this.allTransactions.length; i++) {
+            const transaction = this.allTransactions[i];
+
+            const dateFrom = new Date(statementPeriod.startDate);
+            const dateTo = new Date(statementPeriod.endDate);
+            const checkDate =new Date(transaction.dateCreated.substr(0,10));
+            if(checkDate.getTime() <= dateTo.getTime() && checkDate.getTime() >= dateFrom.getTime()){
+              subtotal += transaction.totalWithoutDeliveryFeeAndDiscount;
+              deliveryFee += transaction.totalDeliveryFee;
+              total += transaction.totalCardTransactions + transaction.totalCashTransactions;
+              transactions.push( transaction );
+              console.log('match: ', transaction);
+            }
+          }
+          return { merchantName, transactions, deliveryFee, subtotal, total, period}
+        })
+
+        return { merchantName: merchant.name, statements }
+      });
+      return merchantStatements
     },
 
-    filteredTransactions: function(){
-      return this.allTransactions.filter( transaction=> transaction.merchantName == this.selectedStatement.merchantName)
+    paginatedItems: function(){
+      return []
     }
   },
 
   methods: {
-    ...mapActions('merchantModule', ['getMerchantStatistics']),
+    ...mapActions('merchantModule', ['getMerchants','getMerchantStatistics']),
     ...mapActions('transactionModule', ['getTransactions']),
     
     paginate(nextPageNum) {
@@ -436,6 +467,12 @@ export default {
 
     clearFilters(){
       this.selectedMerchants=[];
+    }
+  },
+
+  watch: {
+    filteredStatements(newVal){
+      console.log(newVal);
     }
   }
 };
