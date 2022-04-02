@@ -78,9 +78,11 @@
     <div class="row">
       <div class="col-12">
         <DataTable
+        title="Delivery Transaction"
+        subtitle="This table shows all the recent deliveries"
         ref="table"
         :headers="headers"
-        :items="tableItems"
+        :items="deleveryTableItems"
         />
       </div>
     </div>
@@ -132,47 +134,35 @@ export default {
       ],
       headers: [
         {
-          label: "Date",
-          key: "date"
+          label: "Order Id",
+          key: "orderId"
         },
         {
-          label: "Order ID",
-          key: "order_id"
+          label: "Order Total",
+          key: "orderTotal"
         },
         {
-          label: "Merchant Name",
-          key: "merchant_name"
-        },
-        {
-          label: "Customer Name",
-          key: "customer_name"
-        },
-        {
-          label: "Payment Method",
-          key: "payment_method"
+          label: "Ordered By",
+          key: "orderBy"
         },
         {
           label: "Delivery Fee",
-          key: "fee"
+          key: "deliveryFee"
         },
         {
-          label: "Subtotal",
-          key: "subtotal"
+          label: "Merchant Name",
+          key: "merchantName"
         },
         {
-          label: "Total",
-          key: "total"
-        },
-        {
-          label: "Delivered by",
-          kwy: "delivered_by"
+          label: "Customer name",
+          key: "customerName"
         },
         {
           label: "Status",
           key: "status"
-        },
+        }
       ],
-      tableItems: [],
+      deleveryTableItems: [],
 
       selectedMerchant: "",
 
@@ -206,7 +196,8 @@ export default {
       'overallMerchantPeriodSummaries'
       ]),
 
-    ...mapGetters('transactionModule', ['completedMerchantTransactions', 'failedMerchantTransactions', 'cancelledMerchantTransactions']),
+    ...mapState('transactionModule', ['allTransactions']),
+    ...mapGetters('transactionModule', [ 'completedMerchantTransactions', 'failedMerchantTransactions', 'cancelledMerchantTransactions']),
 
     totalCreditCardFees(){
       return '$0'
@@ -284,6 +275,38 @@ export default {
       this.$refs['graphDeliveries'].renderChart(this.lineGraphCategories, 'monthly', [series])
     },
 
+    setDeliveryTable(){
+      console.log(this.selectedMerchant);
+      this.deleveryTableItems = this.allTransactions
+      .filter( transaction => transaction.merchantName == this.selectedMerchant.name )
+      .map( transaction => { 
+        let jobStatus = '';
+
+        if(transaction.jobStatus == 2){
+          jobStatus = "Completed"
+        } else if(transaction.jobStatus == 3){
+          jobStatus = "Failed"
+        } else if(transaction.jobStatus == 8){
+          jobStatus = "Decline"
+        } else if(transaction.jobStatus == 9){
+          jobStatus = "Cancel"
+        }
+        return {
+          orderId: transaction.orderId,
+          orderTotal: transaction.totalPriceWithDiscount,
+          orderBy: transaction.customerUsername,
+          deliveryFee: transaction.deliveryFee,
+          merchantName: transaction.merchantName,
+          customerName: transaction.clientName,
+          status: jobStatus
+        }
+      });
+
+      console.log(this.deleveryTableItems);
+
+    },
+
+
     aggregateByDate(transactions) {
       const groupedTransactions = [];
 
@@ -344,6 +367,7 @@ export default {
       this.setTransactionChart();
       this.setPaymentMethodChart();
       this.setDeliveryCountChart();
+      this.setDeliveryTable();
     }
   }
 };
