@@ -26,8 +26,8 @@ export class UserService extends Http {
     return await this.httpClient().get(`/users${queryString}`, );
   }
 
-  async changePassword(userId, newPassword) {
-    return await this.httpClient().patch(`users/${userId}/change-password`, newPassword);
+  async changePassword(userId, password) {
+    return await this.httpClient().patch(`users/${userId}/change-password`, { password });
   }
 
   async generatePassword(userId) {

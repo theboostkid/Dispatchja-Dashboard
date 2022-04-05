@@ -181,8 +181,8 @@ export default {
       userRoles: [
         { value: 'superuser', text: 'Super User'},
         { value: 'admin', text: 'Admin'},
-        { value: 'merchant-staff', text: 'merchant Staff'},
-        { value: 'merchant-admin', text: 'merchant Admin'}
+        { value: 'restaurant-staff', text: 'merchant Staff'},
+        { value: 'restaurant-admin', text: 'merchant Admin'}
       ],
       headers:[
         {
@@ -229,7 +229,7 @@ export default {
     },
 
     selectmerchants() {
-      return this.allMerchants.map((merchant) => { return {value: merchant._id, text: merchant.name }} )
+      return this.allMerchants.map((merchant) => {return {value: merchant.name, text: merchant.name }} )
     }
   },
 

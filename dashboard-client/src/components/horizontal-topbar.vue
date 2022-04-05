@@ -1,5 +1,6 @@
 <script>
 import { layoutComputed, authComputed } from "@/state/helpers";
+import ProfileModal from "../pages/views/dashboard/profile.vue"
 
 /**
  * Horizontal-topbar component
@@ -15,6 +16,7 @@ export default {
       required: true,
     },
   },
+  components: {ProfileModal},
   computed: {
     ...layoutComputed,
     ...authComputed
@@ -58,6 +60,9 @@ export default {
         }
       }
     },
+    openProfileModal(){
+      this.$refs['profileModal'].openModal();
+    }
   },
   watch: {
     type: {
@@ -119,6 +124,9 @@ export default {
   <header id="page-topbar">
     <div class="navbar-header">
       <div class="d-flex">
+        <ProfileModal
+        ref="profileModal"
+        />
         <!-- LOGO -->
         <div class="navbar-brand-box">
           <router-link to="/" class="logo logo-dark">
@@ -306,12 +314,12 @@ export default {
           </template>
           <!-- item-->
           <b-dropdown-item>
-            <router-link to="/contacts/profile" v-slot="{ navigate }" custom>
-            <span @click="navigate" @keypress.enter="navigate">
-              <i class="bx bx-user font-size-16 align-middle me-1"></i>
-              {{ $t("navbar.dropdown.henry.list.profile") }}
+            <div @click="openProfileModal">
+              <span>
+                <i class="bx bx-user font-size-16 align-middle me-1"></i>
+                {{ $t("navbar.dropdown.henry.list.profile") }}
               </span>
-            </router-link>
+            </div>
           </b-dropdown-item>
           <b-dropdown-divider></b-dropdown-divider>
           <router-link to="/logout" class="dropdown-item text-danger">

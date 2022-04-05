@@ -5,7 +5,7 @@ export const menuItems = [
       icon: "bx-bar-chart-square",
       link: "/dashboard",
       linkName: "Dashboard",
-      allowed:['superuser', 'admin']
+      allowed:['superuser', 'admin', 'restaurant-staff', 'restaurant-admin']
   },
   {
       id: 2,

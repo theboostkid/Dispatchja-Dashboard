@@ -103,3 +103,7 @@ export const actions = {
     }
   }
 }
+
+export const getters = {
+  getMerchantById: state => (id) => state.allMerchants.find( merchant => merchant._id == id) 
+}

@@ -50,6 +50,12 @@ export const actions = {
     const result = await service.delete(userId);
     dispatch('getUsers');
     console.log(result);
+  },
+
+  // eslint-disable-next-line
+  async changePassword({ }, {userId, newPassword}) {
+    const result = await service.changePassword(userId, newPassword);
+    return result;
   }
 }
 
