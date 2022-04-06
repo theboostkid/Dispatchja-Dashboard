@@ -8,13 +8,13 @@ import { UsersRepository } from './users.repository';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-	imports: [
-		ConfigModule,
-		EmailModule,
-		MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
-	],
-	controllers: [UsersController],
-	providers: [UsersService, UsersRepository],
-	exports: [UsersService]
+  imports: [
+    ConfigModule,
+    EmailModule,
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+  ],
+  controllers: [UsersController],
+  providers: [UsersService, UsersRepository],
+  exports: [UsersService],
 })
-export class UsersModule { }
+export class UsersModule {}
