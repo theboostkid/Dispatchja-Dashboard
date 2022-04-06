@@ -3,6 +3,7 @@
 /*/node_modules
 /*/.env
 /*/uploads
+/dashboard-client/.env
 
 # Logs
 logs
