@@ -9,41 +9,6 @@ import { randomUUID } from 'crypto';
 export class MerchantService {
   constructor(private readonly _merchantRepository: MerchantRepository) {}
 
-  // @Cron(CronExpression.EVERY_30_MINUTES)
-  // async automatedStatementReportCron() {
-  //   const today = new Date().toISOString().split('T')[0];
-  //   const { results } = await this.findAll();
-
-  //   const shouldGenerateStatement = (el) => {
-  //     return (
-  //       el.isActive && el.statements?.length && el.nextStatementDate <= today
-  //     );
-  //   };
-
-  //   results
-  //     .filter(shouldGenerateStatement)
-  //     .forEach(async ({ id, lastStatementDate, statementFrequencyInWeeks }) => {
-  //       const t = new Date(lastStatementDate);
-
-  //       //(sum of all completed orders including delivery fees) -
-  //       //all delivery fees - all card transaction fees (4% of all card transactions) = amount owed to merchant
-
-  //       t.setDate(t.getDate() + 1);
-  //       const startDate = t.toISOString().split('T')[0];
-
-  //       t.setDate(t.getDate() + statementFrequencyInWeeks * 7);
-  //       const endDate = t.toISOString().split('T')[0];
-
-  //       await this.createStatement(id, {
-  //         endDate,
-  //         startDate,
-  //         statementFrequencyInWeeks,
-  //       });
-
-  //       //send statement email here.
-  //     });
-  // }
-
   _populateStatementDetails(statement: Statement) {
     statement.id = randomUUID();
     const statementFrequencyInWeeks = statement.statementFrequencyInWeeks;

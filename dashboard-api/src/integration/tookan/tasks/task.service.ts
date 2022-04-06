@@ -13,6 +13,7 @@ import * as fs from 'fs';
 import * as fsp from 'fs/promises';
 import * as csv from 'csv-parser';
 import { SearchQueryParams } from './dto/task.dto';
+import { EmailService } from 'src/email/email.service';
 @Injectable()
 export class TaskService implements OnModuleInit {
   private readonly API_URL: string;
@@ -22,6 +23,7 @@ export class TaskService implements OnModuleInit {
     private readonly _configService: ConfigService,
     private readonly _httpService: HttpService,
     private readonly _merchantService: MerchantService,
+    private readonly _emailService: EmailService,
   ) {
     this.API_URL = this._configService.get<string>('TOOKAN_API_URL');
     this.API_KEY = this._configService.get<string>('TOOKAN_API_KEY');
@@ -33,6 +35,157 @@ export class TaskService implements OnModuleInit {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  @Cron(CronExpression.EVERY_12_HOURS)
+  async automatedStatementReportCron() {
+    const { results } = await this._merchantService.findAll();
+    return;
+    const shouldGenerateStatement = (el) => {
+      return (
+        el.isActive &&
+        el.statements?.length &&
+        el.statements?.some((el) => el.status != 'sent')
+      );
+    };
+
+    results
+      .filter(shouldGenerateStatement)
+      .forEach(
+        async ({
+          name,
+          address,
+          province,
+          country,
+          id,
+          lastStatementDate,
+          statements,
+          statementFrequencyInWeeks,
+        }) => {
+          const t = new Date(lastStatementDate);
+
+          const currentStatement = statements?.find(
+            (el) => el.status != 'sent',
+          );
+          if (currentStatement) {
+            //send statement email here.
+            const transactions = await this.getTasks({
+              merchantName: name,
+              startDate: currentStatement.startDate,
+              endDate: currentStatement.endDate,
+            });
+
+            const { merchantSummary } = await this.getStatistic(
+              null,
+              name,
+              currentStatement.startDate,
+              currentStatement.endDate,
+            );
+
+            console.log(merchantSummary);
+
+            await this._emailService.sendEmail({
+              to: 'yanikblake@gmail.com',
+              subject: 'Transaction Report',
+              template: './statement',
+              context: {
+                merchantName: name,
+                address,
+                province,
+                country,
+                startDate: currentStatement.startDate,
+                endDate: currentStatement.endDate,
+                numberOfTransactions: transactions.length,
+                merchantSummary: {
+                  totalPrice: (
+                    merchantSummary['totalPriceWithDiscount'] || 0
+                  ).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }),
+                  totalCashTransactions:
+                    merchantSummary['totalCashTransactions']?.toLocaleString(
+                      undefined,
+                      {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      },
+                    ) || 0,
+                  cardFees:
+                    (
+                      Number(merchantSummary['totalCardTransactions']) * 0.04
+                    )?.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }) || 0,
+                  totalCardTransactions:
+                    merchantSummary['totalCardTransactions']?.toLocaleString(
+                      undefined,
+                      {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      },
+                    ) || 0,
+                },
+
+                // transactions:
+                // transactions.map(
+                //     (el) => `
+                //         <tr>
+                //         <td><span contenteditable>${
+                //           el.completedDatetime.split('T')[0]
+                //         }</span></td>
+                //             <td><span contenteditable>${el.orderId}</span></td>
+                //             <td><span contenteditable>${
+                //               el.customerUsername
+                //             }</span></td>
+                //             <td><span contenteditable>${
+                //               el.paymentMethod
+                //             }</span></td>
+                //             <td><span data-prefix>$</span><span contenteditable>${el.totalDeliveryFee.toLocaleString(
+                //               undefined,
+                //               {
+                //                 minimumFractionDigits: 2,
+                //                 maximumFractionDigits: 2,
+                //               },
+                //             )}</span></td>
+                //             <td><span data-prefix>$</span><span>${el.totalWithoutDeliveryFeeAndDiscount.toLocaleString(
+                //               undefined,
+                //               {
+                //                 minimumFractionDigits: 2,
+                //                 maximumFractionDigits: 2,
+                //               },
+                //             )}</span></td>
+                //             <td><span data-prefix>$</span><span>${(
+                //               el.totalPriceWithDiscount || 0
+                //             ).toLocaleString(undefined, {
+                //               minimumFractionDigits: 2,
+                //               maximumFractionDigits: 2,
+                //             })}</span></td>
+                //             <td>${el.fleetName}</td>
+                //         </tr>
+                //     `,
+                //   )
+                //   .join(' '),
+              },
+            });
+            console.log('Sent email');
+
+            t.setDate(t.getDate() + 1);
+            const startDate = t.toISOString().split('T')[0];
+
+            t.setDate(t.getDate() + statementFrequencyInWeeks * 7);
+            const endDate = t.toISOString().split('T')[0];
+
+            await this._merchantService.createStatement(id, {
+              endDate,
+              startDate,
+              statementFrequencyInWeeks,
+              status: 'sent',
+            });
+          }
+        },
+      );
   }
 
   @Cron(CronExpression.EVERY_30_MINUTES)
@@ -436,7 +589,7 @@ export class TaskService implements OnModuleInit {
         },
       },
     };
-    console.log(period);
+
     if (period == 'weekly') {
       delete projections.$project['month'];
       projections.$project['week'] = '$_id';
@@ -558,6 +711,10 @@ export class TaskService implements OnModuleInit {
         month,
         week,
         date,
+        orderId,
+        fleetName,
+        customerUsername,
+        completedDatetime,
         merchantName,
         paymentMethod,
         totalJobs,
@@ -569,7 +726,11 @@ export class TaskService implements OnModuleInit {
         month,
         week,
         date,
+        orderId,
+        fleetName,
         merchantName,
+        customerUsername,
+        completedDatetime,
         paymentMethod,
         totalJobs,
         totalPriceWithDiscount: totalPrice,
