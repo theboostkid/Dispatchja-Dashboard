@@ -16,11 +16,26 @@
           :title-class="['d-flex', 'justify-content-center']"
           subtitle="This table shows a breakdown of the delivery transactions"
           :headers="headers"
-          :items="filteredTransactions"
+          :items="selectedStatement.transactions"
           >
+            <template #total="{ item }">
+              {{ formatAsMoney(item.totalCardTransactions + item.totalCashTransactions) }}
+            </template>
           
             <template #jobStatus="{ item }">
               {{ decipherStatusCode(item.jobStatus) }}
+            </template>
+
+            <template #dateCreated="{ item }">
+              {{ new Date(item.dateCreated).toISOString().substr(0, 10)}}
+            </template>
+
+            <template #totalWithoutDeliveryFeeAndDiscount="{ item }">
+              {{ formatAsMoney(item.totalWithoutDeliveryFeeAndDiscount) }}
+            </template>
+
+            <template #deliveryFee="{ item }">
+              {{ formatAsMoney(item.deliveryFee) }}
             </template>
           </DataTable>
         </div>
@@ -51,15 +66,29 @@
         </div>
       </div>
 
-      <div class="col-9">
+      <div class="col-3">
         <label class="mt-3">Filter Merchant:</label>
         <multiselect 
           v-model="selectedMerchants" 
-          :options="restaurantOptions"
+          :options="merchantOptions"
           :multiple="true"
           id="input-5"
           type="text"
-        />
+          :taggable="false"
+          :optionHeight="20"
+        >
+          <template #tag>
+            <span></span>
+          </template>
+
+          <template #selection="{ values, isOpen }">
+            <span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} merchants selected</span>
+            
+            <span @click="clearFilters" v-if="selectedMerchants.length > 0" style="position: absolute; right: 15px; top: 10px; cursor: pointer; z-index: 5;">
+              <i class="mdi mdi-close-thick"/>
+            </span>
+          </template>
+        </multiselect>
       </div>
 
       <!--Search Field-->
@@ -82,7 +111,7 @@
     <template v-if="filteredStatements.length > 0">
       <div class="row mt-5 pt-2">
         <template v-for="statistic in filteredStatements" >
-          <div class="col-md-4" v-if="statistic.restaurantName" :key="statistic.restaurantName">
+          <div class="col-md-4" v-if="statistic.merchantName" :key="statistic.merchantName">
             <div class="card">
               <div class="row justify-content-end">
                 <div class="col-xl-2 d-flex justify-content-end px-4">
@@ -105,11 +134,15 @@
                   <div class="text-center py-5 border-end">
                     <div class="avatar-sm mx-auto mb-3 mt-1">
                       <span
-                        :class="`avatar-title rounded-circle bg-soft bg-blue text-blue font-size-16`"
-                      >{{ statistic.restaurantName.charAt(0) }}</span>
+                        :class="`avatar-title rounded-circle text-black font-size-16`"
+                      >{{ statistic.merchantName.charAt(0) }}</span>
                     </div>
-                    <h5 class=" pb-1">{{ statistic.restaurantName }}</h5>
-                    <h6>Statement: <span class="btn-link">#12930</span></h6>
+                    <h5 class=" pb-1">{{ statistic.merchantName }}</h5>
+                    <h6>Statement:</h6>
+                    <h6>
+                      {{ new Date(statistic.period.startDate).toDateString().split(' ').slice(1).join(' ') }} - 
+                      {{ new Date(statistic.period.endDate).toDateString().split(' ').slice(1).join(' ')  }}
+                    </h6>
                   </div>
                 </div>
                 <div class="col-xl-5">
@@ -118,21 +151,21 @@
                       <div class="col-xs-6 mb-3">
                         <div>
                           <p class="text-muted mb-2 text-truncate">Subtotal</p>
-                          <h5> {{ formatAsMoney(statistic.totalWithoutDeliveryFeeAndDiscount) }}</h5>
+                          <h5> {{ formatAsMoney(statistic.subtotal) }}</h5>
                         </div>
                       </div>
 
                       <div class="col-xs-6 mb-3">
                         <div>
                           <p class="text-muted mb-2 text-truncate">Delivery Fees</p>
-                          <h5>{{ formatAsMoney(statistic.totalDeliveryFee) }}</h5>
+                          <h5>{{ formatAsMoney(statistic.deliveryFee) }}</h5>
                         </div>
                       </div>
 
                       <div class="col-xs-6">
                         <div>
                           <span class="text-muted mb-2 text-truncate">Total</span>
-                          <h5>{{ formatAsMoney(statistic.totalCardTransactions + statistic.totalCashTransactions) }}</h5>
+                          <h5>{{ formatAsMoney(statistic.total) }}</h5>
                         </div>
                       </div>
                     </div>
@@ -184,7 +217,6 @@
               <i href="#" class="fas fa-file-excel" style="font-size: 70px;"></i>
             </div>
             <h4 class="my-4">No Invoices</h4>
-            <p class="text-muted">Please select "Add Invoices" to begin adding invoices to this list</p>
         </div>
       </div>
     </template>
@@ -274,7 +306,7 @@ export default {
         },
         {
           label: 'Merchant Name',
-          key: 'restaurantName'
+          key: 'merchantName'
         },
         {
           label: 'Customer Name',
@@ -309,53 +341,78 @@ export default {
   },
 
   async mounted(){
+    await this.getMerchants();
     const startDate = new Date(new Date().getFullYear() - 2, 0, 1).toISOString().substr(0, 10);
     const endDate = new Date(new Date().getFullYear(), 12 , 0).toISOString().substr(0, 10);
-    if(this.restaurantOverallMonthlyStatistics.length < 1){
-      await this.getRestaurantStatistics({ startDate, endDate });
-    }
-    if(this.overallTransactions.length < 1){
-      await this.getTransactions({ startDate, endDate });
-    }
+    await this.getMerchantStatistics({ startDate, endDate });
+    await this.getTransactions({ startDate, endDate });
   },
 
   computed: {
-    ...mapState('restaurantModule', ['restaurantIndividualBreakdownStatistics', 'restaurantOverallMonthlyStatistics']),
-    ...mapState('transactionModule', ['overallTransactions']),
+    ...mapState('merchantModule', ['overallMerchantSummaries', 'overallMerchantPeriodSummaries', 'allMerchants']),
+    ...mapState('transactionModule', ['allTransactions']),
   
     totalPages: function () {
-      return Math.ceil(this.restaurantIndividualBreakdownStatistics.length / this.pagination.itemsPerPage)
+      return Math.ceil(this.overallMerchantSummaries.length / this.pagination.itemsPerPage)
     },
 
-    restaurantOptions: function(){
-      return this.restaurantIndividualBreakdownStatistics.map((stat) => stat.restaurantName).filter(Boolean)
+    merchantOptions: function(){
+      return this.statements.map((stat) => stat.merchantName).filter(Boolean)
     },
-
 
     filteredStatements: function(){
-      return this.restaurantIndividualBreakdownStatistics.filter(item => {
+      return this.statements.map(item => {
         if(this.selectedMerchants.length > 0){
-          if(this.selectedMerchants.includes(item.restaurantName)){
-            return item;
+          if(this.selectedMerchants.includes(item.merchantName)){
+            return item.statements;
           }
         }
         else{
-          return item
+          return item.statements
         }
-      })
+      }) 
+      .reduce((prevArr, currArr) => prevArr.concat(currArr).filter(Boolean), [])
+
     },
     
-    paginatedItems: function(){
-      return []
+    statements: function(){
+      const merchantStatements = this.allMerchants.map( merchant => {
+        const statements = merchant.statements.map(statementPeriod => {
+          const merchantName = merchant.name
+          const period = { startDate: statementPeriod.startDate, endDate: statementPeriod.endDate }
+          let transactions = [];
+          let deliveryFee = 0;
+          let subtotal = 0;
+          let total = 0;
+
+          for (let i = 0; i < this.allTransactions.length; i++) {
+            const transaction = this.allTransactions[i];
+
+            const dateFrom = new Date(statementPeriod.startDate);
+            const dateTo = new Date(statementPeriod.endDate);
+            const checkDate =new Date(transaction.dateCreated.substr(0,10));
+            if(checkDate.getTime() <= dateTo.getTime() && checkDate.getTime() >= dateFrom.getTime()){
+              subtotal += transaction.totalWithoutDeliveryFeeAndDiscount;
+              deliveryFee += transaction.totalDeliveryFee;
+              total += transaction.totalCardTransactions + transaction.totalCashTransactions;
+              transactions.push( transaction );
+            }
+          }
+          return { merchantName, transactions, deliveryFee, subtotal, total, period}
+        })
+
+        return { merchantName: merchant.name, statements }
+      });
+      return merchantStatements
     },
 
-    filteredTransactions: function(){
-      return this.overallTransactions.filter( transaction=> transaction.restaurantName == this.selectedStatement.restaurantName)
+    paginatedItems: function(){
+      return []
     }
   },
 
   methods: {
-    ...mapActions('restaurantModule', ['getRestaurantStatistics']),
+    ...mapActions('merchantModule', ['getMerchants','getMerchantStatistics']),
     ...mapActions('transactionModule', ['getTransactions']),
     
     paginate(nextPageNum) {
@@ -403,8 +460,29 @@ export default {
       if(code == 10) {
         return 'Deleted'
       }
+    },
+
+    clearFilters(){
+      this.selectedMerchants=[];
+    }
+  },
+
+  watch: {
+    filteredStatements(newVal){
+      console.log(newVal);
     }
   }
 };
 
 </script>
+
+<style >
+  .multiselect__option--highlight:after {
+    color: #333133 !important;
+  }
+
+  .multiselect__option--highlight{
+    color: #333133 !important;
+  }
+
+</style>

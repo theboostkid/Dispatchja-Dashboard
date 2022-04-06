@@ -4,46 +4,47 @@
 
     <div class="row">
       <div class="col-3 mb-5">
-        <label for="restaurants">Please select a merchant</label>
-        <b-form-select
-          id="input-5"
-          class="form-select"
-          type="text"
-          v-model="selectedRestaurant"
-          :options="restaurantOptions"
-          @change="getRestaurantStats"
-        >
-          <template #first>
-            <b-form-select-option class="mb-5" :value="null" disabled>-- Please select an option --</b-form-select-option>
-          </template>
-        </b-form-select>
+        <label for="merchants">Please select a merchant</label>
+        <multiselect 
+          v-model="selectedMerchant" 
+          :options="allMerchants"  
+          label="name" 
+          track-by="name"
+          name="name"
+          :taggable="false"
+          :optionHeight="20"
+          :preserve-search="true"
+          deselect-label=""
+          :allow-empty="false"
+          @input="getMerchantStats"
+        />
       </div>
     </div>
 
     <div class="row">
       <div class="col-xl-3">
         <WidgetCard
-        title="Total Delivery (month)"
-        data="130"
+        :title="'Total Delivery (' + new Date().getFullYear() +')'"
+        :data="totalDeliveries"
         icon="fas fa-shipping-fast"
         />
       </div>
 
       <div class="col-xl-3">
         <WidgetCard
-        title="Total Deliver Earnings (month)"
-        data="$300"
+        :title="'Total Deliver Earnings (' + new Date().getFullYear() +')'"
+        :data="totalDeliveryEarnings"
         icon="fas fa-money-bill-alt"
         />
       </div>
 
-      <div class="col-xl-3">
+      <!-- <div class="col-xl-3">
         <WidgetCard
-        title="Total Credit Card Fees (month)"
-        data="$500"
+        :title="'Total Credit Card Fees (' + new Date().getFullYear() +')'"
+        :data="totalCreditCardFees"
         icon="fas fa-money-check-alt"
         />
-      </div>
+      </div> -->
     </div>
 
     <div class="row">
@@ -77,9 +78,11 @@
     <div class="row">
       <div class="col-12">
         <DataTable
+        title="Delivery Transaction"
+        subtitle="This table shows all the recent deliveries"
         ref="table"
         :headers="headers"
-        :items="tableItems"
+        :items="deleveryTableItems"
         />
       </div>
     </div>
@@ -89,21 +92,22 @@
 <script>
 import Layout from "../../layouts/horizontal.vue";
 import PageHeader from "@/components/page-header";
-import appConfig from "@/app.config";
+// import appConfig from "@/app.config";
 import WidgetCard from "@/components/widgets/card"
 import LineGraph from "@/components/charts/line-chart"
 import MixedGraph from "@/components/charts/mixed-chart.vue"
 import BarChart from '../../../components/charts/bar-chart.vue';
 import DataTable from '../../../components/tables/data-table.vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import Multiselect from "vue-multiselect";
 
 /**
  * Starter component
  */
 export default {
   page: {
-    title: "Starter Page",
-    meta: [{ name: "description", content: appConfig.description }]
+    title: "Reports",
+    meta: [{ name: "description", content: 'Reports for each merchant performance' }]
   },
   components: { 
     Layout, 
@@ -112,66 +116,55 @@ export default {
     LineGraph, 
     MixedGraph, 
     BarChart, 
-    DataTable
+    DataTable,
+    Multiselect
   },
 
   data() {
     return {
-      title: "Restaurant Reports",
+      title: "Merchant Reports",
       items: [
         {
           text: "reports",
         },
         {
-          text: "restaurant reports",
+          text: "Merchant reports",
           active: true
         }
       ],
       headers: [
         {
-          label: "Date",
-          key: "date"
+          label: "Order Id",
+          key: "orderId"
         },
         {
-          label: "Order ID",
-          key: "order_id"
+          label: "Order Total",
+          key: "orderTotal"
         },
         {
-          label: "Restaurant Name",
-          key: "restaurant_name"
-        },
-        {
-          label: "Customer Name",
-          key: "customer_name"
-        },
-        {
-          label: "Payment Method",
-          key: "payment_method"
+          label: "Ordered By",
+          key: "orderBy"
         },
         {
           label: "Delivery Fee",
-          key: "fee"
+          key: "deliveryFee"
         },
         {
-          label: "Subtotal",
-          key: "subtotal"
+          label: "Merchant Name",
+          key: "merchantName"
         },
         {
-          label: "Total",
-          key: "total"
-        },
-        {
-          label: "Delivered by",
-          kwy: "delivered_by"
+          label: "Customer name",
+          key: "customerName"
         },
         {
           label: "Status",
           key: "status"
-        },
+        }
       ],
-      tableItems: [],
+      deleveryTableItems: [],
 
-      selectedRestaurant: "",
+      selectedMerchant: "",
 
       lineGraphCategories: [
         'Jan', 
@@ -187,40 +180,46 @@ export default {
         'Nov', 
         'Dec'
       ],
-
     };
   },
 
   async beforeMount() {
-    await this.getRestaurants();
+    await this.getMerchants();
   },
 
   computed: {
-    ...mapState('restaurantModule', [
-      'restaurants', 
-      'totalRestaurants', 
-      'restaurantMonthlyStatistics', 
-      'restaurantOverallMonthlyStatistics'
+    ...mapState('merchantModule', [
+      'allMerchants', 
+      'totalMerchants', 
+      'singleMerchantPeriodSummaries', 
+      'singleMerchantSummary',
+      'overallMerchantPeriodSummaries'
       ]),
 
-    ...mapGetters('transactionModule', ['completedRestaurantTransactions', 'failedRestaurantTransactions', 'canceledRestaurantTransactions']),
+    ...mapState('transactionModule', ['allTransactions']),
+    ...mapGetters('transactionModule', [ 'completedMerchantTransactions', 'failedMerchantTransactions', 'cancelledMerchantTransactions']),
 
-    restaurantOptions() {
-      return [ 
-        {value: 'all', text: 'All' }, 
-        ...this.restaurants.map((restaurant) => { return {value: restaurant.name, text: restaurant.name }} )
-      ]
+    totalCreditCardFees(){
+      return '$0'
+    },
+
+    totalDeliveryEarnings(){
+      return this.formatAsMoney(this.singleMerchantSummary?.totalDeliveryFee || 0) || '$0';
+    },
+
+    totalDeliveries(){
+      return this.singleMerchantSummary?.totalJobs ? this.singleMerchantSummary.totalJobs.toString() : '0';
     }
   },
 
   methods: {
-    ...mapActions('restaurantModule', ['getRestaurants', 'getRestaurantStatistics']),
+    ...mapActions('merchantModule', ['getMerchants', 'getMerchantStatistics']),
     ...mapActions('transactionModule', ['getTransactions']),
 
     setTransactionChart(){
-      const groupedTransactionsCompleted = this.aggregateByDate(this.completedRestaurantTransactions);
-      const groupedTransactionsFailed = this.aggregateByDate(this.failedRestaurantTransactions);
-      const groupedTransactionsCancel = this.aggregateByDate(this.canceledRestaurantTransactions);
+      const groupedTransactionsCompleted = this.aggregateByDate(this.completedMerchantTransactions);
+      const groupedTransactionsFailed = this.aggregateByDate(this.failedMerchantTransactions);
+      const groupedTransactionsCancel = this.aggregateByDate(this.cancelledMerchantTransactions);
 
       const orderedCompletedTransactions = this.orderByDate(groupedTransactionsCompleted, 12);
       const orderedFailedTransactions = this.orderByDate(groupedTransactionsFailed, 12);
@@ -250,7 +249,7 @@ export default {
     },
 
     setPaymentMethodChart() {
-      const orderedMonthlyStatistice = this.orderByDate(this.restaurantMonthlyStatistics, 12);
+      const orderedMonthlyStatistice = this.orderByDate(this.singleMerchantPeriodSummaries, 12);
 
       const cashSeries = {
         name: 'Cash Payments',
@@ -266,16 +265,42 @@ export default {
     },
 
     setDeliveryCountChart(){
-      const orderedList = this.orderByDate(this.restaurantMonthlyStatistics, 12) 
-
+      const orderedList = this.orderByDate(this.singleMerchantPeriodSummaries, 12) 
       const series = {
         name: 'Total Deliveries',
-        data: orderedList.map( stat=> stat.totalJobs || 0 )
+        data: orderedList.map( stat => stat ? stat.totalJobs : 0 )
       }
-      console.log(series);
 
       this.$refs['graphDeliveries'].renderChart(this.lineGraphCategories, 'monthly', [series])
     },
+
+    setDeliveryTable(){
+      this.deleveryTableItems = this.allTransactions
+      .filter( transaction => transaction.merchantName == this.selectedMerchant.name )
+      .map( transaction => { 
+        let jobStatus = '';
+
+        if(transaction.jobStatus == 2){
+          jobStatus = "Completed"
+        } else if(transaction.jobStatus == 3){
+          jobStatus = "Failed"
+        } else if(transaction.jobStatus == 8){
+          jobStatus = "Decline"
+        } else if(transaction.jobStatus == 9){
+          jobStatus = "Cancel"
+        }
+        return {
+          orderId: transaction.orderId,
+          orderTotal: transaction.totalPriceWithDiscount,
+          orderBy: transaction.customerUsername,
+          deliveryFee: transaction.deliveryFee,
+          merchantName: transaction.merchantName,
+          customerName: transaction.clientName,
+          status: jobStatus
+        }
+      });
+    },
+
 
     aggregateByDate(transactions) {
       const groupedTransactions = [];
@@ -319,29 +344,38 @@ export default {
       const orderedTransactions = [];
 
       for (let i = 0; i < arrayLength; i++) {
+        if(orderedTransactions[i]) continue;
+          
+        orderedTransactions[i] = 0;
         const transaction = transactions[i];
         const arrIndex = transaction?.dateCreated?.substr(6, 7) || transaction?.month?.substr(6, 7) || undefined;
-        if(arrIndex == 0 || arrIndex)
-          orderedTransactions[arrIndex -1] = transaction;
-        else 
-          orderedTransactions[i] = 0;
+        orderedTransactions[Number(arrIndex) -1] = transaction;
       }
       return orderedTransactions;
     },
 
-    async getRestaurantStats(){
-      console.log(this.selectedRestaurant);
+    async getMerchantStats(){
       const startDate = new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10);
       const endDate = new Date(new Date().getFullYear(), 12 , 0).toISOString().substr(0, 10);
-      await this.getRestaurantStatistics({ restaurantName: this.selectedRestaurant, startDate, endDate });
-      await this.getTransactions({ restaurantName: this.selectedRestaurant, startDate, endDate })
+      await this.getMerchantStatistics({ merchantName: this.selectedMerchant.name, startDate, endDate });
+      await this.getTransactions({ merchantName: this.selectedMerchant.name, startDate, endDate })
       this.setTransactionChart();
       this.setPaymentMethodChart();
       this.setDeliveryCountChart();
+      this.setDeliveryTable();
     }
   }
 };
 </script>
 
-<style scoped>
+<style>
+  
+   .multiselect__option--highlight:after {
+    color: #333133 !important;
+  }
+
+  .multiselect__option--highlight{
+    color: #333133 !important;
+  }
+
 </style>

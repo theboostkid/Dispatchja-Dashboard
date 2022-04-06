@@ -1,51 +1,3 @@
-<script>
-import Layout from "../../layouts/auth";
-import { authMethods } from "@/state/helpers";
-import appConfig from "@/app.config";
-
-import { required, email } from "vuelidate/lib/validators";
-
-/**
- * Forgot Password component
- */
-export default {
-  page: {
-    title: "Forgot Password",
-    meta: [
-      {
-        name: "description",
-        content: appConfig.description,
-      },
-    ],
-  },
-  components: {
-    Layout,
-  },
-  data() {
-    return {
-      email: "",
-      submitted: false,
-      error: null,
-      tryingToReset: false,
-      isResetError: false,
-    };
-  },
-  validations: {
-    email: {
-      required,
-      email,
-    },
-  },
-  methods: {
-    ...authMethods,
-    // Try to register the user in with the email, fullname
-    // and password they provided.
-    tryToReset() {
-      
-    },
-  },
-};
-</script>
 
 <template>
   <Layout>
@@ -133,8 +85,7 @@ export default {
             >
           </p>
           <p>
-            © {{ new Date().getFullYear() }} Skote. Crafted with
-            <i class="mdi mdi-heart text-danger"></i> by Themesbrand
+            © {{ new Date().getFullYear() }} Created by Black Sigma
           </p>
         </div>
       </div>
@@ -143,5 +94,71 @@ export default {
     <!-- end row -->
   </Layout>
 </template>
+
+<script>
+import Layout from "../../layouts/auth";
+import { authMethods } from "@/state/helpers";
+import appConfig from "@/app.config";
+
+import { required, email } from "vuelidate/lib/validators";
+import { mapActions } from 'vuex';
+
+/**
+ * Forgot Password component
+ */
+export default {
+  page: {
+    title: "Forgot Password",
+    meta: [
+      {
+        name: "description",
+        content: appConfig.description,
+      },
+    ],
+  },
+  components: {
+    Layout,
+  },
+  data() {
+    return {
+      email: "",
+      submitted: false,
+      error: null,
+      tryingToReset: false,
+      isResetError: false,
+      isModalOpen: false
+    };
+  },
+  validations: {
+    email: {
+      required,
+      email,
+    },
+  },
+  methods: {
+    ...mapActions('auth', ['requestPasswordChange']),
+
+    ...authMethods,
+    // Try to register the user in with the email, fullname
+    // and password they provided.
+    async tryToReset() {
+      
+      const result = await this.requestPasswordChange(this.email);
+      if(result.status == 204) {
+        this.$bvModal.msgBoxOk(
+          'Your request for a password rest was submitted. Check your email for further steps', {
+          title: 'Password Reset',
+          size: 'md',
+          okVariant: 'success',
+          buttonSize: 'sm',
+          headerClass: 'p-2 border-bottom-0',
+          footerClass: 'p-2 border-top-0',
+          centered: true
+        })
+      }
+    },
+  },
+};
+</script>
 
 <style lang="scss" module></style>

@@ -24,6 +24,11 @@ export default [
     },
   },
   {
+    path: '/confirm-request',
+    name: 'Forgot-password-confirm',
+    component: () => import('../pages/views/account/ConfirmPasswordChangeToken')
+  },
+  {
     path: "/logout",
     name: "logout",
     beforeEnter(routeTo, routeFrom, next) {

@@ -1,5 +1,6 @@
 <script>
-import { layoutComputed } from "@/state/helpers";
+import { layoutComputed, authComputed } from "@/state/helpers";
+import ProfileModal from "../pages/views/dashboard/profile.vue"
 
 /**
  * Horizontal-topbar component
@@ -15,8 +16,10 @@ export default {
       required: true,
     },
   },
+  components: {ProfileModal},
   computed: {
     ...layoutComputed,
+    ...authComputed
   },
   data() {
     return {
@@ -57,6 +60,9 @@ export default {
         }
       }
     },
+    openProfileModal(){
+      this.$refs['profileModal'].openModal();
+    }
   },
   watch: {
     type: {
@@ -118,6 +124,9 @@ export default {
   <header id="page-topbar">
     <div class="navbar-header">
       <div class="d-flex">
+        <ProfileModal
+        ref="profileModal"
+        />
         <!-- LOGO -->
         <div class="navbar-brand-box">
           <router-link to="/" class="logo logo-dark">
@@ -299,31 +308,18 @@ export default {
         <b-dropdown right variant="black" toggle-class="header-item">
           <template v-slot:button-content>
             <span class="d-none d-xl-inline-block ms-1">{{
-              $t("navbar.dropdown.henry.text")
+              currentUser.name
             }}</span>
             <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
           </template>
           <!-- item-->
           <b-dropdown-item>
-            <router-link to="/contacts/profile" v-slot="{ navigate }" custom>
-            <span @click="navigate" @keypress.enter="navigate">
-              <i class="bx bx-user font-size-16 align-middle me-1"></i>
-              {{ $t("navbar.dropdown.henry.list.profile") }}
+            <div @click="openProfileModal">
+              <span>
+                <i class="bx bx-user font-size-16 align-middle me-1"></i>
+                {{ $t("navbar.dropdown.henry.list.profile") }}
               </span>
-            </router-link>
-          </b-dropdown-item>
-          <b-dropdown-item href="javascript: void(0);">
-            <i class="bx bx-wallet font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.mywallet") }}
-          </b-dropdown-item>
-          <b-dropdown-item class="d-block" href="javascript: void(0);">
-            <span class="badge bg-success float-end">11</span>
-            <i class="bx bx-wrench font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.settings") }}
-          </b-dropdown-item>
-          <b-dropdown-item href="javascript: void(0);">
-            <i class="bx bx-lock-open font-size-16 align-middle me-1"></i>
-            {{ $t("navbar.dropdown.henry.list.lockscreen") }}
+            </div>
           </b-dropdown-item>
           <b-dropdown-divider></b-dropdown-divider>
           <router-link to="/logout" class="dropdown-item text-danger">

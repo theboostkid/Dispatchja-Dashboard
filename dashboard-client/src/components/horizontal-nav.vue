@@ -198,3 +198,27 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+   .topnav .navbar-nav .nav-link:hover, .topnav .navbar-nav .nav-link:active {
+    color: #FEDB00 /*#556ee6*/;
+    background-color: transparent; 
+   }
+
+   .topnav .navbar-nav .dropdown-item.active, .topnav .navbar-nav .dropdown-item:hover, .topnav .navbar-nav .dropdown-item:active {
+      color: #FEDB00 /*#556ee6*/; 
+    }
+
+    .topnav .navbar-nav .dropdown.active > a {
+      color: #FEDB00 /*#556ee6*/;
+      background-color: transparent; 
+    }
+
+    .topnav .navbar-nav .nav-item:active {
+      color: #FEDB00 /*#556ee6*/; 
+    }
+
+    .router-link-active{
+       color: #FEDB00
+    }
+</style>

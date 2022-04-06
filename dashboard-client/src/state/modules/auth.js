@@ -26,7 +26,6 @@ export const actions = {
     // eslint-disable-next-line no-unused-vars
     async logIn({ commit, dispatch, getters }, { email, password } = {}) {
       const result = await service.login(email, password);
-      console.log(result);
       if(result.status == 200) {
         const { data, status } = result;
         commit('SET_CURRENT_USER', data.user)
@@ -45,10 +44,17 @@ export const actions = {
       }
     },
 
-    // register the user
-    // eslint-disable-next-line no-unused-vars
-    resetPassword({ commit, dispatch, getters }, { email } = {}) {
+    //eslint-disable-next-line
+    async requestPasswordChange({}, email){
+      const result = await service.requestPasswordChange(email);
+      return result;
     },
+
+    // eslint-disable-next-line no-unused-vars
+    async verifyPasswordChange({ commit }, { token }) {
+      const result = await service.verifyPasswordChange(token);
+      return result
+    }
 }
 
 // ===

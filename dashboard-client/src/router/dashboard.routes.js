@@ -1,3 +1,5 @@
+import settingsRoutes from "./settings.routes"
+
 export default [
   {
     path: "/dashboard",
@@ -24,7 +26,7 @@ export default [
       authRequired: true,
       allowedRoles: ['superuser', 'admin'] 
     },
-    component: () => import("../pages/views/dashboard/restaurant-report"),
+    component: () => import("../pages/views/dashboard/merchant-report"),
   },
   {
     path: "/agent-reckon",
@@ -44,22 +46,6 @@ export default [
     },
     component: () => import("../pages/views/dashboard/profile"),
   },
-  {
-    path: "/settings/statement-frequency",
-    name: "Statement Frequency",
-    meta: { 
-      authRequired: true,
-      allowedRoles: ['superuser']  
-    },
-    component: () => import("../pages/views/dashboard/statement-frequency"),
-  }, 
-  {
-    path: "/settings/users",
-    name: "Users",
-    meta: { 
-      authRequired: true,
-      allowedRoles: ['superuser', 'restaurant-admin']  
-    },
-    component: () => import("../pages/views/dashboard/users"),
-  }
+
+  ...settingsRoutes
 ]

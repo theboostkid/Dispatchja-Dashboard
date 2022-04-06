@@ -14,10 +14,14 @@ export class AuthService extends Http {
   }
 
   async requestPasswordChange(email) {
-    return await this.httpClient().post(`auth/${email}/request-password-change`);
+    return await this.httpClient().post(`/auth/${email}/request-password-change`);
   }
 
   async confirmPasswordChange(token) {
     return await this.httpClient().post(`/auth/confirm-password-change/${token}`);
+  }
+
+  verifyPasswordChange(token){
+    return this.httpClient().patch(`/auth/confirm-password-change/${token}`)
   }
 }

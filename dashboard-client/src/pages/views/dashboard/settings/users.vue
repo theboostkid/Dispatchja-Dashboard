@@ -3,11 +3,25 @@
     <PageHeader :title="title" :items="items" />
 
     <b-modal
-    title="Add New User"
+    :title="(dialogMode == 'add' ? 'Add New' : 'Edit') + ' User'"
     title-class="text-black font-18"
     v-model="isUserDialogOpen"
     @ok.prevent="saveUser"
+    @cancel="closeDialog"
     >
+      <b-form-group
+      label="Tooken Id"
+      id="input-group-3"
+      class="mb-3"
+      label-for="input-3"
+      >
+        <b-form-input
+        id="input-3"
+        v-model="userInfo.tookanUserId"
+        type="text"
+        />
+      </b-form-group>
+
       <b-form>
         <b-form-group
         label="Name"
@@ -17,7 +31,7 @@
         >
           <b-form-input
           id="input-1"
-          v-model="newUser.name"
+          v-model="userInfo.name"
           type="text"
           />
         </b-form-group>
@@ -30,21 +44,8 @@
         >
           <b-form-input
           id="input-2"
-          v-model="newUser.email"
+          v-model="userInfo.email"
           type="email"
-          />
-        </b-form-group>
-
-        <b-form-group
-        label="Tooken Id"
-        id="input-group-3"
-        class="mb-3"
-        label-for="input-3"
-        >
-          <b-form-input
-          id="input-3"
-          v-model="newUser.tookenUserId"
-          type="text"
           />
         </b-form-group>
 
@@ -58,7 +59,7 @@
           id="input-4"
           class="form-select"
           type="text"
-          v-model="newUser.role"
+          v-model="userInfo.role"
           :options="userRoles"
           >
             <template #first>
@@ -77,8 +78,8 @@
           id="input-5"
           class="form-select"
           type="text"
-          v-model="newUser.restaurantName"
-          :options="selectRestaurants"
+          v-model="userInfo.merchantName"
+          :options="selectmerchants"
           >
             <template #first>
               <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
@@ -93,7 +94,7 @@
               name="checkbox-1"
               value="true"
               unchecked-value="false"
-              v-model="newUser.isActive"
+              v-model="userInfo.isActive"
             >
               Is Account Active ?
             </b-form-checkbox>
@@ -101,9 +102,9 @@
       </b-form>
     </b-modal>
 
-     <div class="row mb-4">
+    <div class="row mb-4">
       <div class="col">
-        <b-button variant="primary" @click="isUserDialogOpen=true">
+        <b-button variant="primary" @click="openAddUserDialog">
           Add User
         </b-button>
       </div>
@@ -123,7 +124,7 @@
               <div class="col-xl-3 col-lg-4 col-sm-6" @click="removeUser(item)">
                 <i class="mdi mdi-18px mdi-delete"></i>
               </div>
-              <div class="col-xl-3 col-lg-4 col-sm-6" @click="editUser(item)">
+              <div class="col-xl-3 col-lg-4 col-sm-6" @click="openEditUserDialog(item)">
                 <i class="mdi mdi-18px mdi-file-edit-outline"></i>
               </div>
             </div>
@@ -145,19 +146,19 @@
 </template>
 
 <script>
-import Layout from "../../layouts/horizontal.vue";
+import Layout from "../../../layouts/horizontal.vue";
 import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
 import { mapActions, mapState } from 'vuex'
-import DataTable from '../../../components/tables/data-table.vue';
-import { notificationMethods } from '../../../state/helpers'
+import DataTable from '../../../../components/tables/data-table.vue';
+import { notificationMethods } from '../../../../state/helpers'
 
 /**
  * Starter component
  */
 export default {
   page: {
-    title: "Starter Page",
+    title: "User Settings",
     meta: [{ name: "description", content: appConfig.description }]
   },
 
@@ -165,6 +166,7 @@ export default {
 
   data() {
     return {
+      dialogMode: 'add',
       title: "Users",
       items: [
         {
@@ -179,8 +181,8 @@ export default {
       userRoles: [
         { value: 'superuser', text: 'Super User'},
         { value: 'admin', text: 'Admin'},
-        { value: 'restaurant-staff', text: 'Restaurant Staff'},
-        { value: 'restaurant-admin', text: 'Restaurant Admin'}
+        { value: 'restaurant-staff', text: 'merchant Staff'},
+        { value: 'restaurant-admin', text: 'merchant Admin'}
       ],
       headers:[
         {
@@ -209,55 +211,66 @@ export default {
         }
       ],
       isUserDialogOpen: false,
-      newUser: {}
+      userInfo: {}
     };
   },
 
   async beforeMount() {
     await this.getUsers();
-    await this.getRestaurants();
+    await this.getMerchants();
   },
 
   computed: {
     ...mapState('userModule', ['users', 'totalUsers']),
-    ...mapState('restaurantModule', ['restaurants', 'totalRestaurants']),
+    ...mapState('merchantModule', ['allMerchants', 'totalmerchants']),
 
     totalPages(){
       return Math.ceil(this.totalUsers / this.pagination.itemsPerPage)
     },
 
-    selectRestaurants() {
-      return this.restaurants.map((restaurant) => { return {value: restaurant._id, text: restaurant.name }} )
+    selectmerchants() {
+      return this.allMerchants.map((merchant) => {return {value: merchant.name, text: merchant.name }} )
     }
   },
 
   methods: {
     ...mapActions('userModule', ['getUsers', 'createUser', 'deleteUser', 'updateUser']),
-    ...mapActions('restaurantModule', ['getRestaurants']),
+    ...mapActions('merchantModule', ['getMerchants']),
     ...notificationMethods,
 
     async saveUser() {
-      const result = await this.createUser(this.newUser);
+      if(this.dialogMode == 'add') {
+        const result = await this.createUser(this.userInfo);
 
-      if(result.status == 201) {
-        this.clearDialog();
-        this.isUserDialogOpen = false;
-      } 
-      else {
-        console.log('toast');
+        if(result.status == 201) {
+          this.closeDialog();
+        } 
+
+      } else if(this.dialogMode == 'edit') {
+        const result = await this.updateUser(this.userInfo);
+        if(result.status == 200) {
+          this.closeDialog();
+        } 
       }
     },
 
-    clearDialog(){
-      this.newUser = {}
+    closeDialog(){
+      this.userInfo = {}
+      this.isUserDialogOpen = false;
     },
 
-    editUser(user){
-      console.log(user);
+    openAddUserDialog(){
+      this.dialogMode = 'add';
+      this.isUserDialogOpen = true
+    },
+
+    openEditUserDialog(user){
+      this.dialogMode = 'edit';
+      this.userInfo = {...user};
+      this.isUserDialogOpen = true;
     },
 
     removeUser(user){
-      console.log(user);
       this.deleteUser(user.id);
     }
   }
@@ -266,6 +279,7 @@ export default {
 
 <style scoped>
   .col-sm-6:hover {
-    color: #556ee6;
+    color: #FEDB00;
+    cursor: pointer;
   }
 </style>

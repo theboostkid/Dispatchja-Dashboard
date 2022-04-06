@@ -55,7 +55,7 @@
               <b-pagination 
                 v-model="pagination.page" 
                 :total-rows="items.length" 
-                :per-page="pagination.itemsPerPage"
+                :per-page="Number(pagination.itemsPerPage)"
                 @change="paginate"
               />
             </ul>
@@ -97,14 +97,6 @@
           return []
         }
       },
-
-      totalPages(){
-        if(Array.isArray(this.items)){
-          return Math.ceil(this.items.length / Number(this.pagination.itemsPerPage));
-        } else {
-          return 1
-        }
-      }
     },
 
     methods: {
@@ -112,6 +104,21 @@
         this.pagination.skip = (page * Number(this.pagination.itemsPerPage)) - Number(this.pagination.itemsPerPage);
       }
     },
+
+    watch: {
+      items(newVal){
+        if(newVal){
+          this.pagination.skip = 0;
+        }
+      },
+
+      'pagination.itemsPerPage'(newVal){
+        if(newVal){
+          this.pagination.skip = 0;
+          this.pagination.page = 1;
+        }
+      }
+    }
   }
 </script>
 

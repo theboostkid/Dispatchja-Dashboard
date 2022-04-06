@@ -34,7 +34,7 @@
       "badge": "04"
     },
     "statements": {
-      "text": "Satements",
+      "text": "Statements",
       "badge": "05"
     },
     "reports": {
@@ -49,7 +49,8 @@
       "text": "Settings",
       "list": {
         "users": "Users",
-        "statement-frequency": "Statement Frequency"
+        "statement-frequency": "Statement Frequency",
+        "merchant-information": "Merchants"
       }
     }
   }
