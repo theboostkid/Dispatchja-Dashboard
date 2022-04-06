@@ -68,7 +68,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
  */
 export default {
   page: {
-    title: "Starter Page",
+    title: "Dashboard",
     meta: [{ name: "description", content: appConfig.description }]
   },
   

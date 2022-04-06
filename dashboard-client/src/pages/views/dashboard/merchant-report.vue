@@ -92,7 +92,7 @@
 <script>
 import Layout from "../../layouts/horizontal.vue";
 import PageHeader from "@/components/page-header";
-import appConfig from "@/app.config";
+// import appConfig from "@/app.config";
 import WidgetCard from "@/components/widgets/card"
 import LineGraph from "@/components/charts/line-chart"
 import MixedGraph from "@/components/charts/mixed-chart.vue"
@@ -106,8 +106,8 @@ import Multiselect from "vue-multiselect";
  */
 export default {
   page: {
-    title: "Starter Page",
-    meta: [{ name: "description", content: appConfig.description }]
+    title: "Reports",
+    meta: [{ name: "description", content: 'Reports for each merchant performance' }]
   },
   components: { 
     Layout, 

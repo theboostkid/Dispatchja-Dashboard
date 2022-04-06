@@ -104,7 +104,7 @@
 <script>
 import Layout from "../../layouts/horizontal.vue";
 import PageHeader from "@/components/page-header";
-import appConfig from "@/app.config";
+// import appConfig from "@/app.config";
 import DataTable from "@/components/tables/data-table.vue";
 import Multiselect from "vue-multiselect";
 import { mapActions, mapState } from 'vuex';
@@ -116,8 +116,8 @@ import 'vue-hotel-datepicker/dist/vueHotelDatepicker.css';
  */
 export default {
   page: {
-    title: "Starter Page",
-    meta: [{ name: "description", content: appConfig.description }]
+    title: "Riders Reckon",
+    meta: [{ name: "description", content: 'Delivery personnel work history' }]
   },
   
   components: { Layout, PageHeader, DataTable, Multiselect, DatePicker},

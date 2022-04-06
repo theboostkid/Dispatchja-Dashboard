@@ -158,7 +158,7 @@ import { notificationMethods } from '../../../../state/helpers'
  */
 export default {
   page: {
-    title: "Starter Page",
+    title: "User Settings",
     meta: [{ name: "description", content: appConfig.description }]
   },
 

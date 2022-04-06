@@ -207,7 +207,7 @@ import { mapActions, mapState } from 'vuex';
  */
 export default {
   page: {
-    title: "Starter Page",
+    title: "Merchant Settings",
     meta: [{ name: "description", content: appConfig.description }]
   },
   components: { Layout, PageHeader, DataTable},

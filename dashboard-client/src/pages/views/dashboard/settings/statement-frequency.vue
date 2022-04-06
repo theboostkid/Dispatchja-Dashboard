@@ -95,7 +95,7 @@ import { mapActions, mapState } from 'vuex';
  */
 export default {
   page: {
-    title: "Starter Page",
+    title: "Frequency Settings",
     meta: [{ name: "description", content: appConfig.description }]
   },
   components: { Layout, PageHeader, DataTable},
