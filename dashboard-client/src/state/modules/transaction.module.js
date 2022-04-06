@@ -35,7 +35,6 @@ export const getters = {
 export const actions = {
   async getTransactions({ commit }, { merchantName, startDate, endDate }) {
     const result = await service.getTransactions(merchantName, startDate, endDate);
-    console.log("transactions: ", result);
     if(result.status == 200) {
       if(merchantName) {
         commit('SET_MERCHANT_TRANSACTIONS', result.data)

@@ -43,7 +43,6 @@ export const mutations = {
 
 export const actions = {
   async createMerchant({ dispatch }, { name, merchantId, email, address, province, country, startDate, endDate, statementFrequencyInWeeks, isActive}) {
-    console.log(merchantId);
     const result = await service.createMerchant(
       name,
       merchantId,
@@ -56,7 +55,6 @@ export const actions = {
       statementFrequencyInWeeks,
       isActive
     );
-    console.log("save merchant: ", result);
     if(result.status == 201) {
       dispatch('getMerchants'); 
     }
@@ -65,7 +63,6 @@ export const actions = {
 
   async getMerchants({ commit }) {
     const result = await service.getMerchants();
-    console.log("merchants: ", result);
     if(result.status == 200){
       const { data: { count, results} } = result 
       commit('SET_MERCHANTS', results);
@@ -84,7 +81,6 @@ export const actions = {
 
   async getMerchantStatistics({ commit }, { merchantName, startDate, endDate }) {
     const result = await service.getStatistics(merchantName, startDate, endDate);
-    console.log("merchant statistics: ", result);
     if(result.status == 200) {
       if(merchantName){
         commit('SET_SINGLE_MERCHANT_SUMMARY', result.data.merchantSummary);

@@ -21,7 +21,6 @@ export const actions = {
   async getUsers({ commit }) {
     const result = await service.getUsers();
     if(result.status == 200) {
-      console.log('users: ', result);
       const { data:{ results, count} } = result;
       commit('SET_USERS', results);
       commit('SET_TOTAL_USERS', count);
@@ -33,7 +32,6 @@ export const actions = {
   
   async createUser({ dispatch }, { name, email, role, tookanUserId, merchantName, isActive }) {
     const result = await service.create(name, email, role, tookanUserId, merchantName, isActive);
-    console.log(result);
     if(result.status == 201) 
       dispatch('getUsers');
     return result
@@ -41,7 +39,6 @@ export const actions = {
 
   async updateUser({ dispatch }, {id, name, email, role, tookanUserId, merchantName, isActive}) {
     const result = await service.update(id, name, email, role, tookanUserId, merchantName, isActive);
-    console.log(result);
     dispatch('getUsers');
     return result;
   },

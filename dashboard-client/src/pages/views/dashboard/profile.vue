@@ -128,7 +128,6 @@
       ...mapActions('userModule', ['updateUser', 'changePassword']),
 
       openModal(){
-        console.log(this.currentUser);
         const merchant = this.getMerchantById(this.currentUser.merchantName);
         this.user = { ...this.currentUser };
         this.user.merchantName = merchant?.name || this.currentUser.merchantName;
@@ -140,7 +139,6 @@
         const result = await this.updateUser(this.user);
         if (result.status == 204) success = true;
         if(this.password && this.confirmPassword) {
-          console.log(this.password);
           const result = await this.changePassword({ userId: this.currentUser.id, newPassword: this.password });
           if (result.status == 204) success = true;
         }

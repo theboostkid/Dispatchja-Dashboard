@@ -143,7 +143,6 @@ export default {
     ...mapActions('merchantModule',  ['getMerchants', 'updateMerchant']),
 
     openEditDialog(item){
-      console.log(item);
       this.merchantInfo = { ...item };
       this.merchantInfo.startDate = this.merchantInfo.statements[this.merchantInfo.statements.length -1].startDate;
       this.merchantInfo.endDate = this.merchantInfo.statements[this.merchantInfo.statements.length -1].endDate;

@@ -38,13 +38,13 @@
         />
       </div>
 
-      <div class="col-xl-3">
+      <!-- <div class="col-xl-3">
         <WidgetCard
         :title="'Total Credit Card Fees (' + new Date().getFullYear() +')'"
         :data="totalCreditCardFees"
         icon="fas fa-money-check-alt"
         />
-      </div>
+      </div> -->
     </div>
 
     <div class="row">
@@ -270,13 +270,11 @@ export default {
         name: 'Total Deliveries',
         data: orderedList.map( stat => stat ? stat.totalJobs : 0 )
       }
-      console.log(series.data);
 
       this.$refs['graphDeliveries'].renderChart(this.lineGraphCategories, 'monthly', [series])
     },
 
     setDeliveryTable(){
-      console.log(this.selectedMerchant);
       this.deleveryTableItems = this.allTransactions
       .filter( transaction => transaction.merchantName == this.selectedMerchant.name )
       .map( transaction => { 
@@ -301,9 +299,6 @@ export default {
           status: jobStatus
         }
       });
-
-      console.log(this.deleveryTableItems);
-
     },
 
 

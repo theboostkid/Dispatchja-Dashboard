@@ -15,7 +15,6 @@ export const mutations = {
 export const actions = {
   async getAgents({ commit }){
     const result = await service.getAgents();
-    console.log(result);
     if(result.status == 200) {
       commit('SET_AGENTS', result.data);
     }

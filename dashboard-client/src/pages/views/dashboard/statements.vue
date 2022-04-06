@@ -362,8 +362,6 @@ export default {
 
     filteredStatements: function(){
       return this.statements.map(item => {
-        console.log(this.selectedMerchants);
-        console.log(item.merchantName);
         if(this.selectedMerchants.length > 0){
           if(this.selectedMerchants.includes(item.merchantName)){
             return item.statements;
@@ -398,7 +396,6 @@ export default {
               deliveryFee += transaction.totalDeliveryFee;
               total += transaction.totalCardTransactions + transaction.totalCashTransactions;
               transactions.push( transaction );
-              console.log('match: ', transaction);
             }
           }
           return { merchantName, transactions, deliveryFee, subtotal, total, period}

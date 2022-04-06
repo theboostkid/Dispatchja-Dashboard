@@ -56,7 +56,6 @@ export class MerchantService extends Http {
     statementFrequencyInWeeks,
     isActive
   ) {
-    console.log(id);
     return this.httpClient().patch(`/merchants/${id}`, {
       name,
       email,

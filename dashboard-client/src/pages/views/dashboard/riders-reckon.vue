@@ -256,7 +256,6 @@ export default {
     viewAgentTaskHistory(agent){
       this.selectedAgent = agent;
       this.agentTask = this.allTransactions.filter( transaction => transaction.fleetId == agent.fleetId);
-      console.log(this.agentTask); 
       this.isViewAgentHistoryDialogOpen = true;
     },
 

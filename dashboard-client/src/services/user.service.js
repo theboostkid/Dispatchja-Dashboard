@@ -6,7 +6,6 @@ export class UserService extends Http {
   }
 
   async create(name, email, role, tookanUserId, merchantName, isActive) {
-    console.log({name, email, role, tookanUserId, merchantName, isActive});
     return await this.httpClient().post('/users', { name, email, role, tookanUserId, merchantName, isActive});
   }
 

@@ -239,7 +239,6 @@ export default {
     ...notificationMethods,
 
     async saveUser() {
-      console.log(this.userInfo);
       if(this.dialogMode == 'add') {
         const result = await this.createUser(this.userInfo);
 
@@ -268,7 +267,6 @@ export default {
     openEditUserDialog(user){
       this.dialogMode = 'edit';
       this.userInfo = {...user};
-      console.log(this.userInfo);
       this.isUserDialogOpen = true;
     },
 
