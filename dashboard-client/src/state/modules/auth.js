@@ -45,10 +45,18 @@ export const actions = {
       }
     },
 
-    // register the user
-    // eslint-disable-next-line no-unused-vars
-    resetPassword({ commit, dispatch, getters }, { email } = {}) {
+    //eslint-disable-next-line
+    async requestPasswordChange({}, email){
+      const result = await service.requestPasswordChange(email);
+      return result;
     },
+
+    // eslint-disable-next-line no-unused-vars
+    async verifyPasswordChange({ commit }, { token }) {
+      const result = await service.verifyPasswordChange(token);
+      console.log(result);
+      return result
+    }
 }
 
 // ===
