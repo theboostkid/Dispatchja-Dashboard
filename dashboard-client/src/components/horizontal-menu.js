@@ -26,10 +26,10 @@ export const menuItems = [
   },
   {
       id: 4,
-      label: "menuitems.agentreckon.text",
+      label: "menuitems.agentrecon.text",
       icon: "mdi mdi-bike-fast",
-      link: "/reckon",
-      linkName: "Riders Reckon",
+      link: "/recon",
+      linkName: "Riders Recon",
       allowed:['superuser']
   },
   {

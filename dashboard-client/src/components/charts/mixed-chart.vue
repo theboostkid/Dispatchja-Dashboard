@@ -1,7 +1,7 @@
 <template>
-  <div class="card">
+  <div class="card " :class="themeClass">
     <div class="card-body">
-      <h5 class="card-title">{{ title }}</h5>
+      <h5 class="card-title" :class="themeClass">{{ title }}</h5>
       <p class="font-weight-light text-muted mb-4">{{ subtitle }}</p>
       <apexchart
         ref="chart"
@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { layoutComputed } from '../../state/helpers'
+
 const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD"
@@ -101,6 +103,10 @@ export default {
         },
       },
     };
+  },
+
+  computed: {
+    ...layoutComputed
   },
 
   methods: {

@@ -5,6 +5,14 @@
     <b-modal
     v-model="isViewAgentHistoryDialogOpen"
     size="xl"
+    :header-text-variant="textVariant"
+    :body-text-variant="textVariant"
+    :footer-text-variant="textVariant"
+    :body-bg-variant="backgroundVariant"
+    :footer-bg-variant="backgroundVariant"
+    :header-bg-variant="backgroundVariant"
+    body-class='border-0;'
+    :hide-header="true"
     >
       <DataTable
       title="Task History"
@@ -110,13 +118,14 @@ import Multiselect from "vue-multiselect";
 import { mapActions, mapState } from 'vuex';
 import DatePicker from "vue2-datepicker";
 import 'vue-hotel-datepicker/dist/vueHotelDatepicker.css';
+import { layoutComputed } from '../../../state/helpers'
 
 /**
  * Starter component
  */
 export default {
   page: {
-    title: "Riders Reckon",
+    title: "Riders Recon",
     meta: [{ name: "description", content: 'Delivery personnel work history' }]
   },
   
@@ -124,17 +133,17 @@ export default {
   
   data() {
     return {
-      title: "Agent Reckon",
+      title: "Agent Recon",
       items: [
         {
-          text: "Agent Reckon",
+          text: "Agent Recon",
           active: true
         }
       ],
       tableItems: [],
       agentHeaders: [
         {
-          label: "Order ID",
+          label: "ID",
           key: "fleetId"
         },
         {
@@ -156,7 +165,7 @@ export default {
       ],
       agentTaskHeaders: [
         {
-          label: "Order ID",
+          label: "ID",
           key: "jobId"
         },
         {
@@ -242,6 +251,15 @@ export default {
       } else {
         return this.allAgents
       }
+    },
+    ...layoutComputed,
+
+    backgroundVariant(){
+      return this.leftSidebarType == 'dark' ? 'dark' : 'light'
+    },
+
+    textVariant(){
+      return this.leftSidebarType == 'dark' ? 'light' : 'dark'
     }
   },
 
@@ -296,7 +314,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style >
+  .modal-footer{
+    border-top: 0px solid;
+  }
+
   .actions:hover{
     color: #FEDB00;
     cursor: pointer;

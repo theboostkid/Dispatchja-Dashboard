@@ -11,24 +11,21 @@
                   <p>Sign in to continue to Dispatch Dashboard.</p>
                 </div>
               </div>
-              <div class="col-5 align-self-end">
-                
-                <span class="logo-sm">
-                  <img
-                    src="@/assets/images/logo-light.png"
-                    alt
-                    height="120"
-                  />
-                </span>
-              </div>
             </div>
           </div>
           <div class="card-body pt-0">
             <div>
               <router-link to="/">
                 <div class="avatar-md profile-user-wid mb-4">
-                  <span class="avatar-title rounded-circle bg-light">
-                    <img src="@/assets/images/logo.svg" alt height="34" />
+                  <span class="avatar-title rounded-circle bg-dark bg-soft">
+                    
+                    <span class="logo-sm">
+                      <img
+                        src="@/assets/images/logo-light.png"
+                        alt
+                        height="60"
+                      />
+                    </span>
                   </span>
                 </div>
               </router-link>
@@ -117,7 +114,7 @@
 
         <div class="mt-5 text-center">
           <p>
-            © {{ new Date().getFullYear() }} Created by Black Sigma
+            © {{ new Date().getFullYear() }} Created by Black Sigma Technologies
           </p>
         </div>
         <!-- end row -->
@@ -156,8 +153,8 @@ export default {
   },
   data() {
     return {
-      email: "admin@gmail.com",
-      password: "uvb9Qy2d7x",
+      email: "",
+      password: "",
       submitted: false,
       authError: null,
       tryingToLogIn: false,

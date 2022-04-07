@@ -1,15 +1,15 @@
 <template>
-  <div class="card mini-stats-wid">
+  <div class="card mini-stats-wid" :class="themeClass">
     <div class="card-body">
       <div class="d-flex flex-wrap">
         <div class="me-3">
-          <p class="text-muted mb-2">{{ title }}</p>
-          <h5 class="mb-0">{{ data }}</h5>
+          <p class="mb-2" :class="themeClass">{{ title }}</p>
+          <h5 class="mb-0" :class="themeClass">{{ data }}</h5>
         </div>
 
         <div class="avatar-sm ms-auto">
           <div
-            class="avatar-title bg-dark rounded-circle text-primary font-size-20"
+            class="avatar-title rounded-circle font-size-20" :class="{ 'bg-gray text-secondary' : leftSidebarType == 'dark',  'bg-dark text-primary': leftSidebarType == 'light' }"
           >
             <i :class="icon"></i>
           </div>
@@ -20,12 +20,18 @@
 </template>
 
 <script>
+  import { layoutComputed } from "@/state/helpers";
+
   export default {
     props: {
       icon: String,
       data: String,
       title: String
-    }
+    },
+
+    computed: {
+      ...layoutComputed
+    },
   }
 </script>
 

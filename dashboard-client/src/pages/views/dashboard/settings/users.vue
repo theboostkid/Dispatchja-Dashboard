@@ -4,10 +4,16 @@
 
     <b-modal
     :title="(dialogMode == 'add' ? 'Add New' : 'Edit') + ' User'"
-    title-class="text-black font-18"
+    :title-class=" leftSidebarType == 'light' ? 'text-black font-18' : 'text-white font-18'"
     v-model="isUserDialogOpen"
     @ok.prevent="saveUser"
     @cancel="closeDialog"
+    :header-text-variant="textVariant"
+    :body-text-variant="textVariant"
+    :footer-text-variant="textVariant"
+    :body-bg-variant="backgroundVariant"
+    :footer-bg-variant="backgroundVariant"
+    :header-bg-variant="backgroundVariant"
     >
       <b-form-group
       label="Tooken Id"
@@ -151,7 +157,9 @@ import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
 import { mapActions, mapState } from 'vuex'
 import DataTable from '../../../../components/tables/data-table.vue';
-import { notificationMethods } from '../../../../state/helpers'
+import { notificationMethods } from '../../../../state/helpers';
+import { layoutComputed } from '../../../../state/helpers'
+
 
 /**
  * Starter component
@@ -230,6 +238,15 @@ export default {
 
     selectmerchants() {
       return this.allMerchants.map((merchant) => {return {value: merchant.name, text: merchant.name }} )
+    },
+    ...layoutComputed,
+
+    backgroundVariant(){
+      return this.leftSidebarType == 'dark' ? 'dark' : 'light'
+    },
+
+    textVariant(){
+      return this.leftSidebarType == 'dark' ? 'light' : 'dark'
     }
   },
 

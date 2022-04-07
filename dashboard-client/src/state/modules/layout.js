@@ -3,7 +3,7 @@ export const state = {
   layoutWidth: 'fluid',
   leftSidebarType: 'dark',
   topbar: 'dark',
-  loader: false
+  loader: false,
 }
 
 export const mutations = {
@@ -43,5 +43,5 @@ export const actions = {
 
   changeLoaderValue({ commit }, { loader }) {
     commit('LOADER', loader)
-  }
+  },
 }

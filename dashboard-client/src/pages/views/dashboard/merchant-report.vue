@@ -3,8 +3,8 @@
     <PageHeader :title="title" :items="items" />
 
     <div class="row">
-      <div class="col-3 mb-5">
-        <label for="merchants">Please select a merchant</label>
+      <div class="col-3 mb-5" :class="{ 'text-white': leftSidebarType == 'dark', 'text-dark' : leftSidebarType == 'light' }">
+        <label for="merchants" >Please select a merchant</label>
         <multiselect 
           v-model="selectedMerchant" 
           :options="allMerchants"  
@@ -100,6 +100,7 @@ import BarChart from '../../../components/charts/bar-chart.vue';
 import DataTable from '../../../components/tables/data-table.vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import Multiselect from "vue-multiselect";
+import { layoutComputed } from '../../../state/helpers'
 
 /**
  * Starter component
@@ -188,6 +189,8 @@ export default {
   },
 
   computed: {
+    ...layoutComputed,
+    
     ...mapState('merchantModule', [
       'allMerchants', 
       'totalMerchants', 
