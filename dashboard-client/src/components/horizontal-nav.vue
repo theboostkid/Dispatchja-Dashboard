@@ -88,7 +88,7 @@ export default {
 <template>
   <div class="topnav">
     <div class="container-fluid">
-      <nav class="navbar navbar-light navbar-expand-lg topnav-menu active">
+      <nav class="navbar navbar-expand-lg topnav-menu active">
         <div class="collapse navbar-collapse active" id="topnav-menu-content">
           <ul class="navbar-nav">
             <!-- Menu data -->

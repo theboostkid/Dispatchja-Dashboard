@@ -29,13 +29,13 @@ export default [
     component: () => import("../pages/views/dashboard/merchant-report"),
   },
   {
-    path: "/agent-reckon",
-    name: "Riders Reckon",
+    path: "/agent-recon",
+    name: "Riders Recon",
     meta: { 
       authRequired: true, 
       allowedRoles: ['superuser'] 
     },
-    component: () => import("../pages/views/dashboard/riders-reckon"),
+    component: () => import("../pages/views/dashboard/riders-recon"),
   },
   {
     path: "/profile",

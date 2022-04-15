@@ -24,6 +24,7 @@ export default {
   },
   computed: {
     ...layoutComputed,
+
   },
   created: () => {
     document.body.setAttribute("data-layout", "horizontal");
@@ -58,7 +59,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="min-vh-100" :class="{ 'bg-dark': leftSidebarType == 'dark', 'bg-light': leftSidebarType == 'light' }">
     
     <div id="preloader">
       <div id="status">
@@ -80,15 +81,18 @@ export default {
       <!-- ============================================================== -->
       <!-- Start right Content here -->
       <!-- ============================================================== -->
-      <div class="clearfix">
+      <div class="clearfix" :class="{ 'bg-dark': leftSidebarType == 'dark', 'bg-light': leftSidebarType == 'light' }">
         <div class="page-content">
-          <div class="container-fluid">
+          <div class="container-fluid" >
             <slot />
           </div>
           <!-- container-fluid -->
         </div>
         <!-- End Page-content -->
-        <Footer />
+
+        <div>
+          <Footer />
+        </div>
       </div>
       <!-- end main content-->
     </div>
@@ -106,5 +110,5 @@ export default {
       overflow: hidden; 
   }
   .clearfix:after { clear: both; }
-  .clearfix { zoom: 1; }
+  .clearfix { zoom: 1; height: auto;}
 </style>

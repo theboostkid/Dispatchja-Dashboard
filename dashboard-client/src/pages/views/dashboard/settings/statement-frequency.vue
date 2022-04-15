@@ -4,66 +4,68 @@
 
     <b-modal 
       title="Update Statement Frequency"
-      title-class="text-black font-18"
+      :title-class=" leftSidebarType == 'light' ? 'text-black font-18' : 'text-white font-18'"
       v-model="isDialogOpen"
+      :header-text-variant="textVariant"
+      :body-text-variant="textVariant"
+      :footer-text-variant="textVariant"
+      :body-bg-variant="backgroundVariant"
+      :footer-bg-variant="backgroundVariant"
+      :header-bg-variant="backgroundVariant"
       @ok.prevent="save"
     >
-      <div class="card">
-        <div class="card-body">
-          <b-form>
-            <div class="row">
-              <div class="col">
-                <b-form-group
-                label="Start Date"
-                id="input-group-7"
-                class="mb-3"
-                label-for="input-7"
-                >
-                  <b-form-input
-                  id="input-7"
-                  v-model="merchantInfo.startDate"
-                  type="date"
-                  disabled
-                  />
-                </b-form-group>
-              </div>
+      <b-form>
+        <div class="row">
+          <div class="col">
+            <b-form-group
+            label="Start Date"
+            id="input-group-7"
+            class="mb-3"
+            label-for="input-7"
+            >
+              <b-form-input
+              id="input-7"
+              v-model="merchantInfo.startDate"
+              type="date"
+              disabled
+              />
+            </b-form-group>
+          </div>
 
-              <div class="col">
-                <b-form-group
-                  label="End Date"
-                  id="input-group-8"
-                  class="mb-3"
-                  label-for="input-8"
-                  >
-                    <b-form-input
-                    id="input-8"
-                    v-model="merchantInfo.endDate"
-                    type="date"
-                    disabled
-                    />
-                  </b-form-group>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-6">
-                <b-form-group
-                label="Statement Frequency (weeks)"
-                id="input-group-9"
-                class="mb-3"
-                label-for="input-9"
-                >
-                  <b-form-input
-                  id="input-9"
-                  v-model="merchantInfo.statementFrequencyInWeeks"
-                  type="number"
-                  />
-                </b-form-group>
-              </div>
-            </div>
-          </b-form>
+          <div class="col">
+            <b-form-group
+              label="End Date"
+              id="input-group-8"
+              class="mb-3"
+              label-for="input-8"
+              >
+                <b-form-input
+                id="input-8"
+                v-model="merchantInfo.endDate"
+                type="date"
+                disabled
+                />
+              </b-form-group>
+          </div>
         </div>
-      </div>
+
+        <div class="row">
+          <div class="col-6">
+            <b-form-group
+            label="Statement Frequency (weeks)"
+            id="input-group-9"
+            class="mb-3"
+            label-for="input-9"
+            >
+              <b-form-input
+              id="input-9"
+              v-model="merchantInfo.statementFrequencyInWeeks"
+              type="number"
+              />
+            </b-form-group>
+          </div>
+        </div>
+      </b-form>
     </b-modal>
 
     <DataTable
@@ -89,6 +91,7 @@ import PageHeader from "@/components/page-header";
 import appConfig from "@/app.config";
 import DataTable from "@/components/tables/data-table";
 import { mapActions, mapState } from 'vuex';
+import { layoutComputed } from '../../../../state/helpers'
 
 /**
  * Starter component
@@ -136,7 +139,16 @@ export default {
   },
 
   computed: {
-    ...mapState('merchantModule', ['allMerchants'])
+    ...mapState('merchantModule', ['allMerchants']),
+    ...layoutComputed,
+
+    backgroundVariant(){
+      return this.leftSidebarType == 'dark' ? 'dark' : 'light'
+    },
+
+    textVariant(){
+      return this.leftSidebarType == 'dark' ? 'light' : 'dark'
+    }
   },
 
   methods: {
@@ -160,7 +172,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style >
+  .modal-footer{
+    border-top: 0px solid;
+  }
+
   .col-sm-6:hover {
     color: #FEDB00;
     cursor: pointer;

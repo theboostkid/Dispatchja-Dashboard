@@ -25,8 +25,14 @@
             <div>
               <router-link to="/">
                 <div class="avatar-md profile-user-wid mb-4">
-                  <span class="avatar-title rounded-circle bg-light">
-                    <img src="@/assets/images/logo.svg" alt height="34" />
+                  <span class="avatar-title rounded-circle bg-dark bg-soft">
+                    <span class="logo-sm">
+                      <img
+                        src="@/assets/images/logo-light.png"
+                        alt
+                        height="60"
+                      />
+                    </span>
                   </span>
                 </div>
               </router-link>
@@ -161,4 +167,5 @@ export default {
 };
 </script>
 
-<style lang="scss" module></style>
+<style scoped>
+</style>

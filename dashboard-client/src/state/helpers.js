@@ -8,12 +8,20 @@ export const authComputed = {
 }
 
 export const layoutComputed = {
+  themeClass(){
+    if(this.leftSidebarType == 'dark') {
+      return 'bg-secondary text-white'
+    } else {
+      return ''
+    }
+  },
+
   ...mapState('layout', {
     layoutType: (state) => state.layoutType,
     leftSidebarType: (state) => state.leftSidebarType,
     layoutWidth: (state) => state.layoutWidth,
     topbar: (state) => state.topbar,
-    loader: (state) => state.loader
+    loader: (state) => state.loader,
   })
 }
 

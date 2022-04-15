@@ -1,7 +1,7 @@
 <template>
-  <div class="card">
+  <div class="card" :class="themeClass">
     <div class="card-body">
-      <h5 class="card-title">{{ title }}</h5>
+      <h5 class="card-title" :class="themeClass">{{ title }}</h5>
       <p class="font-weight-light text-muted mb-4">{{ subtitle }}</p>
       <!-- Column Charts -->
       <apexchart
@@ -18,7 +18,13 @@
 </template>
 
 <script>
+import { layoutComputed } from '../../state/helpers'
+
 export default {
+  computed: {
+    ...layoutComputed
+  },
+
   props: {
     title: String,
     subtitle: String,

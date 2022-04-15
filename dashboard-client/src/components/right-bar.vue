@@ -43,36 +43,36 @@ export default {
         });
       },
     },
-    width: {
-      get() {
-        return this.$store ? this.$store.state.layout.layoutWidth : {} || {};
-      },
-      set(width) {
-        this.changeLayoutWidth({
-          layoutWidth: width,
-        });
+    // width: {
+    //   get() {
+    //     return this.$store ? this.$store.state.layout.layoutWidth : {} || {};
+    //   },
+    //   set(width) {
+    //     this.changeLayoutWidth({
+    //       layoutWidth: width,
+    //     });
 
-        if (width == "boxed") {
-          this.changeLeftSidebarType({
-            leftSidebarType: "icon",
-          });
-        } else if (width == "fluid" || width == "scrollable") {
-          this.changeLeftSidebarType({
-            leftSidebarType: "dark",
-          });
-        }
-      },
-    },
-    topbar: {
-      get() {
-        return this.$store ? this.$store.state.layout.topbar : {} || {};
-      },
-      set(topbar) {
-        this.changeTopbar({
-          topbar: topbar,
-        });
-      },
-    },
+    //     if (width == "boxed") {
+    //       this.changeLeftSidebarType({
+    //         leftSidebarType: "icon",
+    //       });
+    //     } else if (width == "fluid" || width == "scrollable") {
+    //       this.changeLeftSidebarType({
+    //         leftSidebarType: "dark",
+    //       });
+    //     }
+    //   },
+    // },
+    // topbar: {
+    //   get() {
+    //     return this.$store ? this.$store.state.layout.topbar : {} || {};
+    //   },
+    //   set(topbar) {
+    //     this.changeTopbar({
+    //       topbar: topbar,
+    //     });
+    //   },
+    // },
     sidebarType: {
       get() {
         return this.$store
@@ -85,16 +85,16 @@ export default {
         });
       },
     },
-    loader: {
-      get() {
-        return this.$store ? this.$store.state.layout.loader : {} || {};
-      },
-      set(value) {
-        return this.changeLoaderValue({
-          loader: value,
-        });
-      },
-    },
+    // loader: {
+    //   get() {
+    //     return this.$store ? this.$store.state.layout.loader : {} || {};
+    //   },
+    //   set(value) {
+    //     return this.changeLoaderValue({
+    //       loader: value,
+    //     });
+    //   },
+    // },
   },
 };
 </script>
@@ -111,8 +111,8 @@ export default {
         </div>
         <hr class="mt-0" />
         <div class="p-3">
-          <h6 class="mb-0">Layout</h6>
-          <hr class="mt-1" />
+          <!-- <h6 class="mb-0">Layout</h6> -->
+          <!-- <hr class="mt-1" />
 
           <div class="form-check form-check-inline">
             <input
@@ -137,10 +137,10 @@ export default {
             <label class="form-check-label" for="layout-radio2"
               >Horizontal</label
             >
-          </div>
+          </div> -->
 
           <!-- Width -->
-          <h6 class="mt-3">Width</h6>
+          <!-- <h6 class="mt-3">Width</h6>
           <hr class="mt-1" />
 
           <div class="form-check">
@@ -181,11 +181,11 @@ export default {
             <label class="form-check-label" for="width-radio3">
               Scrollable
             </label>
-          </div>
+          </div> -->
 
           <!-- Sidebar -->
           <div v-if="layout === 'vertical'">
-            <h6 class="mt-3">Sidebar</h6>
+            <h6 class="mt-3">Apperance</h6>
             <hr class="mt-1" />
 
             <div class="form-check">
@@ -198,7 +198,7 @@ export default {
                 v-model="sidebarType"
               />
               <label class="form-check-label" for="sidebar-dark">
-                Dark
+                Dark Mode
               </label>
             </div>
             <div class="form-check">
@@ -211,10 +211,10 @@ export default {
                 v-model="sidebarType"
               />
               <label class="form-check-label" for="sidebar-light">
-                Light
+                Light Mode
               </label>
             </div>
-            <div class="form-check">
+            <!-- <div class="form-check">
               <input
                 class="form-check-input"
                 type="radio"
@@ -252,7 +252,7 @@ export default {
               <label class="form-check-label" for="sidebar-colored">
                 Colored
               </label>
-            </div>
+            </div> -->
           </div>
 
           <!-- Topbar -->
@@ -301,7 +301,7 @@ export default {
           </div>
 
           <!-- Preloader -->
-          <h6 class="mt-3">Preloader</h6>
+          <!-- <h6 class="mt-3">Preloader</h6>
           <hr class="mt-1" />
 
           <div class="form-check form-switch">
@@ -353,7 +353,7 @@ export default {
                 alt
               />
             </router-link>
-          </div>
+          </div> -->
         </div>
       </simplebar>
     </div>

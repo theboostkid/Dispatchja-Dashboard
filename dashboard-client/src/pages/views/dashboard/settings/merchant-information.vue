@@ -4,10 +4,16 @@
 
     <b-modal
     :title="(dialogMode == 'add' ? 'Add New' : 'Edit') + '  Merchant'"
-    title-class="text-black font-18"
+    :title-class=" leftSidebarType == 'light' ? 'text-black font-18' : 'text-white font-18'"
     v-model="isModalOpen"
     @ok.prevent="saveMerchant"
     @cancel="closeModal"
+    :header-text-variant="textVariant"
+    :body-text-variant="textVariant"
+    :footer-text-variant="textVariant"
+    :body-bg-variant="backgroundVariant"
+    :footer-bg-variant="backgroundVariant"
+    :header-bg-variant="backgroundVariant"
     >
       <b-form>
         <b-form-group
@@ -201,6 +207,7 @@ import appConfig from "@/app.config";
 import DataTable from "@/components/tables/data-table";
 import CountriesMixin from  "../../../../mixins/countries.mixin"
 import { mapActions, mapState } from 'vuex';
+import { layoutComputed } from '../../../../state/helpers'
 
 /**
  * Starter component
@@ -276,7 +283,16 @@ export default {
   },
   
   computed: {
-    ...mapState('merchantModule', ['allMerchants'])
+    ...mapState('merchantModule', ['allMerchants']),
+    ...layoutComputed,
+
+    backgroundVariant(){
+      return this.leftSidebarType == 'dark' ? 'dark' : 'light'
+    },
+
+    textVariant(){
+      return this.leftSidebarType == 'dark' ? 'light' : 'dark'
+    }
   },
 
   methods: {

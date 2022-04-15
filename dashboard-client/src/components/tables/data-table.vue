@@ -1,7 +1,7 @@
 <template>
-  <div class="card">
+  <div class="card " :class="themeClass">
     <div class="card-body">
-      <h5 class="card-title"> {{ title }} </h5>
+      <h5 class="card-title" :class="themeClass"> {{ title }} </h5>
       <p class="font-weight-light text-muted mb-4">{{ subtitle }}</p>
       
       <slot name="header"/>
@@ -25,6 +25,7 @@
             :items="paginatedItems"
             :fields="headers"
             fixed
+            :class="themeClass"
           >
             <template v-for="header in headers" v-slot:[`cell(${header.key})`]="data">
               <slot :name="header.key" v-bind:item="data.item">
@@ -67,6 +68,8 @@
 </template>
 
 <script>
+  import { layoutComputed } from '../../state/helpers'
+
   export default {
     props: {
       title: String,
@@ -85,9 +88,9 @@
       }
     },
 
-    beforeMount(){
-      console.log(this.items);
-    },
+    // beforeMount(){
+    //   console.log(this.items);
+    // },
 
     computed: {
       paginatedItems(){
@@ -97,6 +100,8 @@
           return []
         }
       },
+
+      ...layoutComputed
     },
 
     methods: {
@@ -123,5 +128,7 @@
 </script>
 
 <style scoped>
-
+  .page-item {
+    color: #333133;
+  }
 </style>

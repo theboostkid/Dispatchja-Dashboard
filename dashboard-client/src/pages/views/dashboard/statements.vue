@@ -50,7 +50,7 @@
       </div>
     </div> -->
 
-    <div class="row mb-4"> 
+    <div class="row mb-4" :class="{ 'text-white': leftSidebarType == 'dark', 'text-dark' : leftSidebarType == 'light' }"> 
       <div class="col-3">
         <div>
           <label class="mt-3">Date Range:</label>
@@ -61,7 +61,6 @@
             lang="en" 
             confirm
             value-type="YYYY-MM-DD"
-            @confirm="filterByDate"
           />
         </div>
       </div>
@@ -110,7 +109,7 @@
 
     <template v-if="filteredStatements.length > 0">
       <div class="row mt-5 pt-2">
-        <template v-for="statistic in filteredStatements" >
+        <template v-for="statistic in filteredDateStatements" >
           <div class="col-md-4" v-if="statistic.merchantName" :key="statistic.merchantName">
             <div class="card">
               <div class="row justify-content-end">
@@ -212,11 +211,11 @@
       
     <template v-else>
       <div class="row py-5 justify-content-center align-items-center">
-        <div class="col-6 py-5 text-center">
+        <div class="col-6 py-5 text-center"  :class="{ 'text-white': leftSidebarType == 'dark', 'text-dark' : leftSidebarType == 'light' }">
             <div class="my-4">
               <i href="#" class="fas fa-file-excel" style="font-size: 70px;"></i>
             </div>
-            <h4 class="my-4">No Invoices</h4>
+            <h4 class="my-4"  :class="{ 'text-white': leftSidebarType == 'dark', 'text-dark' : leftSidebarType == 'light' }">No Invoices</h4>
         </div>
       </div>
     </template>
@@ -230,8 +229,8 @@ import 'vue-hotel-datepicker/dist/vueHotelDatepicker.css';
 import DataTable from '@/components/tables/data-table.vue'
 import DatePicker from "vue2-datepicker";
 import Multiselect from "vue-multiselect";
-
-
+import { layoutComputed } from '../../../state/helpers'
+ 
 /**
  * Starter component
  */
@@ -351,7 +350,9 @@ export default {
   computed: {
     ...mapState('merchantModule', ['overallMerchantSummaries', 'overallMerchantPeriodSummaries', 'allMerchants']),
     ...mapState('transactionModule', ['allTransactions']),
-  
+    
+    ...layoutComputed,
+
     totalPages: function () {
       return Math.ceil(this.overallMerchantSummaries.length / this.pagination.itemsPerPage)
     },
@@ -372,7 +373,25 @@ export default {
         }
       }) 
       .reduce((prevArr, currArr) => prevArr.concat(currArr).filter(Boolean), [])
+    },
 
+    filteredDateStatements: function() {
+      if(this.daterange[0] && this.daterange[1]) {
+        const filtered = [];
+        for (let i = 0; i < this.filteredStatements.length; i++) {
+          const statement = this.filteredStatements[i];
+
+          const dateFrom = new Date(this.daterange[0]);
+          const dateTo = new Date(this.daterange[1]);
+          const checkDate = new Date(statement.period.startDate);
+          if(checkDate.getTime() <= dateTo.getTime() && checkDate.getTime() >= dateFrom.getTime()){
+            filtered.push(statement)
+          }
+        }
+        return filtered
+      } else {
+        return this.filteredStatements
+      }
     },
     
     statements: function(){
@@ -422,10 +441,6 @@ export default {
     showModal(stats){
       this.selectedStatement = stats;
       this.$refs['breakdownModal'].show()
-    },
-
-    filterByDate(){
-      console.log(this.daterange);
     },
 
     decipherStatusCode(code){
