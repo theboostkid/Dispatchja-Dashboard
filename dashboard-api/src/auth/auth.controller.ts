@@ -6,7 +6,7 @@ import {
   Patch,
   UseGuards,
   HttpCode,
-  HostParam,
+  Headers,
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -50,9 +50,9 @@ export class AuthController {
   @HttpCode(204)
   requestPasswordChange(
     @Param('email') email: string,
-    @HostParam('origin') origin: string,
+    @Headers() headers: any,
   ) {
-    console.log(email);
+    const origin = headers.origin || headers.host;
     return this.authService.sendResetPasswordRequest(email, origin);
   }
 
