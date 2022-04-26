@@ -188,16 +188,16 @@ export class TaskService implements OnModuleInit {
       );
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
-  async handleCron() {
-    try {
-      console.info('[info] running cronjob: ', new Date());
-      await this.populateDBFromTookan();
-      console.info('[info] finish running cronjob: ', new Date());
-    } catch (e) {
-      console.error('[error] running cronjob: ', e);
-    }
-  }
+  // @Cron(CronExpression.EVERY_30_MINUTES)
+  // async handleCron() {
+  //   try {
+  //     console.info('[info] running cronjob: ', new Date());
+  //     await this.populateDBFromTookan();
+  //     console.info('[info] finish running cronjob: ', new Date());
+  //   } catch (e) {
+  //     console.error('[error] running cronjob: ', e);
+  //   }
+  // }
 
   @Cron(CronExpression.EVERY_2_HOURS)
   async uploadCleanUpCron() {
@@ -265,11 +265,17 @@ export class TaskService implements OnModuleInit {
 
       data.forEach((el) => {
         const task = this._mapAPITaskToEntity(el);
-        if (!task.merchantId) return;
+        if (!task.merchantId) {
+          return;
+        }
 
         const merchant =
-          merchants?.find((el) => el.merchantId === task.merchantId) || false;
-        if (!merchant) return;
+          merchants?.find(
+            (el) => el.merchantId.toString() === task.merchantId.toString(),
+          ) || false;
+        if (!merchant) {
+          return;
+        }
 
         task.merchantName = merchant.name;
         tasks.push(task);
@@ -278,7 +284,7 @@ export class TaskService implements OnModuleInit {
       getAllTasksRequestBody.requested_page += 1;
 
       shouldCountinue =
-        getAllTasksRequestBody.requested_page < total_page_count &&
+        getAllTasksRequestBody.requested_page <= total_page_count &&
         getAllTasksRequestBody.is_pagination == 1;
     } while (shouldCountinue);
     console.timeEnd('[info] fetch from tookan and process: ');
