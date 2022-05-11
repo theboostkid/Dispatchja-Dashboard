@@ -40,7 +40,6 @@ export class TaskService implements OnModuleInit {
   @Cron(CronExpression.EVERY_12_HOURS)
   async automatedStatementReportCron() {
     const { results } = await this._merchantService.findAll();
-    return;
     const shouldGenerateStatement = (el) => {
       return (
         el.isActive &&
@@ -54,6 +53,7 @@ export class TaskService implements OnModuleInit {
       .forEach(
         async ({
           name,
+          email,
           address,
           province,
           country,
@@ -85,7 +85,7 @@ export class TaskService implements OnModuleInit {
             console.log(merchantSummary);
 
             await this._emailService.sendEmail({
-              to: 'yanikblake@gmail.com',
+              to: email,
               subject: 'Transaction Report',
               template: './statement',
               context: {
@@ -188,7 +188,7 @@ export class TaskService implements OnModuleInit {
       );
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async handleCron() {
     try {
       console.info('[info] running cronjob: ', new Date());

@@ -18,7 +18,8 @@ cd /root/app/Dispatchja-Dashboard/dashboard-api && npm install && npm run build
 echo "Updating env file..."
 cp .env ./dist/
 echo "Restarting api..."
-forever restart ./dist/main.js
+forever stop ./dist/main.js
+forever start ./dist/main.js
 
 systemctl restart caddy
 systemctl reload caddy
