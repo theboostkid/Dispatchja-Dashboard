@@ -10,6 +10,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { IntegrationModule } from './integration/integration.module';
 import { AuthModule } from './auth/auth.module';
 import { MerchantModule } from './merchant/merchant.module';
+import { StatementModule } from './statement/statement.module';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -57,6 +58,7 @@ import { MerchantModule } from './merchant/merchant.module';
     UsersModule,
     IntegrationModule,
     MerchantModule,
+    StatementModule,
   ],
 })
 export class AppModule {}

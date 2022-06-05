@@ -1,41 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Transform } from 'class-transformer';
 import { Document } from 'mongoose';
-
+import { Types as MongoTypes } from 'mongoose';
 export type MerchantDocument = Merchant & Document;
 
 @Schema()
-export class Statement {
-  @Prop()
-  id?: string;
-
-  @Prop()
-  dateCreated?: string;
-
-  @Prop()
-  startDate?: string;
-
-  @Prop()
-  endDate?: string;
-
-  @Prop()
-  totalAmountPaid?: number;
-
-  @Prop()
-  totalAmount?: number;
-
-  @Prop()
-  totalDeliveryFee?: number;
-
-  @Prop()
-  statementFrequencyInWeeks?: number;
-
-  @Prop()
-  status?: string;
-}
-export const StatementSchema = SchemaFactory.createForClass(Statement);
-
-@Schema()
 export class Merchant {
+  @Transform(({ value }) => value.toString())
+  _id?: MongoTypes.ObjectId;
+
   @Prop()
   id?: string;
 
@@ -64,13 +37,19 @@ export class Merchant {
   statementDay?: number;
 
   @Prop()
+  lastStatementId?: string;
+
+  @Prop()
+  currentStatementStartDate?: string;
+
+  @Prop()
+  currentStatementEndDate?: string;
+
+  @Prop()
   lastStatementDate?: string;
 
   @Prop()
   nextStatementDate?: string;
-
-  @Prop({ type: StatementSchema })
-  statements?: Statement[];
 
   @Prop()
   isActive?: boolean;

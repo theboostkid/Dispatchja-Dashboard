@@ -42,15 +42,13 @@ export class MerchantController {
 
     if (merchantDTO.startDate > merchantDTO.endDate) {
       throw new BadRequestException([
-        'startDate cannot be greater than endDate',
+        'start date cannot be greater than endDate',
       ]);
     }
-
     const today = moment().toISOString();
     const endDate = moment(merchantDTO.endDate).toISOString();
-    console.log(today, endDate);
     if (endDate <= today) {
-      throw new BadRequestException(['endDate must be greater than today.']);
+      throw new BadRequestException(['end date must be greater than today.']);
     }
 
     return this._merchantService.create(merchantDTO);

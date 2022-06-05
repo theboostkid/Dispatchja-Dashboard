@@ -54,6 +54,12 @@ export class CreateMerchantDTO {
   @Max(52)
   statementFrequencyInWeeks: number;
 
+  lastStatementDate?: string;
+  nextStatementDate?: string;
+  lastStatementId?: string;
+  currentStatementStartDate?: string;
+  currentStatementEndDate?: string;
+
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
