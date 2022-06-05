@@ -19,6 +19,10 @@ export class SearchQueryParams {
 
   @IsOptional()
   @IsString()
+  merchantId?: string;
+
+  @IsOptional()
+  @IsString()
   startDate?: string;
 
   @IsOptional()

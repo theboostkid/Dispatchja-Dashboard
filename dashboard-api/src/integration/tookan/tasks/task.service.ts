@@ -13,7 +13,7 @@ import * as fs from 'fs';
 import * as fsp from 'fs/promises';
 import * as csv from 'csv-parser';
 import { SearchQueryParams } from './dto/task.dto';
-import { EmailService } from 'src/email/email.service';
+
 @Injectable()
 export class TaskService implements OnModuleInit {
   private readonly API_URL: string;
@@ -23,7 +23,6 @@ export class TaskService implements OnModuleInit {
     private readonly _configService: ConfigService,
     private readonly _httpService: HttpService,
     private readonly _merchantService: MerchantService,
-    private readonly _emailService: EmailService,
   ) {
     this.API_URL = this._configService.get<string>('TOOKAN_API_URL');
     this.API_KEY = this._configService.get<string>('TOOKAN_API_KEY');
@@ -35,157 +34,6 @@ export class TaskService implements OnModuleInit {
     } catch (e) {
       console.log(e);
     }
-  }
-
-  @Cron(CronExpression.EVERY_12_HOURS)
-  async automatedStatementReportCron() {
-    const { results } = await this._merchantService.findAll();
-    const shouldGenerateStatement = (el) => {
-      return (
-        el.isActive &&
-        el.statements?.length &&
-        el.statements?.some((el) => el.status != 'sent')
-      );
-    };
-
-    results
-      .filter(shouldGenerateStatement)
-      .forEach(
-        async ({
-          name,
-          email,
-          address,
-          province,
-          country,
-          id,
-          lastStatementDate,
-          statements,
-          statementFrequencyInWeeks,
-        }) => {
-          const t = new Date(lastStatementDate);
-
-          const currentStatement = statements?.find(
-            (el) => el.status != 'sent',
-          );
-          if (currentStatement) {
-            //send statement email here.
-            const transactions = await this.getTasks({
-              merchantName: name,
-              startDate: currentStatement.startDate,
-              endDate: currentStatement.endDate,
-            });
-
-            const { merchantSummary } = await this.getStatistic(
-              null,
-              name,
-              currentStatement.startDate,
-              currentStatement.endDate,
-            );
-
-            console.log(merchantSummary);
-
-            await this._emailService.sendEmail({
-              to: email,
-              subject: 'Transaction Report',
-              template: './statement',
-              context: {
-                merchantName: name,
-                address,
-                province,
-                country,
-                startDate: currentStatement.startDate,
-                endDate: currentStatement.endDate,
-                numberOfTransactions: transactions.length,
-                merchantSummary: {
-                  totalPrice: (
-                    merchantSummary['totalPriceWithDiscount'] || 0
-                  ).toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  }),
-                  totalCashTransactions:
-                    merchantSummary['totalCashTransactions']?.toLocaleString(
-                      undefined,
-                      {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      },
-                    ) || 0,
-                  cardFees:
-                    (
-                      Number(merchantSummary['totalCardTransactions']) * 0.04
-                    )?.toLocaleString(undefined, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }) || 0,
-                  totalCardTransactions:
-                    merchantSummary['totalCardTransactions']?.toLocaleString(
-                      undefined,
-                      {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      },
-                    ) || 0,
-                },
-
-                // transactions:
-                // transactions.map(
-                //     (el) => `
-                //         <tr>
-                //         <td><span contenteditable>${
-                //           el.completedDatetime.split('T')[0]
-                //         }</span></td>
-                //             <td><span contenteditable>${el.orderId}</span></td>
-                //             <td><span contenteditable>${
-                //               el.customerUsername
-                //             }</span></td>
-                //             <td><span contenteditable>${
-                //               el.paymentMethod
-                //             }</span></td>
-                //             <td><span data-prefix>$</span><span contenteditable>${el.totalDeliveryFee.toLocaleString(
-                //               undefined,
-                //               {
-                //                 minimumFractionDigits: 2,
-                //                 maximumFractionDigits: 2,
-                //               },
-                //             )}</span></td>
-                //             <td><span data-prefix>$</span><span>${el.totalWithoutDeliveryFeeAndDiscount.toLocaleString(
-                //               undefined,
-                //               {
-                //                 minimumFractionDigits: 2,
-                //                 maximumFractionDigits: 2,
-                //               },
-                //             )}</span></td>
-                //             <td><span data-prefix>$</span><span>${(
-                //               el.totalPriceWithDiscount || 0
-                //             ).toLocaleString(undefined, {
-                //               minimumFractionDigits: 2,
-                //               maximumFractionDigits: 2,
-                //             })}</span></td>
-                //             <td>${el.fleetName}</td>
-                //         </tr>
-                //     `,
-                //   )
-                //   .join(' '),
-              },
-            });
-            console.log('Sent email');
-
-            t.setDate(t.getDate() + 1);
-            const startDate = t.toISOString().split('T')[0];
-
-            t.setDate(t.getDate() + statementFrequencyInWeeks * 7);
-            const endDate = t.toISOString().split('T')[0];
-
-            await this._merchantService.createStatement(id, {
-              endDate,
-              startDate,
-              statementFrequencyInWeeks,
-              status: 'sent',
-            });
-          }
-        },
-      );
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
@@ -291,11 +139,11 @@ export class TaskService implements OnModuleInit {
 
     const len = tasks.length;
     if (len) {
-      console.time(`[info] creating ${tasks.length} tasks from tookan: `);
+      console.time(`[info] created ${tasks.length} tasks from tookan: `);
 
       await this._tookanTaskRepository.createMany(tasks);
 
-      console.timeEnd(`[info] creating ${tasks.length} tasks from tookan: `);
+      console.timeEnd(`[info] created ${tasks.length} tasks from tookan: `);
     }
   }
 
@@ -481,15 +329,25 @@ export class TaskService implements OnModuleInit {
   async getStatistic(
     period?: string,
     merchantName?: string,
+    merchantId?: string,
     startDate?: string,
     endDate?: string,
     jobStatus?: number,
   ) {
     const groupByOptions: GroupByOptions = {
       merchantName,
+      merchantId,
       startDate,
       endDate,
     };
+
+    if (merchantId) {
+      const merchant = await this._merchantService.findByMerchantId(merchantId);
+      if (merchant) {
+        groupByOptions.merchantName = merchant.name;
+        merchantName = merchant.name;
+      }
+    }
 
     const periodData = await this.getTotalBreakDownGroupedByField({
       ...groupByOptions,
@@ -501,6 +359,7 @@ export class TaskService implements OnModuleInit {
       period || 'monthly',
       startDate,
       merchantName,
+      merchantId,
       jobStatus,
     );
 
@@ -537,13 +396,18 @@ export class TaskService implements OnModuleInit {
     period: string,
     startDate?: string,
     merchantName?: string,
+    merchantId?: string,
     jobStatus?: number,
   ) {
     const pipelines = [];
 
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName: merchantName, jobStatus: jobStatus || 2 },
+        $match: { merchantName, jobStatus: jobStatus || 2 },
+      });
+    } else if (merchantId) {
+      pipelines.push({
+        $match: { merchantId, jobStatus: jobStatus || 2 },
       });
     }
 
@@ -614,6 +478,7 @@ export class TaskService implements OnModuleInit {
 
   async getTasks({
     merchantName,
+    merchantId,
     startDate,
     endDate,
     jobStatus,
@@ -624,7 +489,11 @@ export class TaskService implements OnModuleInit {
 
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName: merchantName, jobStatus: jobStatus || 2 },
+        $match: { merchantName, jobStatus: jobStatus || 2 },
+      });
+    } else if (merchantId) {
+      pipelines.push({
+        $match: { merchantId, jobStatus: jobStatus || 2 },
       });
     } else {
       pipelines.push({
@@ -767,6 +636,7 @@ export class TaskService implements OnModuleInit {
   private async getTotalBreakDownGroupedByField({
     propertyToGroupBy,
     merchantName,
+    merchantId,
     startDate,
     endDate,
     returnItems,
@@ -776,7 +646,11 @@ export class TaskService implements OnModuleInit {
 
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName: merchantName, jobStatus: jobStatus || 2 },
+        $match: { merchantName, jobStatus: jobStatus || 2 },
+      });
+    } else if (merchantId) {
+      pipelines.push({
+        $match: { merchantId, jobStatus: jobStatus || 2 },
       });
     } else {
       pipelines.push({

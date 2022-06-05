@@ -50,12 +50,20 @@ export class TasksController {
     ]),
   )
   getTasks(@Query() searchQuery: SearchQueryParams) {
-    const { orderId, fleetId, merchantName, startDate, endDate, jobStatus } =
-      searchQuery;
+    const {
+      orderId,
+      fleetId,
+      merchantName,
+      merchantId,
+      startDate,
+      endDate,
+      jobStatus,
+    } = searchQuery;
     return this._taskService.getTasks({
       orderId,
       fleetId,
       merchantName,
+      merchantId,
       startDate,
       endDate,
       jobStatus,
@@ -72,10 +80,12 @@ export class TasksController {
     ]),
   )
   getMerchantStatistic(@Query() searchQuery: SearchQueryParams) {
-    const { period, merchantName, startDate, endDate, jobStatus } = searchQuery;
+    const { period, merchantName, merchantId, startDate, endDate, jobStatus } =
+      searchQuery;
     return this._taskService.getStatistic(
       period,
       merchantName,
+      merchantId,
       startDate,
       endDate,
       jobStatus,
