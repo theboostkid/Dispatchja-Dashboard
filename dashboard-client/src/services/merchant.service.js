@@ -5,19 +5,6 @@ export class MerchantService extends Http {
     super();
   }
 
-  async getStatistics(merchantName, startDate, endDate, period) {
-    let queryString = "?";
-    if (merchantName) queryString += `merchantName=${merchantName}&`;
-    if (startDate) queryString += `startDate=${startDate}&`;
-    if (endDate) queryString += `endDate=${endDate}&`;
-    if (period) queryString += `period=${period}`;
-    else queryString += `period=monthly`;
-
-    return await this.httpClient().get(
-      `/tookan/tasks/statistics${queryString}`
-    );
-  }
-
   createMerchant(
     name,
     merchantId,
@@ -69,7 +56,7 @@ export class MerchantService extends Http {
     });
   }
 
-  getMerchants() {
+  fetchMerchants() {
     return this.httpClient().get(`/merchants`);
   }
 

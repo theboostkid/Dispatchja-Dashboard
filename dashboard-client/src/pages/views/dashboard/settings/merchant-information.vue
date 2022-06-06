@@ -184,7 +184,7 @@
     title="Merchant Information"
     subtitle="This table shows information about each merchant"
     :headers="headers"
-    :items="allMerchants"
+    :items="merchants"
     >
       <template #actions="{ item }">
         <div class="row">
@@ -222,7 +222,7 @@ export default {
   mixins: [CountriesMixin],
   
   async beforeMount() {
-    await this.getMerchants();
+    await this.fetchMerchants();
 
     if(this.countries.length < 1) 
       await this.loadCountries();
@@ -283,7 +283,7 @@ export default {
   },
   
   computed: {
-    ...mapState('merchantModule', ['allMerchants']),
+    ...mapState('merchantModule', ['merchants']),
     ...layoutComputed,
 
     backgroundVariant(){
@@ -296,7 +296,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('merchantModule', ['createMerchant', 'getMerchants', 'updateMerchant', 'deleteMerchant']),
+    ...mapActions('merchantModule', ['createMerchant', 'fetchMerchants', 'updateMerchant', 'deleteMerchant']),
 
     async saveMerchant(){
       this.merchantInfo.statementFrequencyInWeeks = Number(this.merchantInfo.statementFrequencyInWeeks);
@@ -321,8 +321,9 @@ export default {
     openEditDialog(merchantInfo){
       this.dialogMode = 'edit'
       this.merchantInfo = { ...merchantInfo };
-      this.merchantInfo.startDate = this.merchantInfo.statements[this.merchantInfo.statements.length -1].startDate;
-      this.merchantInfo.endDate = this.merchantInfo.statements[this.merchantInfo.statements.length -1].endDate;
+      console.log(this.allMerchants);
+      this.merchantInfo.startDate = this.merchantInfo.lastStatementDate;
+      this.merchantInfo.endDate = this.merchantInfo.nextStatementDate;
       this.isModalOpen = true;
     },
     

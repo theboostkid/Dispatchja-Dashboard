@@ -32,7 +32,7 @@
                     lang="en" 
                     confirm
                     value-type="YYYY-MM-DD"
-                    @confirm="filterByDate"
+                    @change="fetchTransactions( { startDate: filters.date[0], endDate: filters.date[1] } );"
                   />
                 </div>
               </div>
@@ -188,9 +188,7 @@ export default {
           label: "Date Completed",
           key: "date"
         }
-      ],
-      agentTask: [],
-      
+      ], 
       filters: {
         date: "",
         agents: []
@@ -234,12 +232,12 @@ export default {
     const startDate = new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10);
     const endDate = new Date(new Date().getFullYear(), 12 , 0).toISOString().substr(0, 10);
     await this.getAgents();
-    await this.getTransactions({ startDate, endDate });
+    await this.fetchTransactions({ startDate, endDate });
   },
 
   computed: {
     ...mapState('agentModule', ['allAgents']),
-    ...mapState('transactionModule', ['allTransactions']),
+    ...mapState('transactionModule', ['transactions']),
 
     agentList(){
       return this.allAgents.map( agent => { return { value : agent.fleetId, name: agent.name } })
@@ -260,20 +258,19 @@ export default {
 
     textVariant(){
       return this.leftSidebarType == 'dark' ? 'light' : 'dark'
-    }
+    },
+
+    agentTask(){
+      return this.transactions.filter( transaction => transaction.fleetId == this.selectedAgent.fleetId);
+    },
   },
 
   methods: {
     ...mapActions('agentModule', ['getAgents']),
-    ...mapActions('transactionModule', ['getTransactions']),
-
-    filterByDate(){
-
-    },
+    ...mapActions('transactionModule', ['fetchTransactions']),
 
     viewAgentTaskHistory(agent){
       this.selectedAgent = agent;
-      this.agentTask = this.allTransactions.filter( transaction => transaction.fleetId == agent.fleetId);
       this.isViewAgentHistoryDialogOpen = true;
     },
 

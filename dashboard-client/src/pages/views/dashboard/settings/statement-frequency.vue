@@ -25,7 +25,7 @@
             >
               <b-form-input
               id="input-7"
-              v-model="merchantInfo.startDate"
+              v-model="merchantInfo.lastStatementDate"
               type="date"
               disabled
               />
@@ -41,7 +41,7 @@
               >
                 <b-form-input
                 id="input-8"
-                v-model="merchantInfo.endDate"
+                v-model="merchantInfo.nextStatementDate"
                 type="date"
                 disabled
                 />
@@ -72,7 +72,7 @@
     title="Statment Frequency"
     subtitle="This table shows the time span for each statement and when a statment should be genereated by the system"
     :headers="headers"
-    :items="allMerchants"
+    :items="merchants"
     >
       <template #actions="{ item }">
         <div class="row">
@@ -135,11 +135,11 @@ export default {
   },
 
   async beforeMount(){
-    await this.getMerchants()
+    await this.fetchMerchants()
   },
 
   computed: {
-    ...mapState('merchantModule', ['allMerchants']),
+    ...mapState('merchantModule', ['merchants']),
     ...layoutComputed,
 
     backgroundVariant(){
@@ -152,12 +152,10 @@ export default {
   },
 
   methods: {
-    ...mapActions('merchantModule',  ['getMerchants', 'updateMerchant']),
+    ...mapActions('merchantModule',  ['fetchMerchants', 'updateMerchant']),
 
     openEditDialog(item){
       this.merchantInfo = { ...item };
-      this.merchantInfo.startDate = this.merchantInfo.statements[this.merchantInfo.statements.length -1].startDate;
-      this.merchantInfo.endDate = this.merchantInfo.statements[this.merchantInfo.statements.length -1].endDate;
       this.isDialogOpen = true;
     },
 

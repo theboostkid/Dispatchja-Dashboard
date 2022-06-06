@@ -6,8 +6,8 @@
       <div class="col-3 mb-5" :class="{ 'text-white': leftSidebarType == 'dark', 'text-dark' : leftSidebarType == 'light' }">
         <label for="merchants" >Please select a merchant</label>
         <multiselect 
-          v-model="selectedMerchant" 
-          :options="allMerchants"  
+          v-model="filters.selectedMerchant" 
+          :options="merchants"  
           label="name" 
           track-by="name"
           name="name"
@@ -16,7 +16,21 @@
           :preserve-search="true"
           deselect-label=""
           :allow-empty="false"
-          @input="getMerchantStats"
+          @input="fetchData"
+        />
+      </div>
+
+      <div class="col-3 mb-5" :class="{ 'text-white': leftSidebarType == 'dark', 'text-dark' : leftSidebarType == 'light' }">
+        <label>For The year:</label>
+        <date-picker 
+          v-model="filters.year" 
+          append-to-body 
+          lang="en" 
+          confirm
+          value-type="YYYY-MM-DD"
+          type="year"
+          :range="false" 
+          @change="fetchData"
         />
       </div>
     </div>
@@ -32,7 +46,7 @@
 
       <div class="col-xl-3">
         <WidgetCard
-        :title="'Total Deliver Earnings (' + new Date().getFullYear() +')'"
+        :title="`Total Deliver Earnings (${new Date(filters.year).getFullYear() + 1})`"
         :data="totalDeliveryEarnings"
         icon="fas fa-money-bill-alt"
         />
@@ -49,10 +63,11 @@
 
     <div class="row">
       <div class="col-lg-6">
-        <LineGraph
+        <LineChart
         title="Transactions"
         subtitle="This graph compares transactions that failed and transactions that were successfull"
-        ref="graphTransactions"
+        :chartData="transactionData"
+        :height="200"
         />
       </div>
       
@@ -60,17 +75,19 @@
         <BarChart
         title="Deliveries Count"
         subtitle="This graph shows the total delievers that occurred over the period"
-        ref="graphDeliveries"
+        :chartData="deliveryCountData"
+        :height="230"
         />
       </div>
     </div>
 
     <div class="row">
       <div class="col-12">
-        <MixedGraph
+        <LineChart
         title="Payment Methods"
         subtitle="This graph shows a comparison between card and cash sales and the total sales made"
-        ref="graphPaymentMethods"
+        :chartData="paymentMethodsData"
+        :height="100"
         />
       </div>
     </div>
@@ -82,7 +99,7 @@
         subtitle="This table shows all the recent deliveries"
         ref="table"
         :headers="headers"
-        :items="deleveryTableItems"
+        :items="deliveryTransactions"
         />
       </div>
     </div>
@@ -94,18 +111,19 @@ import Layout from "../../layouts/horizontal.vue";
 import PageHeader from "@/components/page-header";
 // import appConfig from "@/app.config";
 import WidgetCard from "@/components/widgets/card"
-import LineGraph from "@/components/charts/line-chart"
-import MixedGraph from "@/components/charts/mixed-chart.vue"
+import LineChart from "@/components/charts/line-chart"
 import BarChart from '../../../components/charts/bar-chart.vue';
 import DataTable from '../../../components/tables/data-table.vue';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import Multiselect from "vue-multiselect";
 import { layoutComputed } from '../../../state/helpers'
+import { transactionMixin } from '../../../mixins/transaction.mixin'
 
 /**
  * Starter component
  */
 export default {
+  mixins: [transactionMixin],
   page: {
     title: "Reports",
     meta: [{ name: "description", content: 'Reports for each merchant performance' }]
@@ -114,8 +132,7 @@ export default {
     Layout, 
     PageHeader, 
     WidgetCard, 
-    LineGraph, 
-    MixedGraph, 
+    LineChart, 
     BarChart, 
     DataTable,
     Multiselect
@@ -139,33 +156,41 @@ export default {
           key: "orderId"
         },
         {
-          label: "Order Total",
-          key: "orderTotal"
+          label: "Merchant Name",
+          key: "merchantName"
         },
         {
-          label: "Ordered By",
-          key: "orderBy"
+          label: "Customer Name",
+          key: "customerUsername"
         },
         {
           label: "Delivery Fee",
           key: "deliveryFee"
         },
         {
-          label: "Merchant Name",
-          key: "merchantName"
+          label: "Subtotal",
+          key: "subtotal"
         },
         {
-          label: "Customer name",
-          key: "customerName"
+          label: "Total",
+          key: "total"
         },
         {
-          label: "Status",
-          key: "status"
+          label: "Delivered By",
+          key: "fleetName"
+        },
+        {
+          label: "Job Status",
+          key: "jobStatus"
         }
       ],
+
       deleveryTableItems: [],
 
-      selectedMerchant: "",
+      filters: {
+        selectedMerchant: "",
+        year: new Date().toISOString().substr(0, 10)
+      },
 
       lineGraphCategories: [
         'Jan', 
@@ -181,26 +206,139 @@ export default {
         'Nov', 
         'Dec'
       ],
+      
+      paymentMethodsData: {
+        labels: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
+        datasets: [
+          {
+            label: "Online",
+            backgroundColor: "#FFA500",
+            pointRadius: 4,
+            pointHoverRadius: 5,
+            borderColor: "#660031",
+            pointStyle: "circle",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          },
+          {
+            label: "Card",
+            backgroundColor: "#008000",
+            pointRadius: 4,
+            pointHoverRadius: 5,
+            borderColor: "#006629",
+            pointStyle: "circle",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          },
+          {
+            label: "Cash",
+            backgroundColor: "#B22222",
+            pointRadius: 4,
+            pointHoverRadius: 5,
+            borderColor: "#7D5200",
+            pointStyle: "circle",
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          },
+        ],
+      },
+
+      transactionData: {
+        labels: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
+        datasets: [
+          {
+            label: "Completed",
+            backgroundColor: "#008000",
+            pointRadius: 4,
+            pointHoverRadius: 5,
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          },
+          {
+            label: "Failed",
+            backgroundColor: "#FFA500",
+            pointRadius: 4,
+            pointHoverRadius: 5,
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          },
+          {
+            label: "Cancelled",
+            backgroundColor: "#B22222",
+            pointRadius: 4,
+            pointHoverRadius: 5,
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          },
+        ],
+      },
+
+      deliveryCountData: {
+        labels: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
+        datasets: [{
+          label: "Delivery Count",
+          backgroundColor: "#FFA500",
+          borderColor: "#660031",
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        }],
+      },
     };
   },
 
   async beforeMount() {
-    await this.getMerchants();
+    await this.fetchMerchants();
   },
 
   computed: {
     ...layoutComputed,
     
     ...mapState('merchantModule', [
-      'allMerchants', 
+      'merchants', 
       'totalMerchants', 
       'singleMerchantPeriodSummaries', 
       'singleMerchantSummary',
       'overallMerchantPeriodSummaries'
       ]),
-
-    ...mapState('transactionModule', ['allTransactions']),
+    
     ...mapGetters('transactionModule', [ 'completedMerchantTransactions', 'failedMerchantTransactions', 'cancelledMerchantTransactions']),
+    ...mapState('transactionModule', ['allTransactions']),
+      
+    deliveryTransactions() {
+      return this.transactions.filter( transaction => transaction.merchantName == this.filters.selectedMerchant.name)
+    },
 
     totalCreditCardFees(){
       return '$0'
@@ -216,71 +354,114 @@ export default {
   },
 
   methods: {
-    ...mapActions('merchantModule', ['getMerchants', 'getMerchantStatistics']),
-    ...mapActions('transactionModule', ['getTransactions']),
-
-    setTransactionChart(){
-      const groupedTransactionsCompleted = this.aggregateByDate(this.completedMerchantTransactions);
-      const groupedTransactionsFailed = this.aggregateByDate(this.failedMerchantTransactions);
-      const groupedTransactionsCancel = this.aggregateByDate(this.cancelledMerchantTransactions);
-
-      const orderedCompletedTransactions = this.orderByDate(groupedTransactionsCompleted, 12);
-      const orderedFailedTransactions = this.orderByDate(groupedTransactionsFailed, 12);
-      const orderedCancelTransactions = this.orderByDate(groupedTransactionsCancel, 12);
-      
+    ...mapActions('merchantModule', ['fetchMerchants']),
+    ...mapActions('transactionModule', ['fetchTransactions', 'fetchStatistics']),
     
-      const failedSeries = {
-        name: 'Failed Transaction',
-        color: '#FFA500',
-        data: orderedFailedTransactions.map(transaction => transaction.total || 0)
+    setTransactionChart() {
+      const failed = {
+        label: 'Failed Transactions',
+        pointStyle: 'circle',
+        pointRadius: 5,
+        pointHoverRadius: 6,
+        backgroundColor: '#FF007A',
+        borderColor: '#660031',
+        data: this.failedTransactionPeriodSummary.map(transaction => transaction.total)
+      }
+      const completed = {
+        label: 'Completed Transaction', 
+        pointStyle: 'circle',
+        pointRadius: 5,
+        pointHoverRadius: 6,
+        backgroundColor: '#00FF66',
+        borderColor: '#006629',
+        data: this.completedTransactionPeriodSummary.map(transaction => transaction.total)
+      }
+      const cancelled = {
+        label: 'Cancel Transaction',
+        pointStyle: 'circle',
+        pointRadius: 4,
+        pointHoverRadius: 6, 
+        backgroundColor: '#FFA800',
+        borderColor: '#7D5200',
+        data: this.cancelledTransactionPeriodSummary.map(transaction => transaction.total)
       }
 
-      const completeSeries = { 
-        name: 'Completed Transaction', 
-        color: "#008000",
-        data: orderedCompletedTransactions.map(transaction => transaction.total || 0)
+      this.transactionData = { 
+        labels: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ], 
+        datasets: [failed, completed, cancelled]
       }
-
-      const cancelSeries = { 
-        name: 'Cancel Transaction', 
-        color: "#B22222",
-        data: orderedCancelTransactions.map(transaction => transaction.total || 0)
-      }
-
-      this.$refs['graphTransactions'].renderChart(this.lineGraphCategories, 'monthly', [ failedSeries, completeSeries, cancelSeries ])
-
     },
 
     setPaymentMethodChart() {
-      const orderedMonthlyStatistice = this.orderByDate(this.singleMerchantPeriodSummaries, 12);
-
-      const cashSeries = {
-        name: 'Cash Payments',
-        data: orderedMonthlyStatistice.map( value => value.totalCashTransactions || 0)
+      const online = {
+        label: 'Online',
+        backgroundColor: '#FFA500',
+        pointRadius: 4,
+        pointHoverRadius: 5,
+        borderColor: '#660031',
+        pointStyle: 'circle',
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]
       }
 
-      const cardSeries = {
-        name: 'Card Payments',
-        data: orderedMonthlyStatistice.map( value => value.totalCardTransactions || 0)
+      const card = {
+        label: 'Card', 
+        pointStyle: 'circle',
+        pointRadius: 4,
+        pointHoverRadius: 5,
+        backgroundColor: "#008000",
+        borderColor: '#006629',
+        data: this.orderedPeriodSummary.map( summary => summary.totalCardTransactions)
       }
 
-      this.$refs['graphPaymentMethods'].renderChart(this.lineGraphCategories, 'monthly', [cashSeries, cardSeries])
+      const cash = { 
+        label: 'Cash', 
+        backgroundColor: "#B22222",
+        pointRadius: 4,
+        pointHoverRadius: 5,
+        borderColor: '#7D5200',
+        pointStyle: 'circle',
+        data: this.orderedPeriodSummary.map( summary => summary.totalCashTransactions)
+      }
+
+      this.paymentMethodsData= {
+        labels: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ], 
+        datasets: [cash, card, online]
+      }
     },
 
-    setDeliveryCountChart(){
-      const orderedList = this.orderByDate(this.singleMerchantPeriodSummaries, 12) 
-      const series = {
-        name: 'Total Deliveries',
-        data: orderedList.map( stat => stat ? stat.totalJobs : 0 )
-      }
+    setDeliveryCountChart() {
+      const deliveries = {
+        label: "Delivery Count",
+        backgroundColor: "#FFA500",
+        pointRadius: 4,
+        pointHoverRadius: 5,
+        borderColor: "#660031",
+        pointStyle: "circle",
+        data: this.orderedPeriodSummary.map( summary => summary.totalJobs ),
+      };
 
-      this.$refs['graphDeliveries'].renderChart(this.lineGraphCategories, 'monthly', [series])
+      this.deliveryCountData = {
+        labels: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
+        datasets: [deliveries],
+      };
     },
+
 
     setDeliveryTable(){
-      this.deleveryTableItems = this.allTransactions
-      .filter( transaction => transaction.merchantName == this.selectedMerchant.name )
-      .map( transaction => { 
+      this.deleveryTableItems = this.transactions.map( transaction => { 
         let jobStatus = '';
 
         if(transaction.jobStatus == 2){
@@ -302,71 +483,26 @@ export default {
           status: jobStatus
         }
       });
+      console.log(this.deleveryTableItems);
     },
 
-
-    aggregateByDate(transactions) {
-      const groupedTransactions = [];
-
-      if(Array.isArray(transactions)) {
-        for (let i = 0; i < transactions.length; i++) {
-          const transaction = transactions[i];
-          if(groupedTransactions.length == 0) {
-            groupedTransactions.push({
-              dateCreated:  transaction.dateCreated.substr(0, 7),
-              total: transaction.totalPriceWithDiscount,
-              totalTransactions: 1
-            });
-          } else {
-            let found = false;
-
-            for (let j = 0; j < groupedTransactions.length; j++) {
-              const group = groupedTransactions[j];
-              const transactionDate = transaction.dateCreated.substr(0, 7);
-              if(group.dateCreated == transactionDate) {
-                groupedTransactions[j].total += transaction.totalPriceWithDiscount || 0;
-                groupedTransactions[j].totalTransactions ++;
-                found = true;
-              } 
-            }
-            if(!found){
-              groupedTransactions.push({
-                dateCreated: transaction.dateCreated.substr(0, 7),
-                total: transaction.totalPriceWithDiscount,
-                totalTransactions: 1
-              });
-            }
-          }
-          
-        }
+    async fetchData() {
+      if(this.filters.selectedMerchant) {
+        const startDate = new Date(this.filters.year.substr(0, 4), 0, 1)
+          .toISOString()
+          .substr(0, 10);
+        const endDate = new Date(this.filters.year.substr(0, 4), 12, 0)
+          .toISOString()
+          .substr(0, 10);
+        await this.fetchStatistics({ startDate, endDate, merchantName: this.filters.selectedMerchant.name });
+        await this.fetchTransactions({ startDate, endDate, merchantName: this.filters.selectedMerchant.name });
+        this.setTransactionChart();
+        this.setPaymentMethodChart();
+        this.setDeliveryCountChart();
+        this.setDeliveryTable();
+        console.log("fetching..");
       }
-      return groupedTransactions
     },
-
-    orderByDate(transactions, arrayLength) {
-      const orderedTransactions = [];
-
-      for (let i = 0; i < arrayLength; i++) {
-        if(orderedTransactions[i]) continue;
-          
-        orderedTransactions[i] = 0;
-        const transaction = transactions[i];
-        const arrIndex = transaction?.dateCreated?.substr(6, 7) || transaction?.month?.substr(6, 7) || undefined;
-        orderedTransactions[Number(arrIndex) -1] = transaction;
-      }
-      return orderedTransactions;
-    },
-
-    async getMerchantStats(){
-      const startDate = new Date(new Date().getFullYear(), 0, 1).toISOString().substr(0, 10);
-      const endDate = new Date(new Date().getFullYear(), 12 , 0).toISOString().substr(0, 10);
-      await this.getMerchantStatistics({ merchantName: this.selectedMerchant.name, startDate, endDate });
-      await this.getTransactions({ merchantName: this.selectedMerchant.name, startDate, endDate })
-      this.setTransactionChart();
-      this.setPaymentMethodChart();
-      this.setDeliveryCountChart();
-      this.setDeliveryTable();
-    }
   }
 };
 </script>

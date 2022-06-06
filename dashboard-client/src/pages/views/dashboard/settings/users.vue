@@ -225,19 +225,19 @@ export default {
 
   async beforeMount() {
     await this.getUsers();
-    await this.getMerchants();
+    await this.fetchMerchants();
   },
 
   computed: {
     ...mapState('userModule', ['users', 'totalUsers']),
-    ...mapState('merchantModule', ['allMerchants', 'totalmerchants']),
+    ...mapState('merchantModule', ['merchants', 'totalmerchants']),
 
     totalPages(){
       return Math.ceil(this.totalUsers / this.pagination.itemsPerPage)
     },
 
     selectmerchants() {
-      return this.allMerchants.map((merchant) => {return {value: merchant.name, text: merchant.name }} )
+      return this.merchants.map((merchant) => {return {value: merchant.name, text: merchant.name }} )
     },
     ...layoutComputed,
 
@@ -252,7 +252,7 @@ export default {
 
   methods: {
     ...mapActions('userModule', ['getUsers', 'createUser', 'deleteUser', 'updateUser']),
-    ...mapActions('merchantModule', ['getMerchants']),
+    ...mapActions('merchantModule', ['fetchMerchants']),
     ...notificationMethods,
 
     async saveUser() {

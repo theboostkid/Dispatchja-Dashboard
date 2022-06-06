@@ -11,6 +11,8 @@ import Scrollspy from 'vue2-scrollspy';
 import VueSweetalert2 from 'vue-sweetalert2';
 import MyToast from '@/components/widgets/toast'
 import globalMixin from './mixins/global.mixin'
+import 'vue-hotel-datepicker/dist/vueHotelDatepicker.css';
+import DatePicker from "vue2-datepicker";
 
 import "../src/design/app.scss";
 
@@ -22,6 +24,7 @@ import i18n from './i18n'
 
 import tinymce from 'vue-tinymce-editor'
 
+Vue.component('DatePicker', DatePicker)
 Vue.component('tinymce', tinymce)
 Vue.use(VueRouter)
 Vue.use(vco)
