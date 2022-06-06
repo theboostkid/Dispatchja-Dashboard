@@ -121,14 +121,14 @@
 
     computed: {
       ...authComputed,
-      ...mapGetters('merchantModule', ['getMerchantById'])
+      ...mapGetters('merchantModule', ['findMerchantById'])
     },
 
     methods: {
       ...mapActions('userModule', ['updateUser', 'changePassword']),
 
       openModal(){
-        const merchant = this.getMerchantById(this.currentUser.merchantName);
+        const merchant = this.findMerchantById(this.currentUser.merchantName);
         this.user = { ...this.currentUser };
         this.user.merchantName = merchant?.name || this.currentUser.merchantName;
         this.isModalOpen = true;
