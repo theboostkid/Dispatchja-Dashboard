@@ -321,7 +321,6 @@ export default {
     openEditDialog(merchantInfo){
       this.dialogMode = 'edit'
       this.merchantInfo = { ...merchantInfo };
-      console.log(this.allMerchants);
       this.merchantInfo.startDate = this.merchantInfo.lastStatementDate;
       this.merchantInfo.endDate = this.merchantInfo.nextStatementDate;
       this.isModalOpen = true;
