@@ -3,136 +3,173 @@
     <div class="card-body">
       <h5 class="card-title" :class="themeClass">{{ title }}</h5>
       <p class="font-weight-light text-muted mb-4">{{ subtitle }}</p>
-      <!-- Column Charts -->
-      <apexchart
-        ref="chart"
-        class="apex-charts"
-        height="380"
-        type="bar"
-        dir="ltr"
-        :series="series"
-        :options="chartOptions"
-      ></apexchart>
+
+      <BarChartGenerator
+        :chart-data="chartData"
+        :height="height"
+        :chart-options="chartOptions"
+        css-classes="text-white"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import { Bar as BarChartGenerator } from "vue-chartjs/legacy";
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from "chart.js";
 import { layoutComputed } from '../../state/helpers'
 
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+);
+
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
 export default {
-  computed: {
-    ...layoutComputed
-  },
+  name: "BarChart",
+
+  components: { BarChartGenerator },
 
   props: {
-    title: String,
-    subtitle: String,
+    title: {
+      type: String,
+      default: "",
+    },
+
+    subtitle: {
+      type: String,
+      default: "",
+    },
+
+    chartData: {
+      type: Object,
+      default: () => {
+        return {
+          labels: [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ],
+          datasets: [{ data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }],
+          backgroundColor: "#f87979",
+        };
+      },
+    },
+
+    height: {
+      type: Number,
+      default: 100,
+    },
+
+    chartDataFormat: {
+      type: String,
+      default: "money",
+    },
   },
 
   data() {
     return {
-      series: [],
-
       chartOptions: {
-        stroke: {
-          width: [3, 3],
-          curve: "straight",
-        },
-        chart: {
-          toolbar: {
-            show: false,
-          },
-        },
-        plotOptions: {
-          bar: {
-            dataLabels: {
-              position: "top", // top, center, bottom
+        responsive: true,
+
+        scales: {
+          y: {
+            ticks: {
+              callback: function (val) {
+                return formatter.format(Number(val) || 0);
+              },
             },
           },
         },
-        dataLabels: {
-          enabled: true,
-          formatter: function (val) {
-            return val;
-          },
-          offsetY: -22,
-          style: {
-            fontSize: "12px",
-            colors: ["#304758"],
-          },
-        },
-        colors: ["#556ee6"],
-        grid: {
-          row: {
-            colors: ["transparent", "transparent"], // takes an array which will be repeated on columns
-            opacity: 0.2,
-          },
-          borderColor: "#f1f1f1",
-        },
-        xaxis: {
-          categories: [],
+
+        plugins: {
           tooltip: {
-            enabled: true,
-            offsetY: -35,
-          },
-        },
-        fill: {
-          gradient: {
-            shade: "light",
-            type: "horizontal",
-            shadeIntensity: 0.25,
-            gradientToColors: undefined,
-            inverseColors: true,
-            opacityFrom: 1,
-            opacityTo: 1,
-            stops: [50, 0, 100, 100],
-          },
-        },
-        yaxis: {
-          axisBorder: {
-            show: false,
-          },
-          axisTicks: {
-            show: false,
-          },
-          labels: {
-            show: false,
-            formatter: function (val) {
-              return val ;
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label;
+                if (label) {
+                  label += ": ";
+                }
+                if (context.parsed.y !== null) {
+                  label += formatter.format(context.parsed.y || 0);
+                }
+                return label;
+              },
             },
           },
         },
-        // title: {
-        //   text: "Monthly Inflation in Argentina, 2002",
-        //   floating: true,
-        //   offsetY: 330,
-        //   align: "center",
-        //   style: {
-        //     color: "#444",
-        //     fontWeight: "500",
-        //   },
-        // },
       },
     };
   },
 
-  methods: {
-    renderChart(categories, categoryText, series) {
-      this.$refs.chart.updateOptions({
-        xaxis: {
-          categories: categories,
-          title: {
-            text: categoryText,
-          },
-        }
-      });
+  beforeMount() {
+    if (this.chartDataFormat.toLowerCase() == "money") {
+      this.chartOptions = {
+        responsive: true,
 
-      if(Array.isArray(series) && series.length > 0)
-        this.$refs.chart.updateSeries(series, true);
-    },
+        scales: {
+          y: {
+            ticks: {
+              callback: function (val) {
+                return formatter.format(Number(val) || 0);
+              },
+            },
+          },
+        },
+
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label;
+                if (label) {
+                  label += ": ";
+                }
+                if (context.parsed.y !== null) {
+                  label += formatter.format(context.parsed.y || 0);
+                }
+                return label;
+              },
+            },
+          },
+        },
+      };
+    } else if (this.chartDataFormat.toLowerCase() == "number") {
+      this.chartOptions = {
+        responsive: true,
+      };
+    }
+  },
+
+  computed: {
+    ...layoutComputed
   },
 };
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>

@@ -1,138 +1,182 @@
 <template>
-  <div class="card" :class="themeClass">
-    <div class="card-body">
-      <h5 class="card-title" :class="themeClass">{{ title }}</h5>
-      <p class="font-weight-light text-muted mb-4">{{ subtitle }}</p>
-      <div>
-        <!-- Dashed Line Chart -->
-        <apexchart
-          ref="chart"
-          class="apex-charts"
-          height="380"
-          type="line"
-          dir="ltr"
-          :series="series"
-          :options="chartOptions"
-        ></apexchart>
+  <div class="card p-5" :class="themeClass">
+      <div class="card-body">
+        <h5 class="card-title" :class="themeClass">{{ title }}</h5>
+        <p class="font-weight-light" :class="themeClass">{{ subtitle }}</p>
       </div>
-    </div>
+
+    <LineChartGenerator
+      :chart-data="chartData"
+      :height="height"
+      :chart-options="chartOptions"
+    />
   </div>
 </template>
 
 <script>
 import { layoutComputed } from '../../state/helpers'
+import { Line as LineChartGenerator } from "vue-chartjs/legacy";
+
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+} from "chart.js";
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale
+);
 
 const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD"
+  style: "currency",
+  currency: "USD",
 });
 
 export default {
-  computed: {
-    ...layoutComputed
-  },
+  name: "LineChart",
+
+  components: { LineChartGenerator },
+
   props: {
-    title: String,
-    subtitle: String
+    title: {
+      type: String,
+      default: "",
+    },
+
+    subtitle: {
+      type: String,
+      default: "",
+    },
+
+    chartData: {
+      type: Object,
+      default: () => {
+        return {
+          labels: [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ],
+          datasets: [{ data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }],
+          backgroundColor: "#f87979",
+        };
+      },
+    },
+
+    chartDataFormat: {
+      type: String,
+      default: "money",
+    },
+
+    height: {
+      type: Number,
+      default: 100,
+    },
   },
 
   data() {
     return {
       chartOptions: {
-        chart: {
-          height: 400,
-          type: "line",
-          zoom: {
-            enabled: false,
+        responsive: true,
+
+        interaction: {
+          mode: "index",
+          intersect: false,
+        },
+
+        scales: {
+          y: {
+            ticks: {
+              callback: function (val) {
+                return formatter.format(Number(val) || 0);
+              },
+            },
           },
-          toolbar: {
-            show: false,
+        },
+
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label;
+                if (label) {
+                  label += ": ";
+                }
+                if (context.parsed.y !== null) {
+                  label += formatter.format(context.parsed.y || 0);
+                }
+                return label;
+              },
+            },
           },
         },
-        colors: ["#556ee6", "#34c38f"],
-        dataLabels: {
-          enabled: false,
-          formatter: function (val) { console.log('value: ', val); return formatter.format(val) }
-        },
-        stroke: {
-          width: [4, 4, 4, 4],
-          curve: "straight",
-        },
-        grid: {
-          row: {
-            colors: ["transparent", "transparent"], // takes an array which will be repeated on columns
-            opacity: 0.2,
-          },
-          borderColor: "#f1f1f1",
-        },
-        markers: {
-          style: "inverted",
-          size: 6,
-        },
-        xaxis: {
-          categories: [],
-        },
-        yaxis: {
-          title: {
-            text: "Money",
-          },
-          labels: {
-            formatter: (value) => formatter.format(value)
-          }
-        },
-        legend: {
-          position: "top",
-          horizontalAlign: "right",
-          floating: true,
-          offsetY: -25,
-          offsetX: -5,
-        },
-        
-        // responsive: [
-        //   {
-        //     breakpoint: 600,
-        //     options: {
-        //       chart: {
-        //         toolbar: {
-        //           show: false,
-        //         },
-        //       },
-        //       legend: {
-        //         show: false,
-        //       },
-        //     },
-        //   },
-        // ],
       },
-      series: [
-        {
-          name: "",
-          data: []
-        },
-        {
-          name: "",
-          data: []
-        }
-      ]
     };
   },
 
-  methods: {
-    renderChart(categories, categoryText, series) {
-      this.$refs.chart.updateOptions({
-        xaxis: {
-          categories: categories,
-          title: {
-            text: categoryText
-          }
-        }
-      })
-      
-      if(Array.isArray(series) && series.length > 0)
-        this.$refs.chart.updateSeries(series, true);
-    },
+  beforeMount() {
+    if (this.chartDataFormat.toLowerCase() == "money") {
+      this.chartOptions = {
+        responsive: true,
+
+        scales: {
+          y: {
+            ticks: {
+              callback: function (val) {
+                return formatter.format(Number(val) || 0);
+              },
+            },
+          },
+        },
+
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label;
+                if (label) {
+                  label += ": ";
+                }
+                if (context.parsed.y !== null) {
+                  label += formatter.format(context.parsed.y || 0);
+                }
+                return label;
+              },
+            },
+          },
+        },
+      };
+    } else if (this.chartDataFormat.toLowerCase() == "number") {
+      this.chartOptions = {
+        responsive: true,
+      };
+    }
+  },
+
+  computed: {
+    ...layoutComputed
   },
 };
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>
