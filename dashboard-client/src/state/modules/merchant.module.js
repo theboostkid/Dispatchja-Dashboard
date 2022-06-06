@@ -30,8 +30,8 @@ export const actions = {
     }
   },
 
-  async createMerchant({ dispatch }, merchant){
-    const { data, status, error } = await merchantService.createMerchant(merchant);
+  async createMerchant({ dispatch }, {name, merchantId, email, address, province, country, startDate, endDate, statementFrequencyInWeeks, isActive}){
+    const { data, status, error } = await merchantService.createMerchant(name, merchantId, email, address, province, country, startDate, endDate, statementFrequencyInWeeks, isActive);
     if(status == 201){
       dispatch('fetchMerchants');
       return { status, data };
