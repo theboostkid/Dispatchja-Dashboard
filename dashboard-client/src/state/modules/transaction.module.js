@@ -3,6 +3,8 @@ import { TransactionService } from '../../services/transaction.service'
 const transactionService = new TransactionService();
 
 export const state = {
+  statements: [],
+  statementsCount: [],
   transactions: [],
   transactionPeriodSummary: [],
   merchantSummaries: [],
@@ -31,42 +33,52 @@ export const mutations = {
   SET_MERCHANT_SUMMARY(state, payload) {
     state.merchantSummary = payload;
   },
+
+  SET_STATEMENTS(state, payload) {
+    state.statements = payload
+  },
+
+  SET_STATMENTS_COUNT(state, payload){
+    state.statementsCount = payload
+  }
 };
 
 export const actions = {
   async fetchTransactions({ commit }, { startDate, endDate, merchantName }) {
-    const { status, data, error } = await transactionService.fetchTransactions(
+    const { status, data} = await transactionService.fetchTransactions(
       startDate,
       endDate,
       merchantName
     );
     if (status == 200) {
       commit("SET_TRANSACTIONS", data);
-      return status;
-    } else {
-      const { message, title } = error;
-      return { status, message, title };
     }
+    return status;
   },
 
   async fetchStatistics({ commit }, { startDate, endDate, merchantName }) {
-    const { status, data, error } = await transactionService.fetchStatistics(
+    const { status, data } = await transactionService.fetchStatistics(
       startDate,
       endDate,
       merchantName
     );
-    console.log(data);
     if (status == 200) {
       const { periodSummary, paymentMethodSummary, merchantSummary } = data;
       commit("SET_MERCHANT_SUMMARIES", merchantSummary);
       commit("SET_PAYMENT_METHOD_SUMMARIES", paymentMethodSummary);
       commit("SET_PERIOD_SUMMARIES", periodSummary);
-      return status;
-    } else {
-      const { message, title } = error;
-      return { status, message, title };
-    }
+    } 
+    return status;
   },
+
+  async fetchStatements({ commit }, { startDate, endDate, merchantId, skip, limit }){
+    const { data, status } = await transactionService.fetchStatements(startDate, endDate, merchantId, skip, limit);
+    if(status == 200){
+      commit('SET_STATEMENTS', data.results);
+      commit('SET_STATMENTS_COUNT', data.count)
+    }
+    return status
+  }
 };
 
 export const getters = {

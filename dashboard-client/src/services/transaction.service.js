@@ -33,4 +33,14 @@ export class TransactionService extends Http {
     return this.httpClient().get(`/tookan/tasks/statistics${queryString}`);
   }
 
+  fetchStatements(startDate, endDate, merchantId, skip, limit){
+    let queryString = "?";
+    if (merchantId) queryString += `merchantId=${merchantId}&`;
+    if (startDate) queryString += `startDate=${startDate}&`;
+    if (endDate) queryString += `endDate=${endDate}&`;
+    if (skip) queryString += `skip=${skip}`;
+    if (limit) queryString += `limit=${limit}`;
+
+    return this.httpClient().get(`/statements${queryString}`)
+  }
 }

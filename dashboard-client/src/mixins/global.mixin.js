@@ -6,7 +6,7 @@ const formatter = new Intl.NumberFormat("en-US", {
 export default {
   methods: {
     formatAsMoney(value) {
-      return formatter.format(value);
+      return formatter.format(Number(value) || 0) ;
     }
   }
 }
