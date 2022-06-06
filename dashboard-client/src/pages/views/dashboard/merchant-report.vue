@@ -334,7 +334,6 @@ export default {
       ]),
     
     ...mapGetters('transactionModule', [ 'completedMerchantTransactions', 'failedMerchantTransactions', 'cancelledMerchantTransactions']),
-    ...mapState('transactionModule', ['allTransactions']),
       
     deliveryTransactions() {
       return this.transactions.filter( transaction => transaction.merchantName == this.filters.selectedMerchant.name)
@@ -355,7 +354,7 @@ export default {
 
   methods: {
     ...mapActions('merchantModule', ['fetchMerchants']),
-    ...mapActions('transactionModule', ['fetchTransactions', 'fetchStatistics']),
+    ...mapActions('transactionModule', ['fetchTransactions', 'fetchStatistics', 'fetchStatements']),
     
     setTransactionChart() {
       const failed = {
@@ -483,7 +482,6 @@ export default {
           status: jobStatus
         }
       });
-      console.log(this.deleveryTableItems);
     },
 
     async fetchData() {
@@ -500,7 +498,6 @@ export default {
         this.setPaymentMethodChart();
         this.setDeliveryCountChart();
         this.setDeliveryTable();
-        console.log("fetching..");
       }
     },
   }
