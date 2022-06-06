@@ -403,11 +403,15 @@ export class TaskService implements OnModuleInit {
 
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName, jobStatus: jobStatus || 2 },
+        $match: { merchantName, jobStatus: Number(jobStatus) ?? 2 },
       });
     } else if (merchantId) {
       pipelines.push({
-        $match: { merchantId, jobStatus: jobStatus || 2 },
+        $match: { merchantId, jobStatus: Number(jobStatus) ?? 2 },
+      });
+    } else {
+      pipelines.push({
+        $match: { jobStatus: Number(jobStatus) ?? 2 },
       });
     }
 
@@ -468,7 +472,6 @@ export class TaskService implements OnModuleInit {
     pipelines.push(projections);
 
     const data = await this._tookanTaskRepository.aggregate(pipelines);
-
     return this._getMappedTotals(data);
   }
 
@@ -489,15 +492,15 @@ export class TaskService implements OnModuleInit {
 
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName, jobStatus: jobStatus || 2 },
+        $match: { merchantName, jobStatus: Number(jobStatus) ?? 2 },
       });
     } else if (merchantId) {
       pipelines.push({
-        $match: { merchantId, jobStatus: jobStatus || 2 },
+        $match: { merchantId, jobStatus: Number(jobStatus) ?? 2 },
       });
     } else {
       pipelines.push({
-        $match: { jobStatus: jobStatus || 2 },
+        $match: { jobStatus: Number(jobStatus) ?? 2 },
       });
     }
 
@@ -646,15 +649,15 @@ export class TaskService implements OnModuleInit {
 
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName, jobStatus: jobStatus || 2 },
+        $match: { merchantName, jobStatus: Number(jobStatus) ?? 2 },
       });
     } else if (merchantId) {
       pipelines.push({
-        $match: { merchantId, jobStatus: jobStatus || 2 },
+        $match: { merchantId, jobStatus: Number(jobStatus) ?? 2 },
       });
     } else {
       pipelines.push({
-        $match: { jobStatus: jobStatus || 2 },
+        $match: { jobStatus: Number(jobStatus) ?? 2 },
       });
     }
 
