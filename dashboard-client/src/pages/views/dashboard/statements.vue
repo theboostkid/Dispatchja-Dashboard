@@ -129,7 +129,7 @@
                     <h6>Statement:</h6>
                     <h6>
                       {{ new Date(statement.startDate).toDateString().split(' ').slice(1).join(' ') }} - 
-                      {{ new Date(statement.endDate).toDateString().split(' ').slice(1).join(' ')  }}
+                      {{ new Date(statement.dateCreated).toDateString().split(' ').slice(1).join(' ')  }}
                     </h6>
                   </div>
                 </div>
@@ -217,7 +217,9 @@ import { mapActions, mapState } from 'vuex';
 import DataTable from '@/components/tables/data-table.vue'
 import Multiselect from "vue-multiselect";
 import { layoutComputed } from '../../../state/helpers'
- 
+import { TransactionService } from '../../../services/transaction.service'
+
+const transactionService = new TransactionService();
 /**
  * Starter component
  */
@@ -320,6 +322,7 @@ export default {
       ],
       tableItems: [],
       selectedStatement: {},
+      selectedStatementTransactions: [],
       filters: {
         date: [],
         merchant: '',
@@ -344,19 +347,19 @@ export default {
       return Math.ceil(this.statements.length / this.pagination.itemsPerPage)
     },
 
-    selectedStatementTransactions: function(){
-      return this.transactions.filter( transaction => {
-        if(transaction.merchantName == this.selectedStatement.merchant?.name) {
-          const dateFrom = new Date(this.selectedStatement.startDate);
-          const dateTo = new Date(this.selectedStatement.endDate);
-          const checkDate =new Date(transaction.dateCreated.substr(0,10));
-          if(checkDate.getTime() <= dateTo.getTime() && checkDate.getTime() >= dateFrom.getTime()){
-            return transaction
-          }
-        }
-      }
-      )
-    }
+    // selectedStatementTransactions: function(){
+    //   return this.transactions.filter( transaction => {
+    //     if(transaction.merchantName == this.selectedStatement.merchant?.name) {
+    //       const dateFrom = new Date(this.selectedStatement.startDate);
+    //       const dateTo = new Date(this.selectedStatement.endDate);
+    //       const checkDate =new Date(transaction.dateCreated.substr(0,10));
+    //       if(checkDate.getTime() <= dateTo.getTime() && checkDate.getTime() >= dateFrom.getTime()){
+    //         return transaction
+    //       }
+    //     }
+    //   }
+    //   )
+    // }
   },
   methods: {
     ...mapActions('merchantModule', ['fetchMerchants']),
@@ -372,8 +375,12 @@ export default {
       this.pagination.page = nextPageNum;
     },
 
-    showModal(statement){
-      this.selectedStatement = statement;
+    async showModal(statement){
+      const { data, status } = await transactionService.fetchTransactions(statement.startDate.substr(0, 10), statement.endDate.substr(0, 10), statement.merchant.name);
+      console.log(statement);
+      if(status == 200) {
+        this.selectedStatementTransactions = data
+      }
       this.$refs['breakdownModal'].show()
     },
 

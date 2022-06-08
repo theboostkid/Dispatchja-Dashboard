@@ -41,7 +41,7 @@ export const transactionMixin = {
         const month = transaction.dateCreated.substr(5,2);
         const foundIndex = groupedTransactions.findIndex( transaction => transaction?.dateCreated == transactionDate );
         if(foundIndex == -1) {
-          groupedTransactions[month.replace(/^0/g, '')] = {
+          groupedTransactions[Number(month.replace(/^0/g, '')) -1] = {
             dateCreated: transactionDate,
             total: transaction.totalPriceWithDiscount || 0
           }
