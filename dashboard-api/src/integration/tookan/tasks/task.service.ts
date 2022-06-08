@@ -401,18 +401,21 @@ export class TaskService implements OnModuleInit {
     jobStatus?: number,
   ) {
     const pipelines = [];
+    if (isNaN(Number(jobStatus))) {
+      jobStatus = 2;
+    }
 
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName, jobStatus: Number(jobStatus || 0) ?? 2 },
+        $match: { merchantName, jobStatus: Number(jobStatus) },
       });
     } else if (merchantId) {
       pipelines.push({
-        $match: { merchantId, jobStatus: Number(jobStatus || 0) ?? 2 },
+        $match: { merchantId, jobStatus: Number(jobStatus) },
       });
     } else {
       pipelines.push({
-        $match: { jobStatus: Number(jobStatus || 0) ?? 2 },
+        $match: { jobStatus: Number(jobStatus) },
       });
     }
 
@@ -493,17 +496,21 @@ export class TaskService implements OnModuleInit {
   }: SearchQueryParams) {
     const pipelines = [];
 
+    if (isNaN(Number(jobStatus))) {
+      jobStatus = 2;
+    }
+
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName, jobStatus: Number(jobStatus || 0) ?? 2 },
+        $match: { merchantName, jobStatus: Number(jobStatus) },
       });
     } else if (merchantId) {
       pipelines.push({
-        $match: { merchantId, jobStatus: Number(jobStatus || 0) ?? 2 },
+        $match: { merchantId, jobStatus: Number(jobStatus) },
       });
     } else {
       pipelines.push({
-        $match: { jobStatus: Number(jobStatus || 0) ?? 2 },
+        $match: { jobStatus: Number(jobStatus) },
       });
     }
 
@@ -657,18 +664,20 @@ export class TaskService implements OnModuleInit {
     jobStatus,
   }: GroupByOptions) {
     const pipelines = [];
-
+    if (isNaN(Number(jobStatus))) {
+      jobStatus = 2;
+    }
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName, jobStatus: Number(jobStatus || 0) ?? 2 },
+        $match: { merchantName, jobStatus: Number(jobStatus) },
       });
     } else if (merchantId) {
       pipelines.push({
-        $match: { merchantId, jobStatus: Number(jobStatus || 0) ?? 2 },
+        $match: { merchantId, jobStatus: Number(jobStatus) },
       });
     } else {
       pipelines.push({
-        $match: { jobStatus: Number(jobStatus || 0) ?? 2 },
+        $match: { jobStatus: Number(jobStatus) },
       });
     }
 
