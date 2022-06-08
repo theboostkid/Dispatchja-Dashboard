@@ -31,29 +31,8 @@ export class MerchantService extends Http {
     });
   }
 
-  updateMerchant(
-    name,
-    id,
-    email,
-    address,
-    province,
-    country,
-    startDate,
-    endDate,
-    statementFrequencyInWeeks,
-    isActive
-  ) {
-    return this.httpClient().patch(`/merchants/${id}`, {
-      name,
-      email,
-      address,
-      province,
-      country,
-      startDate,
-      endDate,
-      statementFrequencyInWeeks,
-      isActive,
-    });
+  updateMerchant(id, updates){
+    return this.httpClient().patch(`/merchants/${id}`, updates);
   }
 
   fetchMerchants() {

@@ -300,13 +300,14 @@ export default {
 
     async saveMerchant(){
       this.merchantInfo.statementFrequencyInWeeks = Number(this.merchantInfo.statementFrequencyInWeeks);
+      console.log( this.merchantInfo);
       if(this.dialogMode == 'add'){
         const result = await this.createMerchant(this.merchantInfo);
         if (result.status == 201) {
           this.closeModal();
         }
       } else if (this.dialogMode == 'edit'){
-        const result = await this.updateMerchant(this.merchantInfo);
+        const result = await this.updateMerchant({ id: this.merchantInfo.id, updates: this.merchantInfo});
         if(result.status == 200){
           this.closeModal();
         }
