@@ -89,6 +89,13 @@ export class StatementService {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async automatedStatementReportCron() {
+    console.log('[info] automated statement generation');
+    const tasks = await this._taskService.getTasks({ limit: 1 });
+    if (tasks.length === 0) {
+      console.log('[info] exited because no transactions were found.');
+      return;
+    }
+
     const { results } = await this._merchantService.findAll();
 
     const today = new Date();
