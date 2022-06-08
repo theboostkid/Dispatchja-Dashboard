@@ -36,7 +36,7 @@ export class TaskService implements OnModuleInit {
     }
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async handleCron() {
     try {
       console.info('[info] running cronjob: ', new Date());
@@ -103,7 +103,8 @@ export class TaskService implements OnModuleInit {
     let shouldCountinue = false;
     const tasks = [];
 
-    console.time('[info] fetch from tookan and process: ');
+    console.log('[info] fetching tasks from tookan api');
+    console.time('[info] finish fetching from tookan and process: ');
     do {
       const { data, total_page_count } = await lastValueFrom(
         this._httpService
@@ -135,7 +136,7 @@ export class TaskService implements OnModuleInit {
         getAllTasksRequestBody.requested_page <= total_page_count &&
         getAllTasksRequestBody.is_pagination == 1;
     } while (shouldCountinue);
-    console.timeEnd('[info] fetch from tookan and process: ');
+    console.timeEnd('[info] finish fetching from tookan and process: ');
 
     const len = tasks.length;
     if (len) {
@@ -403,15 +404,15 @@ export class TaskService implements OnModuleInit {
 
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName, jobStatus: Number(jobStatus) ?? 2 },
+        $match: { merchantName, jobStatus: Number(jobStatus || 0) ?? 2 },
       });
     } else if (merchantId) {
       pipelines.push({
-        $match: { merchantId, jobStatus: Number(jobStatus) ?? 2 },
+        $match: { merchantId, jobStatus: Number(jobStatus || 0) ?? 2 },
       });
     } else {
       pipelines.push({
-        $match: { jobStatus: Number(jobStatus) ?? 2 },
+        $match: { jobStatus: Number(jobStatus || 0) ?? 2 },
       });
     }
 
@@ -487,20 +488,22 @@ export class TaskService implements OnModuleInit {
     jobStatus,
     orderId,
     fleetId,
+    limit,
+    skip,
   }: SearchQueryParams) {
     const pipelines = [];
 
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName, jobStatus: Number(jobStatus) ?? 2 },
+        $match: { merchantName, jobStatus: Number(jobStatus || 0) ?? 2 },
       });
     } else if (merchantId) {
       pipelines.push({
-        $match: { merchantId, jobStatus: Number(jobStatus) ?? 2 },
+        $match: { merchantId, jobStatus: Number(jobStatus || 0) ?? 2 },
       });
     } else {
       pipelines.push({
-        $match: { jobStatus: Number(jobStatus) ?? 2 },
+        $match: { jobStatus: Number(jobStatus || 0) ?? 2 },
       });
     }
 
@@ -528,8 +531,16 @@ export class TaskService implements OnModuleInit {
       pipelines.push({ $match: dateFilterPipeline });
     }
 
-    const data = await this._tookanTaskRepository.aggregate(pipelines);
+    if (limit) {
+      pipelines.push({
+        $skip: Number(skip),
+      });
+      pipelines.push({
+        $limit: Number(limit),
+      });
+    }
 
+    const data = await this._tookanTaskRepository.aggregate(pipelines);
     return this._getMappedTotals(data, true, true);
   }
 
@@ -649,15 +660,15 @@ export class TaskService implements OnModuleInit {
 
     if (merchantName) {
       pipelines.push({
-        $match: { merchantName, jobStatus: Number(jobStatus) ?? 2 },
+        $match: { merchantName, jobStatus: Number(jobStatus || 0) ?? 2 },
       });
     } else if (merchantId) {
       pipelines.push({
-        $match: { merchantId, jobStatus: Number(jobStatus) ?? 2 },
+        $match: { merchantId, jobStatus: Number(jobStatus || 0) ?? 2 },
       });
     } else {
       pipelines.push({
-        $match: { jobStatus: Number(jobStatus) ?? 2 },
+        $match: { jobStatus: Number(jobStatus || 0) ?? 2 },
       });
     }
 

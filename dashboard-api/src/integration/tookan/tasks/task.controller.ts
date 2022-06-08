@@ -58,6 +58,8 @@ export class TasksController {
       startDate,
       endDate,
       jobStatus,
+      limit,
+      skip,
     } = searchQuery;
     return this._taskService.getTasks({
       orderId,
@@ -67,6 +69,8 @@ export class TasksController {
       startDate,
       endDate,
       jobStatus,
+      limit,
+      skip,
     });
   }
 

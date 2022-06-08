@@ -31,4 +31,10 @@ export class SearchQueryParams {
 
   @IsOptional()
   jobStatus?: number;
+
+  @IsOptional()
+  limit?: number;
+
+  @IsOptional()
+  skip?: number;
 }
