@@ -38,16 +38,16 @@
     <div class="row">
       <div class="col-xl-3">
         <WidgetCard
-        :title="'Total Delivery (' + new Date().getFullYear() +')'"
-        :data="totalDeliveries"
+        :title="'Total Delivery (' + filters.year.substr(0,4) +')'"
+        :data="merchantSummary.hasOwnProperty('totalJobs') ? merchantSummary.totalJobs : 0"
         icon="fas fa-shipping-fast"
         />
       </div>
 
       <div class="col-xl-3">
         <WidgetCard
-        :title="`Total Deliver Earnings (${new Date(filters.year).getFullYear() + 1})`"
-        :data="totalDeliveryEarnings"
+        :title="`Total Deliver Earnings (${filters.year.substr(0,4)})`"
+        :data="formatAsMoney(merchantSummary.hasOwnProperty('totalDeliveryFee') ? merchantSummary.totalDeliveryFee : 0)"
         icon="fas fa-money-bill-alt"
         />
       </div>
@@ -327,29 +327,18 @@ export default {
     
     ...mapState('merchantModule', [
       'merchants', 
-      'totalMerchants', 
-      'singleMerchantPeriodSummaries', 
-      'singleMerchantSummary',
-      'overallMerchantPeriodSummaries'
+      'totalMerchants'
       ]),
+
+    ...mapState('transactionModule', [
+      'merchantSummary'
+    ]),
     
     ...mapGetters('transactionModule', [ 'completedMerchantTransactions', 'failedMerchantTransactions', 'cancelledMerchantTransactions']),
       
     deliveryTransactions() {
       return this.transactions.filter( transaction => transaction.merchantName == this.filters.selectedMerchant.name)
     },
-
-    totalCreditCardFees(){
-      return '$0'
-    },
-
-    totalDeliveryEarnings(){
-      return this.formatAsMoney(this.singleMerchantSummary?.totalDeliveryFee || 0) || '$0';
-    },
-
-    totalDeliveries(){
-      return this.singleMerchantSummary?.totalJobs ? this.singleMerchantSummary.totalJobs.toString() : '0';
-    }
   },
 
   methods: {
