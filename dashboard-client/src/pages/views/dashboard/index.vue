@@ -21,16 +21,16 @@
     <div class="row">
       <div class="col-sm-3 col-md-3">
         <WidgetCard
-        :title="'Total statements ('+ new Date().getFullYear() + ')'"
-        data="0"
+        :title="'Total statements ('+ filters.year.toString().substr(0,4) + ')'"
+        :data="statementsCount"
         icon="fas fa-file-invoice"
         />
       </div>
       
       <div class="col-sm-3 col-md-3">
         <WidgetCard
-        :title="'Completed Transactions ('+new Date().getFullYear() +')'"
-        data="0"
+        :title="'Completed Transactions ('+ filters.year.toString().substr(0,4) + ')'"
+        :data="this.completedTransactions.length"
         icon="fas fa-file-invoice-dollar"
         />
       </div>
@@ -80,6 +80,7 @@ import WidgetCard from "@/components/widgets/card";
 import DataTable from "@/components/tables/data-table.vue"
 import 'vue-hotel-datepicker/dist/vueHotelDatepicker.css';
 import { transactionMixin } from '../../../mixins/transaction.mixin'
+import { mapState } from 'vuex';
 
 /**
  * Starter component
@@ -199,13 +200,11 @@ export default {
   },
 
   computed: {
+    ...mapState('transactionModule', ['statementsCount']),
+    
     totalCompletedTransactions(){
       return this.completedTransactions.length.toString()
     },
-
-    // totalStatments(){
-    //   return this.formatAsMoney(this.overallMerchantSummaries.totalCardTransactions + this.overallMerchantSummaries.totalCashTransactions || 0)
-    // }
   },
 
   methods: {

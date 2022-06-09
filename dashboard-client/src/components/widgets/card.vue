@@ -25,7 +25,7 @@
   export default {
     props: {
       icon: String,
-      data: String,
+      data: [String, Number],
       title: String
     },
 

@@ -4,12 +4,15 @@ const transactionService = new TransactionService();
 
 export const state = {
   statements: [],
-  statementsCount: [],
+  statementsCount: 0,
+
   transactions: [],
   transactionPeriodSummary: [],
-  merchantSummaries: [],
+
   paymentMethodSummaries: [],
   periodSummaries: [],
+
+  merchantSummaries: [],
   merchantSummary: {},
 };
 
@@ -64,7 +67,13 @@ export const actions = {
     );
     if (status == 200) {
       const { periodSummary, paymentMethodSummary, merchantSummary } = data;
-      commit("SET_MERCHANT_SUMMARIES", merchantSummary);
+      if(merchantName){
+        commit("SET_MERCHANT_SUMMARY", merchantSummary);
+        commit("SET_MERCHANT_SUMMARIES", []);
+      } else {
+        commit("SET_MERCHANT_SUMMARIES", merchantSummary);
+        commit("SET_MERCHANT_SUMMARY", []);
+      }
       commit("SET_PAYMENT_METHOD_SUMMARIES", paymentMethodSummary);
       commit("SET_PERIOD_SUMMARIES", periodSummary);
     } 
