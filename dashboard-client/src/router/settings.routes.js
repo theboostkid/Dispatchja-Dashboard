@@ -22,7 +22,7 @@ export default [
     name: "Merchants",
     meta: { 
       authRequired: true,
-      allowedRoles: ['superuser', 'restaurant-admin']  
+      allowedRoles: ['superuser']  
     },
     component: () => import("../pages/views/dashboard/settings/merchant-information"),
   }

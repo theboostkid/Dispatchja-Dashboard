@@ -47,7 +47,10 @@ export const mutations = {
 };
 
 export const actions = {
-  async fetchTransactions({ commit }, { startDate, endDate, merchantName }) {
+  async fetchTransactions({ commit, rootState }, { startDate, endDate, merchantName }) {
+    if(rootState.auth.currentUser.role == 'restaurant-admin' || rootState.auth.currentUser.role == 'restaurant-staff'){
+      merchantName = rootState.auth.currentUser.merchantName
+    }
     const { status, data} = await transactionService.fetchTransactions(
       startDate,
       endDate,
@@ -59,7 +62,10 @@ export const actions = {
     return status;
   },
 
-  async fetchStatistics({ commit }, { startDate, endDate, merchantName }) {
+  async fetchStatistics({ commit, rootState }, { startDate, endDate, merchantName }) {
+    if(rootState.auth.currentUser.role == 'restaurant-admin' || rootState.auth.currentUser.role == 'restaurant-staff'){
+      merchantName = rootState.auth.currentUser.merchantName
+    }
     const { status, data } = await transactionService.fetchStatistics(
       startDate,
       endDate,

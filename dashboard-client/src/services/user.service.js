@@ -9,12 +9,12 @@ export class UserService extends Http {
     return await this.httpClient().post('/users', { name, email, role, tookanUserId, merchantName, isActive});
   }
 
-  async getUsers( search, merchant, paginated, skip, limit ) {
+  async getUsers( merchant, search, paginated, skip, limit ) {
     let queryString = "?"
     if(search)
       queryString += `search=${search}&`
     if(merchant)
-      queryString += `merchant=${merchant}&`
+      queryString += `restaurant=${merchant}&`
     if(paginated)
       queryString += `paginated=${paginated}&`
     if(skip)

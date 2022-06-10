@@ -42,14 +42,6 @@
       </div>
     </b-modal>
 
-    <!-- <div class="row mb-4">
-      <div class="col">
-        <b-button variant="primary">
-          Add Invoice
-        </b-button>
-      </div>
-    </div> -->
-
     <div class="row mb-4" :class="{ 'text-white': leftSidebarType == 'dark', 'text-dark' : leftSidebarType == 'light' }"> 
       <div class="col-3">
         <div>
@@ -66,7 +58,7 @@
         </div>
       </div>
 
-      <div class="col-3">
+      <div class="col-3" v-if="currentUser.role != 'restaurant-staff' && currentUser.role != 'restaurant-admin'">
         <label class="mt-3">Filter Merchant:</label>
         <multiselect 
           v-model="filters.merchant" 
@@ -340,6 +332,7 @@ export default {
   computed: {
     ...mapState('merchantModule', ['merchants']),
     ...mapState('transactionModule', ['transactions', 'statements']),
+    ...mapState('auth', ['currentUser']),
     
     ...layoutComputed,
 
@@ -347,19 +340,6 @@ export default {
       return Math.ceil(this.statements.length / this.pagination.itemsPerPage)
     },
 
-    // selectedStatementTransactions: function(){
-    //   return this.transactions.filter( transaction => {
-    //     if(transaction.merchantName == this.selectedStatement.merchant?.name) {
-    //       const dateFrom = new Date(this.selectedStatement.startDate);
-    //       const dateTo = new Date(this.selectedStatement.endDate);
-    //       const checkDate =new Date(transaction.dateCreated.substr(0,10));
-    //       if(checkDate.getTime() <= dateTo.getTime() && checkDate.getTime() >= dateFrom.getTime()){
-    //         return transaction
-    //       }
-    //     }
-    //   }
-    //   )
-    // }
   },
   methods: {
     ...mapActions('merchantModule', ['fetchMerchants']),

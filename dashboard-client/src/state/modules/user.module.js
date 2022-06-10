@@ -18,8 +18,12 @@ export const mutations = {
 }
 
 export const actions = {
-  async getUsers({ commit }) {
-    const result = await service.getUsers();
+  async getUsers({ commit, rootState }) {
+    let merchantName = '';
+    if(rootState.auth.currentUser.role == 'restaurant-admin'){
+      merchantName = rootState.auth.currentUser.merchantName
+    }
+    const result = await service.getUsers(merchantName);
     if(result.status == 200) {
       const { data:{ results, count} } = result;
       commit('SET_USERS', results);
