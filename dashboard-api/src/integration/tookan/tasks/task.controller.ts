@@ -41,14 +41,6 @@ export class TasksController {
   }
 
   @Get('/')
-  @UseGuards(
-    RoleGuard([
-      Role.ADMIN,
-      Role.SUPER_USER,
-      Role.RESTUARANT,
-      Role.RESTUARANT_STAFF,
-    ]),
-  )
   getTasks(@Query() searchQuery: SearchQueryParams) {
     const {
       orderId,
@@ -75,14 +67,6 @@ export class TasksController {
   }
 
   @Get('/statistics')
-  @UseGuards(
-    RoleGuard([
-      Role.ADMIN,
-      Role.SUPER_USER,
-      Role.RESTUARANT,
-      Role.RESTUARANT_STAFF,
-    ]),
-  )
   getMerchantStatistic(@Query() searchQuery: SearchQueryParams) {
     const { period, merchantName, merchantId, startDate, endDate, jobStatus } =
       searchQuery;
