@@ -75,10 +75,8 @@ export const actions = {
       const { periodSummary, paymentMethodSummary, merchantSummary } = data;
       if(merchantName){
         commit("SET_MERCHANT_SUMMARY", merchantSummary);
-        commit("SET_MERCHANT_SUMMARIES", []);
       } else {
         commit("SET_MERCHANT_SUMMARIES", merchantSummary);
-        commit("SET_MERCHANT_SUMMARY", []);
       }
       commit("SET_PAYMENT_METHOD_SUMMARIES", paymentMethodSummary);
       commit("SET_PERIOD_SUMMARIES", periodSummary);
@@ -93,6 +91,10 @@ export const actions = {
       commit('SET_STATMENTS_COUNT', data.count)
     }
     return status
+  },
+
+  resetMerchantSummary({ commit }){
+    commit('SET_MERCHANT_SUMMARY', {})
   }
 };
 

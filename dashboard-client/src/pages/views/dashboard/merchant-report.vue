@@ -343,7 +343,7 @@ export default {
 
   methods: {
     ...mapActions('merchantModule', ['fetchMerchants']),
-    ...mapActions('transactionModule', ['fetchTransactions', 'fetchStatistics', 'fetchStatements']),
+    ...mapActions('transactionModule', ['fetchTransactions', 'fetchStatistics', 'fetchStatements', 'resetMerchantSummary']),
     
     setTransactionChart() {
       const failed = {
@@ -489,6 +489,10 @@ export default {
         this.setDeliveryTable();
       }
     },
+  },
+
+  beforeDestroy(){
+    this.resetMerchantSummary();
   }
 };
 </script>
