@@ -14,7 +14,7 @@ export class UserService extends Http {
     if(search)
       queryString += `search=${search}&`
     if(merchant)
-      queryString += `restaurant=${merchant}&`
+      queryString += `merchant=${merchant}&`
     if(paginated)
       queryString += `paginated=${paginated}&`
     if(skip)
