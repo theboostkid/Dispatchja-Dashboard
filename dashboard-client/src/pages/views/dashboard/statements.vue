@@ -357,7 +357,6 @@ export default {
 
     async showModal(statement){
       const { data, status } = await transactionService.fetchTransactions(statement.startDate.substr(0, 10), statement.endDate.substr(0, 10), statement.merchant.name);
-      console.log(statement);
       if(status == 200) {
         this.selectedStatementTransactions = data
       }
